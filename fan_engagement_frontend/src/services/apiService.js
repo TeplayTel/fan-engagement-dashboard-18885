@@ -77,7 +77,21 @@ class ApiService {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        // Try to get error details from response body
+        let errorMessage = `HTTP error! status: ${response.status}`;
+        try {
+          const errorData = await response.json();
+          if (errorData.detail) {
+            errorMessage += ` - ${errorData.detail}`;
+          } else if (errorData.message) {
+            errorMessage += ` - ${errorData.message}`;
+          }
+        } catch (parseError) {
+          // If response body can't be parsed, use status text
+          errorMessage += ` - ${response.statusText}`;
+        }
+        
+        throw new Error(errorMessage);
       }
 
       return await response.json();

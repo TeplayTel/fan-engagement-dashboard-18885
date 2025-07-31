@@ -103,11 +103,12 @@ function EmojiReactions() {
         userId = `anonymous_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
       }
 
+      // Payload structure for /fan-engagement/emoji/v1/userEmojiReaction endpoint
       const reactionPayload = {
-        userId: userId,
-        eventId: "live_match_001", // Default event ID - could be made dynamic
-        emojiId: emojiData.id.toString(),
-        createdAt: currentTime
+        userId: userId,           // User identifier (authenticated user token or anonymous ID)
+        eventId: "live_match_001", // Event/match identifier - could be made dynamic
+        emojiId: emojiData.id.toString(), // String representation of emoji ID
+        createdAt: currentTime    // ISO timestamp when reaction was created
       };
       
       // Send the reaction with proper error handling
@@ -128,8 +129,23 @@ function EmojiReactions() {
     } catch (err) {
       console.warn('Failed to send reaction to backend:', err);
       
+      // Provide more specific error feedback based on error type
+      let errorMessage = 'Failed to send reaction';
+      
+      if (err.message.includes('401')) {
+        errorMessage = 'Authentication required';
+      } else if (err.message.includes('403')) {
+        errorMessage = 'Access denied';
+      } else if (err.message.includes('404')) {
+        errorMessage = 'Service unavailable';
+      } else if (err.message.includes('500')) {
+        errorMessage = 'Server error';
+      } else if (err.message.includes('Network')) {
+        errorMessage = 'Connection failed';
+      }
+      
       // Show error feedback
-      setFeedbackMessage('Failed to send reaction');
+      setFeedbackMessage(errorMessage);
       setFeedbackType('error');
       
       // Clear error feedback after 3 seconds
