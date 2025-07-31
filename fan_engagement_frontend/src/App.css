@@ -187,34 +187,80 @@ body {
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
+  width: 90%; /* Use percentage for responsiveness */
+  max-width: 600px; /* Max width on larger screens */
   z-index: 10;
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: space-between; /* Pushes emoji list and counter apart */
+  gap: 16px;
   background-color: rgba(30, 30, 30, 0.8);
-  padding: 12px 20px;
+  padding: 8px 16px; /* Adjusted padding */
   border-radius: 30px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   transition: all 0.3s ease;
-  width: fit-content;
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
 }
 
-.emoji-reactions-bar span {
+.emoji-list {
+  display: flex;
+  flex-wrap: wrap; /* Allow emojis to wrap on smaller screens */
+  gap: 12px;
+  align-items: center;
+}
+
+.emoji {
   font-size: 1.5rem;
   cursor: pointer;
   transition: transform 0.2s ease;
 }
 
-.emoji-reactions-bar span:hover {
+.emoji:hover {
   transform: scale(1.15) translateY(-2px);
 }
 
 .watching-counter {
-  margin-left: auto;
+  margin-left: auto; /* Keeps it to the right */
   text-align: right;
+  flex-shrink: 0; /* Prevents counter from shrinking */
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .emoji-reactions-bar {
+    width: 95%;
+    padding: 8px 12px;
+    gap: 12px;
+  }
+
+  .emoji {
+    font-size: 1.3rem; /* Slightly smaller emojis */
+  }
+
+  .emoji-list {
+    gap: 8px; /* Reduce gap between emojis */
+    justify-content: center; /* Center emojis when they wrap */
+    flex-grow: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .emoji-reactions-bar {
+    flex-direction: column; /* Stack items vertically */
+    bottom: 12px;
+    padding: 12px;
+  }
+  
+  .emoji {
+    font-size: 1.4rem; /* Increase size again for touch friendliness */
+  }
+
+  .watching-counter {
+    margin-left: 0; /* Remove margin when stacked */
+    margin-top: 8px; /* Add space on top */
+  }
 }
 
 .watching-count {
