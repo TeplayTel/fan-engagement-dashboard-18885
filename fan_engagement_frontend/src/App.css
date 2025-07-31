@@ -368,3 +368,32 @@ body {
   border-radius: 12px;
   border: 1px solid var(--border-color);
 }
+
+/* Emoji Flying Animation */
+.flying-emoji-container {
+  position: absolute;
+  bottom: 80px; /* Start above the emoji bar */
+  left: 0;
+  right: 0;
+  height: 300px; /* Area for animation */
+  pointer-events: none; /* Allow clicks to pass through */
+  overflow: hidden;
+  z-index: 11; /* Above emoji bar */
+}
+
+.flying-emoji {
+  position: absolute;
+  font-size: 2rem;
+  animation: fly-up 2s ease-out forwards;
+}
+
+@keyframes fly-up {
+  from {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-250px) scale(0.5);
+    opacity: 0;
+  }
+}
