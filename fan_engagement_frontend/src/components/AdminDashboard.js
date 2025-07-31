@@ -566,6 +566,7 @@ function AdminDashboard() {
               {isAdmin && (
                 <button
                   onClick={() => handleRemoveEmoji(emoji.id)}
+                  className="emoji-remove-btn"
                   style={{
                     background: 'var(--accent-red)',
                     color: 'white',
@@ -576,9 +577,21 @@ function AdminDashboard() {
                     cursor: 'pointer',
                     position: 'absolute',
                     top: '8px',
-                    right: '8px'
+                    right: '8px',
+                    transition: 'all 0.2s ease',
+                    opacity: 0.8
                   }}
-                  title="Remove emoji"
+                  onMouseEnter={(e) => {
+                    e.target.style.opacity = '1';
+                    e.target.style.transform = 'scale(1.1)';
+                    e.target.style.boxShadow = '0 2px 4px rgba(229, 9, 20, 0.3)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.opacity = '0.8';
+                    e.target.style.transform = 'scale(1)';
+                    e.target.style.boxShadow = 'none';
+                  }}
+                  title="Remove emoji - This will update the emoji bar in real-time"
                 >
                   ✕
                 </button>
