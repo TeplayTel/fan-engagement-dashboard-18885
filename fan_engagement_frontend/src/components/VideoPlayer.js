@@ -3,8 +3,8 @@ import React, { useState, useRef, useEffect } from 'react';
 // PUBLIC_INTERFACE
 function VideoPlayer({ videoUrl, children }) {
   /**
-   * VideoPlayer component for embedding live match streams with hover-controlled emoji overlay.
-   * It also serves as a container for overlay elements like emoji reactions.
+   * VideoPlayer component with optimized overlay positioning for sleek emoji bar.
+   * Ensures emoji bar never obscures video player controls.
    * @param {string} videoUrl - The URL of the video to embed.
    * @param {React.ReactNode} children - Components to overlay on the video.
    */
@@ -76,7 +76,7 @@ function VideoPlayer({ videoUrl, children }) {
   return (
     <div 
       ref={containerRef}
-      className="video-player-container"
+      className="video-player-container-sleek"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onTouchStart={handleTouchStart}
@@ -92,18 +92,20 @@ function VideoPlayer({ videoUrl, children }) {
         style={{ pointerEvents: 'auto' }}
       ></iframe>
       
-      {/* Hover overlay container for emoji reactions */}
+      {/* Sleek overlay container - positioned to avoid video controls */}
       <div 
-        className={`emoji-overlay-container ${isHovered ? 'visible' : 'hidden'}`}
+        className={`emoji-overlay-container-sleek ${isHovered ? 'visible' : 'hidden'}`}
         style={{
           position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
+          bottom: '60px', // Positioned above typical video controls
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '90%',
+          maxWidth: '600px',
           pointerEvents: isHovered ? 'auto' : 'none',
-          transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           opacity: isHovered ? 1 : 0,
-          transform: isHovered ? 'translateY(0)' : 'translateY(20px)',
+          transform: isHovered ? 'translateX(-50%) translateY(0)' : 'translateX(-50%) translateY(10px)',
           zIndex: 20
         }}
       >
@@ -113,7 +115,7 @@ function VideoPlayer({ videoUrl, children }) {
       {/* Mobile tap indicator */}
       {isTouchDevice && (
         <div 
-          className="mobile-tap-indicator"
+          className="mobile-tap-indicator-sleek"
           style={{
             position: 'absolute',
             top: '50%',
@@ -124,16 +126,16 @@ function VideoPlayer({ videoUrl, children }) {
             transition: 'opacity 0.3s ease',
             background: 'rgba(0, 0, 0, 0.7)',
             color: 'white',
-            padding: '8px 16px',
-            borderRadius: '20px',
-            fontSize: '14px',
+            padding: '6px 12px',
+            borderRadius: '16px',
+            fontSize: '12px',
             fontWeight: '500',
             backdropFilter: 'blur(10px)',
             border: '1px solid rgba(255, 255, 255, 0.1)',
             zIndex: 10
           }}
         >
-          Tap for emoji reactions
+          Tap for reactions
         </div>
       )}
     </div>

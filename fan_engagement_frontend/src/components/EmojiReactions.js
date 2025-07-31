@@ -5,8 +5,8 @@ import useAuth from '../hooks/useAuth';
 // PUBLIC_INTERFACE
 function EmojiReactions() {
   /**
-   * A responsive emoji reactions bar that appears on hover/tap.
-   * Features modern aesthetics with smooth animations and mobile support.
+   * A sleek, single-row emoji reactions bar that appears as a minimalist overlay.
+   * Positioned to never obscure video player controls with modern aesthetics.
    */
   const [flyingEmojis, setFlyingEmojis] = useState([]);
   const [availableEmojis, setAvailableEmojis] = useState([]);
@@ -218,17 +218,16 @@ function EmojiReactions() {
 
   if (loading) {
     return (
-      <div className="emoji-reactions-bar-hover">
-        <div className="emoji-reactions-content">
-          <div className="emoji-list-hover">
-            <div className="emoji-loading">
+      <div className="emoji-reactions-bar-sleek">
+        <div className="emoji-reactions-content-sleek">
+          <div className="emoji-list-sleek">
+            <div className="emoji-loading-sleek">
               <span className="loading-spinner">⏳</span>
-              <span>Loading emojis...</span>
+              <span>Loading...</span>
             </div>
           </div>
-          <div className="watching-counter-hover">
-            <span className="watching-count">2.1K</span>
-            <span className="watching-text">watching</span>
+          <div className="watching-counter-sleek">
+            <span className="watching-count-sleek">2.1K</span>
           </div>
         </div>
       </div>
@@ -238,11 +237,11 @@ function EmojiReactions() {
   return (
     <>
       {/* Enhanced flying emoji container */}
-      <div className="flying-emoji-container-enhanced">
+      <div className="flying-emoji-container-sleek">
         {flyingEmojis.map((item) => (
           <span
             key={item.id}
-            className="flying-emoji-enhanced"
+            className="flying-emoji-sleek"
             style={{ 
               left: item.left,
               animationDelay: item.animationDelay,
@@ -256,29 +255,22 @@ function EmojiReactions() {
         ))}
       </div>
 
-      {/* Modern hover-controlled emoji bar */}
-      <div className="emoji-reactions-bar-hover">
-        <div className="emoji-reactions-content">
-          {/* Status and feedback area */}
-          <div className="emoji-status-area">
-            {error && (
-              <span className="status-indicator error" title={error}>
-                ⚠️
-              </span>
-            )}
-            {feedbackMessage && (
-              <span className={`feedback-message ${feedbackType}`}>
-                {feedbackMessage}
-              </span>
-            )}
-          </div>
+      {/* Sleek single-row emoji bar */}
+      <div className="emoji-reactions-bar-sleek">
+        <div className="emoji-reactions-content-sleek">
+          {/* Status feedback (minimal) */}
+          {feedbackMessage && (
+            <div className={`feedback-message-sleek ${feedbackType}`}>
+              {feedbackMessage}
+            </div>
+          )}
 
-          {/* Emoji list */}
-          <div className="emoji-list-hover">
-            {availableEmojis.map((emojiData, index) => (
+          {/* Emoji list - single row, horizontal */}
+          <div className="emoji-list-sleek">
+            {availableEmojis.slice(0, 8).map((emojiData, index) => (
               <button
                 key={emojiData.id}
-                className="emoji-button-hover"
+                className="emoji-button-sleek"
                 onClick={() => handleEmojiClick(emojiData)}
                 aria-label={`React with ${emojiData.name || emojiData.emoji}`}
                 title={emojiData.name || emojiData.emoji}
@@ -286,19 +278,15 @@ function EmojiReactions() {
                   animationDelay: `${index * 0.05}s`
                 }}
               >
-                <span className="emoji-symbol">{emojiData.emoji}</span>
-                <span className="emoji-ripple"></span>
+                <span className="emoji-symbol-sleek">{emojiData.emoji}</span>
               </button>
             ))}
           </div>
 
-          {/* Watching counter */}
-          <div className="watching-counter-hover">
-            <div className="counter-content">
-              <span className="watching-count">2.1K</span>
-              <span className="watching-text">watching</span>
-            </div>
-            <div className="live-pulse"></div>
+          {/* Watching counter (compact) */}
+          <div className="watching-counter-sleek">
+            <span className="watching-count-sleek">2.1K</span>
+            <div className="live-pulse-sleek"></div>
           </div>
         </div>
       </div>
