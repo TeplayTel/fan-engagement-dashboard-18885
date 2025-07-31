@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import Dashboard from './components/Dashboard';
+import AdminDashboard from './components/AdminDashboard';
 
 // PUBLIC_INTERFACE
 function App() {
   const [theme, setTheme] = useState('dark'); // Default to dark theme
+  const [activeTab, setActiveTab] = useState('viewer'); // 'viewer' or 'admin'
 
   // Effect to apply theme to document element
   useEffect(() => {
@@ -27,7 +29,23 @@ function App() {
         >
           {theme === 'light' ? '🌙 Dark' : '☀️ Light'}
         </button>
-      <Dashboard />
+      
+      <nav className="app-nav">
+        <button 
+          className={`nav-tab ${activeTab === 'viewer' ? 'active' : ''}`}
+          onClick={() => setActiveTab('viewer')}
+        >
+          Viewer
+        </button>
+        <button 
+          className={`nav-tab ${activeTab === 'admin' ? 'active' : ''}`}
+          onClick={() => setActiveTab('admin')}
+        >
+          Admin
+        </button>
+      </nav>
+
+      {activeTab === 'viewer' ? <Dashboard /> : <AdminDashboard />}
     </div>
   );
 }

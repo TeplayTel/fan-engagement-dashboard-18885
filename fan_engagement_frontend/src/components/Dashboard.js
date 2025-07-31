@@ -4,11 +4,12 @@ import SportsFilter from './SportsFilter';
 import MatchCard from './MatchCard';
 import EmojiReactions from './EmojiReactions';
 import Analytics from './Analytics';
+import VideoPlayer from './VideoPlayer';
 
 const placeholderMatches = [
   {
     league: 'Premier League',
-    time: '88\'',
+    time: '88\\\'',
     home: { name: 'Arsenal', logo: 'https://via.placeholder.com/40' },
     away: { name: 'Chelsea', logo: 'https://via.placeholder.com/40' },
     score: '2 - 1',
@@ -22,6 +23,8 @@ const placeholderMatches = [
   },
 ];
 
+const liveVideoUrl = "https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1&mute=1"; // Placeholder URL
+
 // PUBLIC_INTERFACE
 function Dashboard() {
   /**
@@ -33,6 +36,7 @@ function Dashboard() {
       <SportsFilter />
       <main className="main-content">
         <div className="matches-container">
+          <VideoPlayer videoUrl={liveVideoUrl} />
           {placeholderMatches.map((match, index) => (
             <MatchCard key={index} match={match} />
           ))}
