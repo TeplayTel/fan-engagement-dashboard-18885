@@ -105,6 +105,16 @@ class ApiService {
   async sendReaction(reactionData) {
     return this.post('/fan-engagement/emoji/v1/reaction', reactionData);
   }
+
+  // PUBLIC_INTERFACE
+  /**
+   * Send user emoji reaction with correct payload structure
+   * @param {Object} reactionData - Object containing userId, eventId, emojiId, createdAt
+   * @returns {Promise} Response data
+   */
+  async sendUserEmojiReaction(reactionData) {
+    return this.post('/fan-engagement/emoji/v1/userEmojiReaction', reactionData);
+  }
 }
 
 // Export a singleton instance

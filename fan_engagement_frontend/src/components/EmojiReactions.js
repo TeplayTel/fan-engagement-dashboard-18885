@@ -12,7 +12,9 @@ function EmojiReactions() {
   const [availableEmojis, setAvailableEmojis] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { isAuthenticated, getDemoToken, login } = useAuth();
+  const [feedbackMessage, setFeedbackMessage] = useState(null);
+  const [feedbackType, setFeedbackType] = useState(null); // 'success' or 'error'
+  const { isAuthenticated, getDemoToken, login, userToken } = useAuth();
 
   // Fallback emojis in case API fails
   const fallbackEmojis = [
@@ -74,7 +76,7 @@ function EmojiReactions() {
   }, [isAuthenticated]);
 
   const handleEmojiClick = async (emojiData) => {
-    // Create flying animation
+    // Create flying animation immediately for responsiveness
     const newEmoji = {
       id: Date.now() + Math.random(),
       emoji: emojiData.emoji,
@@ -83,20 +85,58 @@ function EmojiReactions() {
 
     setFlyingEmojis((currentEmojis) => [...currentEmojis, newEmoji]);
 
-    // Send reaction to backend (optional, non-blocking)
+    // Clear any previous feedback
+    setFeedbackMessage(null);
+    setFeedbackType(null);
+
+    // Send reaction to backend with correct payload structure
     try {
-      const reactionData = {
-        emoji_id: emojiData.id,
-        emoji: emojiData.emoji,
-        timestamp: new Date().toISOString(),
+      const currentTime = new Date().toISOString();
+      
+      // Generate userId - use token info or anonymous identifier
+      let userId;
+      if (isAuthenticated && userToken) {
+        // Extract user ID from token or use token as identifier
+        userId = userToken.includes('demo_') ? userToken : `user_${userToken.substring(0, 8)}`;
+      } else {
+        // Generate anonymous user identifier
+        userId = `anonymous_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+      }
+
+      const reactionPayload = {
+        userId: userId,
+        eventId: "live_match_001", // Default event ID - could be made dynamic
+        emojiId: emojiData.id.toString(),
+        createdAt: currentTime
       };
       
-      // Fire and forget - don't block the UI animation
-      apiService.sendReaction(reactionData).catch(err => {
-        console.warn('Failed to send reaction to backend:', err);
-      });
+      // Send the reaction with proper error handling
+      const response = await apiService.sendUserEmojiReaction(reactionPayload);
+      
+      // Show success feedback
+      setFeedbackMessage('Reaction sent!');
+      setFeedbackType('success');
+      
+      // Clear feedback after 2 seconds
+      setTimeout(() => {
+        setFeedbackMessage(null);
+        setFeedbackType(null);
+      }, 2000);
+      
+      console.log('Emoji reaction sent successfully:', response);
+      
     } catch (err) {
-      console.warn('Error preparing reaction data:', err);
+      console.warn('Failed to send reaction to backend:', err);
+      
+      // Show error feedback
+      setFeedbackMessage('Failed to send reaction');
+      setFeedbackType('error');
+      
+      // Clear error feedback after 3 seconds
+      setTimeout(() => {
+        setFeedbackMessage(null);
+        setFeedbackType(null);
+      }, 3000);
     }
   };
 
@@ -148,6 +188,18 @@ function EmojiReactions() {
               title={error}
             >
               ⚠️
+            </span>
+          )}
+          {feedbackMessage && (
+            <span 
+              style={{ 
+                color: feedbackType === 'success' ? '#28A745' : 'var(--accent-red)', 
+                fontSize: '0.8rem', 
+                marginRight: '8px',
+                fontWeight: 'bold'
+              }}
+            >
+              {feedbackType === 'success' ? '✓' : '✗'} {feedbackMessage}
             </span>
           )}
           {availableEmojis.map((emojiData) => (
