@@ -180,10 +180,23 @@ class ApiService {
   // PUBLIC_INTERFACE
   /**
    * Get emoji usage statistics (admin only)
+   * @param {string} eventId - Optional event ID to filter statistics
    * @returns {Promise} Response data with emoji statistics
    */
-  async getEmojiStats() {
-    return this.get('/fan-engagement/emoji/v1/stats');
+  async getEmojiStats(eventId = null) {
+    const endpoint = eventId ? 
+      `/fan-engagement/emoji/v1/stats?eventId=${encodeURIComponent(eventId)}` : 
+      '/fan-engagement/emoji/v1/stats';
+    return this.get(endpoint);
+  }
+
+  // PUBLIC_INTERFACE
+  /**
+   * Get list of available events for statistics filtering
+   * @returns {Promise} Response data with available events
+   */
+  async getEvents() {
+    return this.get('/fan-engagement/events/v1/list');
   }
 
   // PUBLIC_INTERFACE

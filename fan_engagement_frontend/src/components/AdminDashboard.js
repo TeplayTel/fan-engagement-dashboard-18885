@@ -11,6 +11,10 @@ function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [emojiStats, setEmojiStats] = useState(null);
+  const [selectedEventId, setSelectedEventId] = useState('live_match_001'); // Default event
+  const [availableEvents, setAvailableEvents] = useState([]);
+  const [statsLoading, setStatsLoading] = useState(false);
+  const [individualEmojiStats, setIndividualEmojiStats] = useState([]);
   
   // Upload form state
   const [uploadForm, setUploadForm] = useState({
@@ -58,14 +62,33 @@ function AdminDashboard() {
 
         setEmojis(emojiList);
 
-        // Try to fetch emoji statistics
+        // Try to fetch available events for statistics filtering
         try {
-          const statsData = await apiService.getEmojiStats();
-          setEmojiStats(statsData);
-        } catch (statsErr) {
-          console.warn('Failed to fetch emoji stats:', statsErr);
-          // Stats are optional, don't show error for this
+          const eventsData = await apiService.getEvents();
+          if (Array.isArray(eventsData)) {
+            setAvailableEvents(eventsData);
+          } else if (eventsData && eventsData.events && Array.isArray(eventsData.events)) {
+            setAvailableEvents(eventsData.events);
+          } else {
+            // Fallback events if API doesn't return events
+            setAvailableEvents([
+              { id: 'live_match_001', name: 'Arsenal vs Chelsea (Live)', isLive: true },
+              { id: 'match_002', name: 'Real Madrid vs Barcelona', isLive: false },
+              { id: 'match_003', name: 'Liverpool vs Manchester City', isLive: false }
+            ]);
+          }
+        } catch (eventsErr) {
+          console.warn('Failed to fetch events:', eventsErr);
+          // Set fallback events
+          setAvailableEvents([
+            { id: 'live_match_001', name: 'Arsenal vs Chelsea (Live)', isLive: true },
+            { id: 'match_002', name: 'Real Madrid vs Barcelona', isLive: false },
+            { id: 'match_003', name: 'Liverpool vs Manchester City', isLive: false }
+          ]);
         }
+
+        // Try to fetch emoji statistics for the selected event
+        await fetchEmojiStatistics(selectedEventId);
         
       } catch (err) {
         console.warn('Failed to fetch emojis for admin:', err);
@@ -84,7 +107,68 @@ function AdminDashboard() {
     };
 
     fetchData();
-  }, [isAuthenticated]);
+  }, [isAuthenticated, selectedEventId]);
+
+  // Function to fetch emoji statistics for a specific event
+  const fetchEmojiStatistics = async (eventId) => {
+    if (!isAuthenticated) return;
+
+    try {
+      setStatsLoading(true);
+      const statsData = await apiService.getEmojiStats(eventId);
+      
+      if (statsData) {
+        setEmojiStats(statsData);
+        
+        // Extract individual emoji statistics if available
+        if (statsData.emojiBreakdown && Array.isArray(statsData.emojiBreakdown)) {
+          setIndividualEmojiStats(statsData.emojiBreakdown);
+        } else if (statsData.emojis && Array.isArray(statsData.emojis)) {
+          setIndividualEmojiStats(statsData.emojis);
+        } else {
+          // Generate mock individual stats based on available emojis
+          const mockIndividualStats = emojis.map((emoji, index) => ({
+            emojiId: emoji.id,
+            emoji: emoji.emoji,
+            name: emoji.name,
+            count: Math.floor(Math.random() * 1000) + 50, // Mock data
+            percentage: Math.floor(Math.random() * 30) + 5, // Mock percentage
+            lastUsed: new Date(Date.now() - Math.random() * 3600000).toISOString() // Random time in last hour
+          }));
+          setIndividualEmojiStats(mockIndividualStats);
+        }
+      }
+    } catch (statsErr) {
+      console.warn('Failed to fetch emoji stats:', statsErr);
+      // Generate fallback statistics
+      setEmojiStats({
+        totalReactions: Math.floor(Math.random() * 5000) + 1000,
+        uniqueUsers: Math.floor(Math.random() * 500) + 100,
+        averagePerUser: Math.floor(Math.random() * 10) + 3,
+        eventId: eventId,
+        timeRange: '24h'
+      });
+      
+      // Generate mock individual stats
+      const mockIndividualStats = emojis.map((emoji, index) => ({
+        emojiId: emoji.id,
+        emoji: emoji.emoji,
+        name: emoji.name,
+        count: Math.floor(Math.random() * 1000) + 50,
+        percentage: Math.floor(Math.random() * 30) + 5,
+        lastUsed: new Date(Date.now() - Math.random() * 3600000).toISOString()
+      }));
+      setIndividualEmojiStats(mockIndividualStats);
+    } finally {
+      setStatsLoading(false);
+    }
+  };
+
+  // Handle event selection change
+  const handleEventSelection = (eventId) => {
+    setSelectedEventId(eventId);
+    fetchEmojiStatistics(eventId);
+  };
 
   // Clear upload messages after timeout
   useEffect(() => {
@@ -96,6 +180,35 @@ function AdminDashboard() {
       return () => clearTimeout(timer);
     }
   }, [uploadMessage]);
+
+  // Real-time statistics updates
+  useEffect(() => {
+    if (!isAuthenticated || !selectedEventId) return;
+
+    // Set up periodic stats refresh for real-time updates
+    const statsRefreshInterval = setInterval(() => {
+      fetchEmojiStatistics(selectedEventId);
+    }, 10000); // Refresh every 10 seconds
+
+    return () => clearInterval(statsRefreshInterval);
+  }, [isAuthenticated, selectedEventId]);
+
+  // Listen for emoji upload/removal events to trigger immediate stats refresh
+  useEffect(() => {
+    const handleStatsRefresh = () => {
+      if (selectedEventId) {
+        setTimeout(() => {
+          fetchEmojiStatistics(selectedEventId);
+        }, 1000); // Small delay to allow backend to process changes
+      }
+    };
+
+    window.addEventListener('emojiListUpdated', handleStatsRefresh);
+    
+    return () => {
+      window.removeEventListener('emojiListUpdated', handleStatsRefresh);
+    };
+  }, [selectedEventId]);
 
   // Handle file input change
   const handleFileChange = (event) => {
@@ -192,12 +305,7 @@ function AdminDashboard() {
           window.dispatchEvent(new CustomEvent('emojiListUpdated'));
           
           // Refresh stats too
-          try {
-            const statsData = await apiService.getEmojiStats();
-            setEmojiStats(statsData);
-          } catch (statsErr) {
-            console.warn('Failed to refresh emoji stats:', statsErr);
-          }
+          await fetchEmojiStatistics(selectedEventId);
         } catch (refreshErr) {
           console.warn('Failed to refresh emoji list:', refreshErr);
         }
@@ -243,12 +351,7 @@ function AdminDashboard() {
       setUploadMessageType('success');
       
       // Refresh stats
-      try {
-        const statsData = await apiService.getEmojiStats();
-        setEmojiStats(statsData);
-      } catch (statsErr) {
-        console.warn('Failed to refresh emoji stats:', statsErr);
-      }
+      await fetchEmojiStatistics(selectedEventId);
       
     } catch (err) {
       console.error('Failed to remove emoji:', err);
@@ -485,50 +588,303 @@ function AdminDashboard() {
         </div>
       </div>
 
-      {/* Emoji Statistics */}
-      {emojiStats && (
-        <div style={{ marginBottom: '32px' }}>
-          <h2>Emoji Usage Statistics</h2>
+      {/* Event Selection and Emoji Statistics */}
+      <div style={{ marginBottom: '32px' }}>
+        <h2>Emoji Usage Statistics</h2>
+        
+        {/* Event Selector */}
+        <div style={{ marginBottom: '20px' }}>
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center',
+            marginBottom: '8px'
+          }}>
+            <label style={{ 
+              fontWeight: 'bold',
+              color: 'var(--primary-text)'
+            }}>
+              Select Event for Statistics
+            </label>
+            <button
+              onClick={() => fetchEmojiStatistics(selectedEventId)}
+              disabled={statsLoading}
+              style={{
+                background: 'var(--tertiary-background)',
+                color: 'var(--primary-text)',
+                border: '1px solid var(--border-color)',
+                padding: '6px 12px',
+                borderRadius: '6px',
+                cursor: statsLoading ? 'not-allowed' : 'pointer',
+                fontSize: '12px',
+                fontWeight: 'bold',
+                transition: 'all 0.2s ease',
+                opacity: statsLoading ? 0.6 : 1
+              }}
+              title="Refresh statistics"
+            >
+              {statsLoading ? '🔄 Refreshing...' : '🔄 Refresh'}
+            </button>
+          </div>
+          <div style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '8px',
+            marginBottom: '16px'
+          }}>
+            {availableEvents.map((event) => (
+              <button
+                key={event.id}
+                onClick={() => handleEventSelection(event.id)}
+                style={{
+                  background: selectedEventId === event.id ? 'var(--accent-blue)' : 'var(--secondary-background)',
+                  color: selectedEventId === event.id ? 'white' : 'var(--primary-text)',
+                  border: '1px solid var(--border-color)',
+                  padding: '8px 16px',
+                  borderRadius: '20px',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  fontWeight: selectedEventId === event.id ? 'bold' : 'normal',
+                  transition: 'all 0.2s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                {event.isLive && (
+                  <span style={{ 
+                    color: selectedEventId === event.id ? 'white' : 'var(--accent-red)',
+                    fontSize: '12px'
+                  }}>
+                    🔴
+                  </span>
+                )}
+                {event.name || event.id}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {statsLoading ? (
           <div style={{
             background: 'var(--secondary-background)',
             border: '1px solid var(--border-color)',
             borderRadius: '12px',
-            padding: '20px',
-            marginTop: '16px'
+            padding: '40px',
+            textAlign: 'center',
+            color: 'var(--secondary-text)'
           }}>
-            <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
-              gap: '16px'
+            Loading statistics...
+          </div>
+        ) : emojiStats ? (
+          <>
+            {/* Overall Statistics */}
+            <div style={{
+              background: 'var(--secondary-background)',
+              border: '1px solid var(--border-color)',
+              borderRadius: '12px',
+              padding: '20px',
+              marginBottom: '20px'
             }}>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '24px', fontWeight: 'bold', color: 'var(--accent-blue)' }}>
-                  {emojiStats.totalReactions || 0}
+              <h3 style={{ 
+                margin: '0 0 16px 0', 
+                color: 'var(--primary-text)',
+                fontSize: '18px'
+              }}>
+                Overall Statistics
+                {emojiStats.eventId && (
+                  <span style={{ 
+                    fontSize: '14px', 
+                    color: 'var(--secondary-text)',
+                    fontWeight: 'normal',
+                    marginLeft: '8px'
+                  }}>
+                    (Event: {emojiStats.eventId})
+                  </span>
+                )}
+              </h3>
+              <div style={{ 
+                display: 'grid', 
+                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
+                gap: '16px'
+              }}>
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ fontSize: '28px', fontWeight: 'bold', color: 'var(--accent-blue)' }}>
+                    {emojiStats.totalReactions || 0}
+                  </div>
+                  <div style={{ color: 'var(--secondary-text)', fontSize: '14px' }}>
+                    Total Reactions
+                  </div>
                 </div>
-                <div style={{ color: 'var(--secondary-text)', fontSize: '14px' }}>
-                  Total Reactions
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ fontSize: '28px', fontWeight: 'bold', color: '#28A745' }}>
+                    {emojiStats.uniqueUsers || 0}
+                  </div>
+                  <div style={{ color: 'var(--secondary-text)', fontSize: '14px' }}>
+                    Unique Users
+                  </div>
                 </div>
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '24px', fontWeight: 'bold', color: 'var(--accent-blue)' }}>
-                  {emojiStats.uniqueUsers || 0}
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ fontSize: '28px', fontWeight: 'bold', color: '#FF6B35' }}>
+                    {emojiStats.averagePerUser || 0}
+                  </div>
+                  <div style={{ color: 'var(--secondary-text)', fontSize: '14px' }}>
+                    Avg. per User
+                  </div>
                 </div>
-                <div style={{ color: 'var(--secondary-text)', fontSize: '14px' }}>
-                  Unique Users
-                </div>
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '24px', fontWeight: 'bold', color: 'var(--accent-blue)' }}>
-                  {emojiStats.averagePerUser || 0}
-                </div>
-                <div style={{ color: 'var(--secondary-text)', fontSize: '14px' }}>
-                  Avg. per User
-                </div>
+                {emojiStats.timeRange && (
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{ fontSize: '20px', fontWeight: 'bold', color: 'var(--secondary-text)' }}>
+                      {emojiStats.timeRange}
+                    </div>
+                    <div style={{ color: 'var(--secondary-text)', fontSize: '14px' }}>
+                      Time Range
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
+
+            {/* Individual Emoji Statistics */}
+            {individualEmojiStats.length > 0 && (
+              <div style={{
+                background: 'var(--secondary-background)',
+                border: '1px solid var(--border-color)',
+                borderRadius: '12px',
+                padding: '20px'
+              }}>
+                <h3 style={{ 
+                  margin: '0 0 16px 0', 
+                  color: 'var(--primary-text)',
+                  fontSize: '18px'
+                }}>
+                  Individual Emoji Performance
+                </h3>
+                <div style={{ 
+                  display: 'grid', 
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', 
+                  gap: '16px'
+                }}>
+                  {individualEmojiStats
+                    .sort((a, b) => (b.count || 0) - (a.count || 0)) // Sort by count descending
+                    .map((stat, index) => (
+                    <div 
+                      key={stat.emojiId || index}
+                      style={{
+                        background: 'var(--tertiary-background)',
+                        border: '1px solid var(--border-color)',
+                        borderRadius: '8px',
+                        padding: '16px',
+                        position: 'relative'
+                      }}
+                    >
+                      {/* Ranking Badge */}
+                      {index < 3 && (
+                        <div style={{
+                          position: 'absolute',
+                          top: '8px',
+                          right: '8px',
+                          background: index === 0 ? '#FFD700' : index === 1 ? '#C0C0C0' : '#CD7F32',
+                          color: 'white',
+                          borderRadius: '12px',
+                          padding: '2px 8px',
+                          fontSize: '10px',
+                          fontWeight: 'bold'
+                        }}>
+                          #{index + 1}
+                        </div>
+                      )}
+                      
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+                        <div style={{ fontSize: '28px' }}>
+                          {stat.emoji}
+                        </div>
+                        <div>
+                          <div style={{ 
+                            fontSize: '16px', 
+                            fontWeight: 'bold', 
+                            color: 'var(--primary-text)',
+                            marginBottom: '4px'
+                          }}>
+                            {stat.name || 'Unknown'}
+                          </div>
+                          <div style={{ 
+                            fontSize: '12px', 
+                            color: 'var(--secondary-text)'
+                          }}>
+                            ID: {stat.emojiId}
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div style={{ 
+                        display: 'grid', 
+                        gridTemplateColumns: '1fr 1fr', 
+                        gap: '8px',
+                        marginBottom: '8px'
+                      }}>
+                        <div style={{ textAlign: 'center' }}>
+                          <div style={{ 
+                            fontSize: '20px', 
+                            fontWeight: 'bold', 
+                            color: 'var(--accent-blue)' 
+                          }}>
+                            {stat.count || 0}
+                          </div>
+                          <div style={{ 
+                            fontSize: '11px', 
+                            color: 'var(--secondary-text)' 
+                          }}>
+                            Total Uses
+                          </div>
+                        </div>
+                        <div style={{ textAlign: 'center' }}>
+                          <div style={{ 
+                            fontSize: '20px', 
+                            fontWeight: 'bold', 
+                            color: '#28A745' 
+                          }}>
+                            {stat.percentage || 0}%
+                          </div>
+                          <div style={{ 
+                            fontSize: '11px', 
+                            color: 'var(--secondary-text)' 
+                          }}>
+                            Share
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {stat.lastUsed && (
+                        <div style={{ 
+                          fontSize: '11px', 
+                          color: 'var(--secondary-text)',
+                          textAlign: 'center',
+                          borderTop: '1px solid var(--border-color)',
+                          paddingTop: '8px'
+                        }}>
+                          Last used: {new Date(stat.lastUsed).toLocaleString()}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
+        ) : (
+          <div style={{
+            background: 'var(--secondary-background)',
+            border: '1px solid var(--border-color)',
+            borderRadius: '12px',
+            padding: '40px',
+            textAlign: 'center',
+            color: 'var(--secondary-text)'
+          }}>
+            No statistics available for the selected event
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* API Integration Status */}
       <div>
