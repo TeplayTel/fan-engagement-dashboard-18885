@@ -28,27 +28,26 @@ function MatchThumbnailCard({ match, isActive, onMatchSelect, index }) {
 
   const getStatusIndicator = (status, time) => {
     const indicators = {
-      live: { text: 'LIVE', color: 'var(--accent-red)', icon: '🔴' },
-      halftime: { text: 'HT', color: 'var(--accent-orange)', icon: '⏸️' },
-      finished: { text: 'FT', color: 'var(--secondary-text)', icon: '✓' },
-      upcoming: { text: 'UP', color: 'var(--accent-blue)', icon: '⏰' }
+      live: { text: 'LIVE', color: '#ff0000', icon: '🔴' },
+      halftime: { text: 'HT', color: '#ffa502', icon: '⏸️' },
+      finished: { text: 'FT', color: '#666666', icon: '✓' },
+      upcoming: { text: 'UP', color: '#3742fa', icon: '⏰' }
     };
     
     const indicator = indicators[status] || indicators.upcoming;
     
     return (
       <div className="status-indicator" style={{
-        background: status === 'live' ? 
-          'linear-gradient(135deg, var(--accent-red) 0%, #FF6B7A 100%)' : 
-          indicator.color,
+        background: indicator.color,
         color: 'white',
         padding: '4px 8px',
-        borderRadius: 'var(--radius-sm)',
+        borderRadius: '4px',
         fontSize: '0.75rem',
         fontWeight: '700',
         display: 'flex',
         alignItems: 'center',
         gap: '4px',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
         animation: status === 'live' ? 'pulse-glow 2s ease-in-out infinite alternate' : 'none'
       }}>
         <span>{indicator.icon}</span>
@@ -77,15 +76,31 @@ function MatchThumbnailCard({ match, isActive, onMatchSelect, index }) {
         animationDelay: `${index * 0.1}s`,
         cursor: isActive ? 'default' : 'pointer',
         opacity: isLoading ? 0.7 : 1,
-        transform: isActive ? 'scale(0.95)' : 'scale(1)'
+        transform: isActive ? 'scale(0.95)' : 'scale(1)',
+        transition: 'all 0.2s ease-in-out',
+        border: isActive ? '2px solid #00ff88' : '1px solid #404040'
       }}
       role="button"
       tabIndex={0}
-      aria-label={`${match.home.name} vs ${match.away.name} - ${match.league}`}
+      aria-label={`${match.home.name} vs ${match.away.name} - ${match.league} - ${match.status === 'live' ? 'Live match' : match.status}`}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           handleCardClick();
+        }
+      }}
+      onMouseEnter={(e) => {
+        if (!isActive && !isLoading) {
+          e.currentTarget.style.transform = 'scale(1.05)';
+          e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.4)';
+          e.currentTarget.style.borderColor = '#ffffff';
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (!isActive && !isLoading) {
+          e.currentTarget.style.transform = 'scale(1)';
+          e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.2)';
+          e.currentTarget.style.borderColor = '#404040';
         }
       }}
     >

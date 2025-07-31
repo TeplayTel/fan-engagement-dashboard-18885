@@ -266,7 +266,111 @@ body {
   opacity: 1;
 }
 
-/* Enhanced Match Card Component */
+/* Modern Match Card Component - Based on Design Notes */
+.match-analytics-card {
+  background: #2a2a2a;
+  border-radius: 8px;
+  border: 1px solid #404040;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease-in-out;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+.match-analytics-card:hover:not(.active) {
+  transform: scale(1.02);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  border-color: #ffffff;
+}
+
+.match-analytics-card:focus {
+  outline: 2px solid #00ff88;
+  outline-offset: 2px;
+}
+
+.match-analytics-card.active {
+  border-color: #00ff88;
+  opacity: 0.95;
+}
+
+/* Match Cards Grid Layout - Responsive Design */
+.match-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  padding: 20px 0;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Match Grid Container Improvements */
+.match-grid-container {
+  margin-top: var(--space-lg);
+  width: 100%;
+}
+
+.match-grid-container .match-grid-header {
+  margin-bottom: var(--space-md);
+  padding: 0 4px; /* Align with grid cards */
+}
+
+/* Ensure consistent spacing for both grids */
+.matches-grid,
+.match-cards-grid {
+  margin-bottom: var(--space-lg);
+}
+
+/* Grid container wrapper for better spacing */
+.match-grid-section {
+  margin-bottom: var(--space-2xl);
+}
+
+.match-grid-section:last-child {
+  margin-bottom: 0;
+}
+
+/* Ensure proper minimum heights for cards */
+.match-analytics-card {
+  min-height: 120px;
+  max-height: 160px;
+}
+
+/* Loading state improvements for match cards */
+.match-cards-grid .match-card-skeleton {
+  height: 140px;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Better hover states for touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .match-analytics-card:hover {
+    transform: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  .match-thumbnail-card:hover {
+    transform: none;
+  }
+  
+  /* Add active states for touch */
+  .match-analytics-card:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+  
+  .match-thumbnail-card:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+}
+
+/* Enhanced Match Card Component - Legacy Support */
 .match-card {
   background: var(--glass-background);
   backdrop-filter: blur(20px);
@@ -362,6 +466,100 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* Pulse animation for live indicators */
+@keyframes pulse-dot {
+  0% { 
+    opacity: 1; 
+    transform: scale(1);
+    box-shadow: 0 0 6px #ff0000;
+  }
+  100% { 
+    opacity: 0.6; 
+    transform: scale(1.3);
+    box-shadow: 0 0 12px #ff0000;
+  }
+}
+
+/* Skeleton loading animation for match cards */
+@keyframes skeleton-loading {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.match-card-skeleton {
+  background: #2a2a2a;
+  border-radius: 8px;
+  padding: 16px;
+  border: 1px solid #404040;
+  min-width: 280px;
+  max-width: 400px;
+  height: 140px;
+  position: relative;
+  overflow: hidden;
+}
+
+.match-card-skeleton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  background-size: 200px 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+/* Improved loading state for cards */
+.match-analytics-card.loading {
+  pointer-events: none;
+  opacity: 0.7;
+  position: relative;
+}
+
+.match-analytics-card.loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(42, 42, 42, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Enhanced focus states for better accessibility */
+.match-analytics-card:focus-visible {
+  outline: 3px solid #00ff88;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 6px rgba(0, 255, 136, 0.2);
+}
+
+/* Improved active state animation */
+.match-analytics-card.active {
+  animation: active-pulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes active-pulse {
+  0% {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 2px #00ff88;
+  }
+  100% {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 2px rgba(0, 255, 136, 0.6);
+  }
 }
 
 /* Sleek Single-Row Emoji Reactions Bar */
@@ -1621,7 +1819,26 @@ body {
 }
 
 /* Enhanced Mobile Responsiveness for New Components */
+@media (max-width: 1200px) {
+  /* Desktop - 4 columns */
+  .match-cards-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+}
+
 @media (max-width: 1024px) {
+  /* Tablet - 3 columns */
+  .match-cards-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  
+  .match-analytics-card {
+    min-width: 240px;
+    max-width: 350px;
+  }
+  
   .matches-grid {
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   }
@@ -1645,6 +1862,19 @@ body {
 }
 
 @media (max-width: 768px) {
+  /* Mobile - 2 columns */
+  .match-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 16px 0;
+  }
+  
+  .match-analytics-card {
+    min-width: 300px;
+    max-width: none;
+    padding: 12px;
+  }
+  
   .matches-grid {
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: var(--space-sm);
@@ -1687,6 +1917,20 @@ body {
 }
 
 @media (max-width: 480px) {
+  /* Small Mobile - 1 column for analytics cards */
+  .match-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 12px 0;
+  }
+  
+  .match-analytics-card {
+    min-width: 100%;
+    max-width: none;
+    padding: 12px;
+    margin: 0 auto;
+  }
+  
   .matches-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: var(--space-xs);
@@ -1727,6 +1971,80 @@ body {
   
   .match-thumbnail-card {
     aspect-ratio: 16 / 9;
+  }
+  
+  /* Extra small screens - single column for analytics cards */
+  .match-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 8px 0;
+  }
+  
+  .match-analytics-card {
+    font-size: 14px;
+    padding: 12px;
+  }
+  
+  .match-analytics-card h3 {
+    font-size: 14px !important;
+  }
+  
+  .match-analytics-card span {
+    font-size: 12px !important;
+  }
+}
+
+/* Ensure proper aspect ratios for match cards */
+.match-analytics-card {
+  aspect-ratio: 3 / 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Smooth transitions for responsive changes */
+.match-cards-grid,
+.matches-grid {
+  transition: grid-template-columns 0.3s ease, gap 0.3s ease;
+}
+
+/* Focus ring improvements for better accessibility */
+.match-analytics-card:focus,
+.match-thumbnail-card:focus {
+  outline: 3px solid #00ff88;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 6px rgba(0, 255, 136, 0.2);
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .match-analytics-card {
+    border-width: 2px;
+    border-color: #ffffff;
+  }
+  
+  .match-analytics-card:hover {
+    border-color: #00ff88;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .match-analytics-card,
+  .match-thumbnail-card {
+    transition: none;
+    animation: none;
+  }
+  
+  .match-analytics-card:hover {
+    transform: none;
+  }
+  
+  @keyframes pulse-dot {
+    0%, 100% { 
+      opacity: 1; 
+      transform: scale(1);
+    }
   }
 }
 

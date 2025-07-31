@@ -3,6 +3,7 @@ import Header from './Header';
 import SportsFilter from './SportsFilter';
 import CurrentMatchDisplay from './CurrentMatchDisplay';
 import MatchThumbnailCard from './MatchThumbnailCard';
+import MatchCard from './MatchCard';
 import EmojiReactions from './EmojiReactions';
 import Analytics from './Analytics';
 import VideoPlayer from './VideoPlayer';
@@ -271,17 +272,77 @@ function Dashboard() {
                 </button>
               </div>
             ) : (
-              <div className="matches-grid">
-                {filteredMatches.map((match, index) => (
-                  <MatchThumbnailCard
-                    key={match.id}
-                    match={match}
-                    isActive={match.id === currentMatchId}
-                    onMatchSelect={handleMatchSelect}
-                    index={index}
-                  />
-                ))}
-              </div>
+              <>
+                {/* Thumbnail Grid */}
+                <div className="matches-grid">
+                  {filteredMatches.map((match, index) => (
+                    <MatchThumbnailCard
+                      key={match.id}
+                      match={match}
+                      isActive={match.id === currentMatchId}
+                      onMatchSelect={handleMatchSelect}
+                      index={index}
+                    />
+                  ))}
+                </div>
+                
+                {/* Modern Analytics Cards Grid */}
+                <div className="match-grid-section" style={{ marginTop: 'var(--space-xl)' }}>
+                  <div className="match-grid-header">
+                    <h2 className="match-grid-title">
+                      <span>📊</span>
+                      Match Analytics
+                    </h2>
+                    <div className="match-grid-count">
+                      {matches.length} matches
+                    </div>
+                  </div>
+                  <div className="match-cards-grid">
+                    {matches.slice(0, 4).map((match, index) => (
+                      <MatchCard
+                        key={`analytics-${match.id}`}
+                        match={match}
+                        onClick={() => handleMatchSelect(match)}
+                        isActive={match.id === currentMatchId}
+                      />
+                    ))}
+                  </div>
+                  
+                  {/* Show more matches if available */}
+                  {matches.length > 4 && (
+                    <div style={{ 
+                      textAlign: 'center', 
+                      marginTop: 'var(--space-lg)',
+                      padding: 'var(--space-md)'
+                    }}>
+                      <button 
+                        style={{
+                          background: 'var(--glass-background)',
+                          border: '1px solid var(--border-color)',
+                          color: 'var(--primary-text)',
+                          padding: 'var(--space-sm) var(--space-lg)',
+                          borderRadius: 'var(--radius-md)',
+                          cursor: 'pointer',
+                          fontSize: '0.875rem',
+                          fontWeight: '600',
+                          transition: 'all 0.3s ease',
+                          backdropFilter: 'blur(10px)'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.background = 'var(--accent-blue)';
+                          e.target.style.transform = 'translateY(-2px)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.background = 'var(--glass-background)';
+                          e.target.style.transform = 'translateY(0)';
+                        }}
+                      >
+                        View All {matches.length} Matches
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </>
             )}
           </div>
         </div>
