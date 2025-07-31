@@ -5,36 +5,39 @@ import useAuth from '../hooks/useAuth';
 // PUBLIC_INTERFACE
 function EmojiReactions() {
   /**
-   * A responsive bar for displaying emoji reactions.
-   * Emojis are fetched from the backend API and can be clicked to trigger animations.
+   * A responsive emoji reactions bar that appears on hover/tap.
+   * Features modern aesthetics with smooth animations and mobile support.
    */
   const [flyingEmojis, setFlyingEmojis] = useState([]);
   const [availableEmojis, setAvailableEmojis] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [feedbackMessage, setFeedbackMessage] = useState(null);
-  const [feedbackType, setFeedbackType] = useState(null); // 'success' or 'error'
+  const [feedbackType, setFeedbackType] = useState(null);
+  const [recentClicks, setRecentClicks] = useState([]);
   const { isAuthenticated, getDemoToken, login, userToken } = useAuth();
 
-  // Fallback emojis in case API fails
+  // Fallback emojis with enhanced variety
   const fallbackEmojis = [
     { id: 1, emoji: '❤️', name: 'heart' },
     { id: 2, emoji: '🔥', name: 'fire' },
     { id: 3, emoji: '😂', name: 'laugh' },
     { id: 4, emoji: '😮', name: 'wow' },
-    { id: 5, emoji: '👍', name: 'thumbs_up' }
+    { id: 5, emoji: '👍', name: 'thumbs_up' },
+    { id: 6, emoji: '⚽', name: 'soccer' },
+    { id: 7, emoji: '🎉', name: 'celebration' },
+    { id: 8, emoji: '😢', name: 'sad' }
   ];
 
-  // Effect to ensure user has a token for API calls
+  // Auto-login effect
   useEffect(() => {
     if (!isAuthenticated) {
-      // Auto-login with demo token for seamless experience
       const demoToken = getDemoToken(false);
       login(demoToken, false);
     }
   }, [isAuthenticated, getDemoToken, login]);
 
-  // Effect to fetch emojis from API
+  // Fetch emojis effect
   useEffect(() => {
     const fetchEmojis = async () => {
       if (!isAuthenticated) return;
@@ -45,7 +48,6 @@ function EmojiReactions() {
         
         const emojisData = await apiService.getEmojis();
         
-        // Handle different possible response formats
         let emojis = [];
         if (Array.isArray(emojisData)) {
           emojis = emojisData;
@@ -55,7 +57,6 @@ function EmojiReactions() {
           emojis = emojisData.data;
         }
 
-        // Ensure emojis have the expected structure
         const formattedEmojis = emojis.map((emoji, index) => ({
           id: emoji.id || index + 1,
           emoji: emoji.emoji || emoji.symbol || emoji,
@@ -65,7 +66,7 @@ function EmojiReactions() {
         setAvailableEmojis(formattedEmojis.length > 0 ? formattedEmojis : fallbackEmojis);
       } catch (err) {
         console.warn('Failed to fetch emojis from API, using fallback:', err);
-        setError('Failed to load emojis from server');
+        setError('Using local emojis');
         setAvailableEmojis(fallbackEmojis);
       } finally {
         setLoading(false);
@@ -74,20 +75,18 @@ function EmojiReactions() {
 
     fetchEmojis();
 
-    // Set up periodic refresh to catch admin updates
     const refreshInterval = setInterval(() => {
       if (isAuthenticated) {
         fetchEmojis();
       }
-    }, 30000); // Refresh every 30 seconds
+    }, 30000);
 
     return () => clearInterval(refreshInterval);
   }, [isAuthenticated]);
 
-  // Listen for custom events from admin dashboard for immediate updates
+  // Listen for admin updates
   useEffect(() => {
     const handleEmojiListUpdate = () => {
-      // Refresh emoji list immediately when admin makes changes
       if (isAuthenticated) {
         setTimeout(async () => {
           try {
@@ -115,7 +114,6 @@ function EmojiReactions() {
       }
     };
 
-    // Listen for custom events
     window.addEventListener('emojiListUpdated', handleEmojiListUpdate);
     
     return () => {
@@ -124,64 +122,74 @@ function EmojiReactions() {
   }, [isAuthenticated, fallbackEmojis]);
 
   const handleEmojiClick = async (emojiData) => {
-    // Create flying animation immediately for responsiveness
-    const newEmoji = {
-      id: Date.now() + Math.random(),
-      emoji: emojiData.emoji,
-      left: `${Math.random() * 90 + 5}%`, // From 5% to 95%
-    };
-
-    setFlyingEmojis((currentEmojis) => [...currentEmojis, newEmoji]);
-
-    // Clear any previous feedback
-    setFeedbackMessage(null);
-    setFeedbackType(null);
-
-    // Send reaction to backend with correct payload structure
-    try {
-      const currentTime = new Date().toISOString();
-      
-      // Generate userId - use token info or anonymous identifier
-      let userId;
-      if (isAuthenticated && userToken) {
-        // Extract user ID from token or use token as identifier
-        userId = userToken.includes('demo_') ? userToken : `user_${userToken.substring(0, 8)}`;
-      } else {
-        // Generate anonymous user identifier
-        userId = `anonymous_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
-      }
-
-      // Payload structure for /fan-engagement/emoji/v1/userEmojiReaction endpoint
-      const reactionPayload = {
-        userId: userId,           // User identifier (authenticated user token or anonymous ID)
-        eventId: "live_match_001", // Event/match identifier - could be made dynamic
-        emojiId: emojiData.id.toString(), // String representation of emoji ID
-        createdAt: currentTime    // ISO timestamp when reaction was created
-      };
-      
-      // Send the reaction with proper error handling
-      const response = await apiService.sendUserEmojiReaction(reactionPayload);
-      
-      // Show success feedback
-      setFeedbackMessage('Reaction sent!');
-      setFeedbackType('success');
-      
-      // Clear feedback after 2 seconds
+    // Prevent spam clicking
+    const now = Date.now();
+    const recentClicksFiltered = recentClicks.filter(time => now - time < 1000);
+    if (recentClicksFiltered.length >= 3) {
+      setFeedbackMessage('Slow down! 🙂');
+      setFeedbackType('warning');
       setTimeout(() => {
         setFeedbackMessage(null);
         setFeedbackType(null);
       }, 2000);
+      return;
+    }
+
+    setRecentClicks([...recentClicksFiltered, now]);
+
+    // Create enhanced flying animation
+    const newEmoji = {
+      id: Date.now() + Math.random(),
+      emoji: emojiData.emoji,
+      left: `${Math.random() * 80 + 10}%`,
+      animationDelay: `${Math.random() * 0.5}s`,
+      scale: 0.8 + Math.random() * 0.4,
+      rotation: (Math.random() - 0.5) * 30
+    };
+
+    setFlyingEmojis((currentEmojis) => [...currentEmojis, newEmoji]);
+
+    // Clear previous feedback
+    setFeedbackMessage(null);
+    setFeedbackType(null);
+
+    // Send reaction to backend
+    try {
+      const currentTime = new Date().toISOString();
+      
+      let userId;
+      if (isAuthenticated && userToken) {
+        userId = userToken.includes('demo_') ? userToken : `user_${userToken.substring(0, 8)}`;
+      } else {
+        userId = `anonymous_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+      }
+
+      const reactionPayload = {
+        userId: userId,
+        eventId: "live_match_001",
+        emojiId: emojiData.id.toString(),
+        createdAt: currentTime
+      };
+      
+      const response = await apiService.sendUserEmojiReaction(reactionPayload);
+      
+      setFeedbackMessage('✨ Sent!');
+      setFeedbackType('success');
+      
+      setTimeout(() => {
+        setFeedbackMessage(null);
+        setFeedbackType(null);
+      }, 1500);
       
       console.log('Emoji reaction sent successfully:', response);
       
     } catch (err) {
       console.warn('Failed to send reaction to backend:', err);
       
-      // Provide more specific error feedback based on error type
-      let errorMessage = 'Failed to send reaction';
+      let errorMessage = 'Failed to send';
       
       if (err.message.includes('401')) {
-        errorMessage = 'Authentication required';
+        errorMessage = 'Auth required';
       } else if (err.message.includes('403')) {
         errorMessage = 'Access denied';
       } else if (err.message.includes('404')) {
@@ -192,35 +200,36 @@ function EmojiReactions() {
         errorMessage = 'Connection failed';
       }
       
-      // Show error feedback
       setFeedbackMessage(errorMessage);
       setFeedbackType('error');
       
-      // Clear error feedback after 3 seconds
       setTimeout(() => {
         setFeedbackMessage(null);
         setFeedbackType(null);
-      }, 3000);
+      }, 2500);
     }
   };
 
   const handleAnimationEnd = (id) => {
-    // Remove the emoji from state once its animation is complete
     setFlyingEmojis((currentEmojis) =>
       currentEmojis.filter((e) => e.id !== id)
     );
   };
 
-  // Show loading state
   if (loading) {
     return (
-      <div className="emoji-reactions-bar">
-        <div className="emoji-list">
-          <span style={{ color: 'var(--secondary-text)' }}>Loading emojis...</span>
-        </div>
-        <div className="watching-counter">
-          <span className="watching-count">2.1K</span>
-          <span className="watching-text">watching</span>
+      <div className="emoji-reactions-bar-hover">
+        <div className="emoji-reactions-content">
+          <div className="emoji-list-hover">
+            <div className="emoji-loading">
+              <span className="loading-spinner">⏳</span>
+              <span>Loading emojis...</span>
+            </div>
+          </div>
+          <div className="watching-counter-hover">
+            <span className="watching-count">2.1K</span>
+            <span className="watching-text">watching</span>
+          </div>
         </div>
       </div>
     );
@@ -228,60 +237,69 @@ function EmojiReactions() {
 
   return (
     <>
-      <div className="flying-emoji-container">
+      {/* Enhanced flying emoji container */}
+      <div className="flying-emoji-container-enhanced">
         {flyingEmojis.map((item) => (
           <span
             key={item.id}
-            className="flying-emoji"
-            style={{ left: item.left }}
+            className="flying-emoji-enhanced"
+            style={{ 
+              left: item.left,
+              animationDelay: item.animationDelay,
+              '--emoji-scale': item.scale,
+              '--emoji-rotation': `${item.rotation}deg`
+            }}
             onAnimationEnd={() => handleAnimationEnd(item.id)}
           >
             {item.emoji}
           </span>
         ))}
       </div>
-      <div className="emoji-reactions-bar">
-        <div className="emoji-list">
-          {error && (
-            <span 
-              style={{ 
-                color: 'var(--accent-red)', 
-                fontSize: '0.8rem', 
-                marginRight: '8px' 
-              }}
-              title={error}
-            >
-              ⚠️
-            </span>
-          )}
-          {feedbackMessage && (
-            <span 
-              style={{ 
-                color: feedbackType === 'success' ? '#28A745' : 'var(--accent-red)', 
-                fontSize: '0.8rem', 
-                marginRight: '8px',
-                fontWeight: 'bold'
-              }}
-            >
-              {feedbackType === 'success' ? '✓' : '✗'} {feedbackMessage}
-            </span>
-          )}
-          {availableEmojis.map((emojiData) => (
-            <span
-              key={emojiData.id}
-              className="emoji"
-              onClick={() => handleEmojiClick(emojiData)}
-              role="button"
-              aria-label={`React with ${emojiData.name || emojiData.emoji}`}
-              title={emojiData.name || emojiData.emoji}
-            >
-              {emojiData.emoji}
-            </span>
-          ))}
-        </div>
-        <div className="watching-counter">
-          <span className="watching-count">2.1K</span>
-          <span className="watching-text">watching</span>
+
+      {/* Modern hover-controlled emoji bar */}
+      <div className="emoji-reactions-bar-hover">
+        <div className="emoji-reactions-content">
+          {/* Status and feedback area */}
+          <div className="emoji-status-area">
+            {error && (
+              <span className="status-indicator error" title={error}>
+                ⚠️
+              </span>
+            )}
+            {feedbackMessage && (
+              <span className={`feedback-message ${feedbackType}`}>
+                {feedbackMessage}
+              </span>
+            )}
+          </div>
+
+          {/* Emoji list */}
+          <div className="emoji-list-hover">
+            {availableEmojis.map((emojiData, index) => (
+              <button
+                key={emojiData.id}
+                className="emoji-button-hover"
+                onClick={() => handleEmojiClick(emojiData)}
+                aria-label={`React with ${emojiData.name || emojiData.emoji}`}
+                title={emojiData.name || emojiData.emoji}
+                style={{
+                  animationDelay: `${index * 0.05}s`
+                }}
+              >
+                <span className="emoji-symbol">{emojiData.emoji}</span>
+                <span className="emoji-ripple"></span>
+              </button>
+            ))}
+          </div>
+
+          {/* Watching counter */}
+          <div className="watching-counter-hover">
+            <div className="counter-content">
+              <span className="watching-count">2.1K</span>
+              <span className="watching-text">watching</span>
+            </div>
+            <div className="live-pulse"></div>
+          </div>
         </div>
       </div>
     </>
