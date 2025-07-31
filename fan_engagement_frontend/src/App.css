@@ -140,6 +140,15 @@ body {
   gap: var(--space-md);
   max-width: 320px;
   min-width: 280px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.right-panel * {
+  max-width: 100%;
+  box-sizing: border-box;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 /* Enhanced Header Component */
@@ -734,6 +743,11 @@ body {
   height: fit-content;
   max-height: calc(100vh - 200px);
   overflow-y: auto;
+  overflow-x: hidden;
+  width: 100%;
+  min-width: 0;
+  word-wrap: break-word;
+  box-sizing: border-box;
 }
 
 .analytics-section::before {
@@ -1190,6 +1204,13 @@ body {
   .right-panel {
     width: 280px;
     min-width: 260px;
+    overflow: hidden;
+  }
+  
+  .analytics-section {
+    padding: var(--space-sm);
+    overflow-x: hidden;
+    word-break: break-word;
   }
 }
 
@@ -1198,16 +1219,24 @@ body {
     flex-direction: column;
     gap: var(--space-md);
     max-width: 100%;
+    overflow-x: hidden;
   }
   
   .matches-container {
     max-width: 100%;
+    overflow-x: hidden;
   }
   
   .right-panel {
     width: 100%;
     max-width: 100%;
     min-width: auto;
+    overflow: hidden;
+  }
+  
+  .analytics-section {
+    max-width: 100%;
+    overflow-x: hidden;
   }
 }
 
@@ -1221,6 +1250,19 @@ body {
   .dashboard {
     max-width: 100%;
     overflow-x: hidden;
+  }
+  
+  .analytics-section {
+    padding: var(--space-xs);
+    max-width: 100%;
+    overflow-x: hidden;
+    word-break: break-word;
+  }
+  
+  .analytics-section * {
+    max-width: 100%;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
   
   /* Mobile sleek emoji bar styles */
@@ -1395,6 +1437,27 @@ body {
   .match-score {
     font-size: 1.75rem;
     order: -1;
+  }
+  
+  /* Analytics specific mobile styles */
+  .analytics-section {
+    padding: var(--space-xs);
+    font-size: 0.8rem;
+    max-width: 100%;
+    overflow-x: hidden;
+    word-break: break-word;
+  }
+  
+  .analytics-section h2,
+  .analytics-section h3 {
+    font-size: 0.875rem !important;
+  }
+  
+  .analytics-section * {
+    max-width: 100% !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    box-sizing: border-box !important;
   }
 }
 

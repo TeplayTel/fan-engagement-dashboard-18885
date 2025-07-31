@@ -220,31 +220,40 @@ function Analytics({ currentMatch }) {
           }} title={currentMatch?.status === 'live' ? 'Live data' : 'Historical data'} />
         </div>
         
-        {/* Match Information Card - Neat and Compact */}
+        {/* Match Information Card - Compact and Responsive */}
         {currentMatch && (
           <div style={{
             background: 'var(--tertiary-background)',
             border: '1px solid var(--border-color)',
             borderRadius: 'var(--radius-md)',
-            padding: 'var(--space-md)',
-            marginBottom: 'var(--space-md)'
+            padding: 'var(--space-sm)',
+            marginBottom: 'var(--space-md)',
+            width: '100%',
+            boxSizing: 'border-box',
+            overflow: 'hidden'
           }}>
-            {/* League Badge */}
+            {/* League Badge - Responsive */}
             <div style={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              marginBottom: 'var(--space-sm)'
+              marginBottom: 'var(--space-sm)',
+              gap: 'var(--space-xs)',
+              flexWrap: 'wrap'
             }}>
               <div style={{
                 background: 'var(--accent-blue)',
                 color: 'white',
                 padding: 'var(--space-xs) var(--space-sm)',
                 borderRadius: 'var(--radius-sm)',
-                fontSize: '0.75rem',
+                fontSize: '0.7rem',
                 fontWeight: '600',
                 textTransform: 'uppercase',
-                letterSpacing: '0.05em'
+                letterSpacing: '0.05em',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                maxWidth: '60%'
               }}>
                 {currentMatch.league}
               </div>
@@ -254,14 +263,15 @@ function Analytics({ currentMatch }) {
                   color: 'white',
                   padding: 'var(--space-xs) var(--space-sm)',
                   borderRadius: 'var(--radius-sm)',
-                  fontSize: '0.75rem',
+                  fontSize: '0.7rem',
                   fontWeight: '600',
                   textTransform: 'uppercase',
                   letterSpacing: '0.05em',
                   display: 'flex',
                   alignItems: 'center',
                   gap: 'var(--space-xs)',
-                  animation: 'pulse-glow 2s ease-in-out infinite alternate'
+                  animation: 'pulse-glow 2s ease-in-out infinite alternate',
+                  flexShrink: 0
                 }}>
                   <span style={{ fontSize: '0.6rem' }}>🔴</span>
                   LIVE
@@ -269,82 +279,84 @@ function Analytics({ currentMatch }) {
               )}
             </div>
             
-            {/* Teams Display - Compact */}
+            {/* Teams Display - Vertical Stack for Narrow Space */}
             <div style={{
               display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: 'var(--space-sm)'
+              flexDirection: 'column',
+              gap: 'var(--space-xs)',
+              width: '100%'
             }}>
+              {/* Home Team */}
               <div style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: 'var(--space-xs)',
-                flex: 1,
-                minWidth: 0
+                width: '100%'
               }}>
                 <img 
                   src={currentMatch.home.logo} 
                   alt={currentMatch.home.name}
                   style={{
-                    width: '24px',
-                    height: '24px',
+                    width: '20px',
+                    height: '20px',
                     borderRadius: '50%',
                     flexShrink: 0
                   }}
                 />
                 <span style={{
-                  fontSize: '0.875rem',
+                  fontSize: '0.8rem',
                   fontWeight: '600',
                   color: 'var(--primary-text)',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap'
+                  whiteSpace: 'nowrap',
+                  flex: 1
                 }}>
                   {currentMatch.home.name}
                 </span>
               </div>
               
+              {/* Score */}
               <div style={{
+                textAlign: 'center',
                 background: 'var(--glass-background)',
-                padding: 'var(--space-xs) var(--space-sm)',
+                padding: 'var(--space-xs)',
                 borderRadius: 'var(--radius-sm)',
-                fontSize: '0.875rem',
+                fontSize: '0.8rem',
                 fontWeight: '700',
-                color: 'var(--primary-text)',
-                flexShrink: 0
+                color: 'var(--primary-text)'
               }}>
                 {currentMatch.score}
               </div>
               
+              {/* Away Team */}
               <div style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: 'var(--space-xs)',
-                flex: 1,
-                minWidth: 0,
-                justifyContent: 'flex-end'
+                width: '100%'
               }}>
-                <span style={{
-                  fontSize: '0.875rem',
-                  fontWeight: '600',
-                  color: 'var(--primary-text)',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap'
-                }}>
-                  {currentMatch.away.name}
-                </span>
                 <img 
                   src={currentMatch.away.logo} 
                   alt={currentMatch.away.name}
                   style={{
-                    width: '24px',
-                    height: '24px',
+                    width: '20px',
+                    height: '20px',
                     borderRadius: '50%',
                     flexShrink: 0
                   }}
                 />
+                <span style={{
+                  fontSize: '0.8rem',
+                  fontWeight: '600',
+                  color: 'var(--primary-text)',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  flex: 1
+                }}>
+                  {currentMatch.away.name}
+                </span>
               </div>
             </div>
             
@@ -356,7 +368,7 @@ function Analytics({ currentMatch }) {
                 padding: 'var(--space-xs)',
                 background: 'var(--glass-background)',
                 borderRadius: 'var(--radius-sm)',
-                fontSize: '0.75rem',
+                fontSize: '0.7rem',
                 color: 'var(--secondary-text)',
                 fontWeight: '600'
               }}>
@@ -369,22 +381,31 @@ function Analytics({ currentMatch }) {
 
       {/* Key Statistics Cards */}
       <div style={{ 
-        display: 'grid', 
-        gap: 'var(--space-md)',
-        marginBottom: 'var(--space-lg)'
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 'var(--space-sm)',
+        marginBottom: 'var(--space-lg)',
+        width: '100%',
+        boxSizing: 'border-box'
       }}>
         <div style={{
           background: 'var(--glass-background)',
           border: '1px solid var(--border-color)',
           borderRadius: 'var(--radius-md)',
-          padding: 'var(--space-md)',
+          padding: 'var(--space-sm)',
           transition: 'all 0.3s ease',
           position: 'relative',
-          overflow: 'hidden'
+          overflow: 'hidden',
+          width: '100%',
+          boxSizing: 'border-box',
+          minHeight: '60px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center'
         }}
         onMouseEnter={(e) => {
           e.target.style.borderColor = 'var(--hover-border)';
-          e.target.style.transform = 'translateY(-2px)';
+          e.target.style.transform = 'translateY(-1px)';
         }}
         onMouseLeave={(e) => {
           e.target.style.borderColor = 'var(--border-color)';
@@ -395,25 +416,31 @@ function Analytics({ currentMatch }) {
             top: 0,
             left: 0,
             right: 0,
-            height: '3px',
+            height: '2px',
             background: 'linear-gradient(90deg, var(--accent-blue), var(--accent-purple))'
           }} />
           <div style={{ 
-            fontSize: '0.875rem', 
+            fontSize: '0.75rem', 
             color: 'var(--secondary-text)',
             marginBottom: 'var(--space-xs)',
             display: 'flex',
             alignItems: 'center',
-            gap: 'var(--space-xs)'
+            gap: 'var(--space-xs)',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap'
           }}>
             <span>🎯</span>
-            Total Reactions
+            <span>Total Reactions</span>
           </div>
           <div style={{ 
-            fontSize: '1.75rem', 
+            fontSize: '1.25rem', 
             fontWeight: '700',
             color: 'var(--primary-text)',
-            letterSpacing: '-0.025em'
+            letterSpacing: '-0.025em',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap'
           }}>
             {formatNumber(stats.totalReactions)}
           </div>
@@ -423,14 +450,20 @@ function Analytics({ currentMatch }) {
           background: 'var(--glass-background)',
           border: '1px solid var(--border-color)',
           borderRadius: 'var(--radius-md)',
-          padding: 'var(--space-md)',
+          padding: 'var(--space-sm)',
           transition: 'all 0.3s ease',
           position: 'relative',
-          overflow: 'hidden'
+          overflow: 'hidden',
+          width: '100%',
+          boxSizing: 'border-box',
+          minHeight: '60px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center'
         }}
         onMouseEnter={(e) => {
           e.target.style.borderColor = 'var(--hover-border)';
-          e.target.style.transform = 'translateY(-2px)';
+          e.target.style.transform = 'translateY(-1px)';
         }}
         onMouseLeave={(e) => {
           e.target.style.borderColor = 'var(--border-color)';
@@ -441,25 +474,31 @@ function Analytics({ currentMatch }) {
             top: 0,
             left: 0,
             right: 0,
-            height: '3px',
+            height: '2px',
             background: 'linear-gradient(90deg, var(--accent-green), var(--accent-blue))'
           }} />
           <div style={{ 
-            fontSize: '0.875rem', 
+            fontSize: '0.75rem', 
             color: 'var(--secondary-text)',
             marginBottom: 'var(--space-xs)',
             display: 'flex',
             alignItems: 'center',
-            gap: 'var(--space-xs)'
+            gap: 'var(--space-xs)',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap'
           }}>
             <span>👥</span>
-            Active Viewers
+            <span>Active Viewers</span>
           </div>
           <div style={{ 
-            fontSize: '1.75rem', 
+            fontSize: '1.25rem', 
             fontWeight: '700',
             color: 'var(--primary-text)',
-            letterSpacing: '-0.025em'
+            letterSpacing: '-0.025em',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap'
           }}>
             {formatNumber(stats.uniqueViewers)}
           </div>
@@ -469,14 +508,20 @@ function Analytics({ currentMatch }) {
           background: 'var(--glass-background)',
           border: '1px solid var(--border-color)',
           borderRadius: 'var(--radius-md)',
-          padding: 'var(--space-md)',
+          padding: 'var(--space-sm)',
           transition: 'all 0.3s ease',
           position: 'relative',
-          overflow: 'hidden'
+          overflow: 'hidden',
+          width: '100%',
+          boxSizing: 'border-box',
+          minHeight: '60px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center'
         }}
         onMouseEnter={(e) => {
           e.target.style.borderColor = 'var(--hover-border)';
-          e.target.style.transform = 'translateY(-2px)';
+          e.target.style.transform = 'translateY(-1px)';
         }}
         onMouseLeave={(e) => {
           e.target.style.borderColor = 'var(--border-color)';
@@ -487,34 +532,45 @@ function Analytics({ currentMatch }) {
             top: 0,
             left: 0,
             right: 0,
-            height: '3px',
+            height: '2px',
             background: 'linear-gradient(90deg, var(--accent-orange), var(--accent-red))'
           }} />
           <div style={{ 
-            fontSize: '0.875rem', 
+            fontSize: '0.75rem', 
             color: 'var(--secondary-text)',
             marginBottom: 'var(--space-xs)',
             display: 'flex',
             alignItems: 'center',
-            gap: 'var(--space-xs)'
+            gap: 'var(--space-xs)',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap'
           }}>
             <span>📈</span>
-            Engagement Rate
+            <span>Engagement Rate</span>
           </div>
           <div style={{ 
-            fontSize: '1.75rem', 
+            fontSize: '1.25rem', 
             fontWeight: '700',
             color: 'var(--primary-text)',
             letterSpacing: '-0.025em',
             display: 'flex',
             alignItems: 'center',
-            gap: 'var(--space-xs)'
+            gap: 'var(--space-xs)',
+            overflow: 'hidden'
           }}>
-            {stats.engagementRate.toFixed(1)}%
             <span style={{ 
-              fontSize: '0.875rem', 
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap'
+            }}>
+              {stats.engagementRate.toFixed(1)}%
+            </span>
+            <span style={{ 
+              fontSize: '0.7rem', 
               color: 'var(--accent-green)',
-              fontWeight: '600'
+              fontWeight: '600',
+              flexShrink: 0
             }}>
               +2.3%
             </span>
@@ -525,14 +581,20 @@ function Analytics({ currentMatch }) {
           background: 'var(--glass-background)',
           border: '1px solid var(--border-color)',
           borderRadius: 'var(--radius-md)',
-          padding: 'var(--space-md)',
+          padding: 'var(--space-sm)',
           transition: 'all 0.3s ease',
           position: 'relative',
-          overflow: 'hidden'
+          overflow: 'hidden',
+          width: '100%',
+          boxSizing: 'border-box',
+          minHeight: '60px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center'
         }}
         onMouseEnter={(e) => {
           e.target.style.borderColor = 'var(--hover-border)';
-          e.target.style.transform = 'translateY(-2px)';
+          e.target.style.transform = 'translateY(-1px)';
         }}
         onMouseLeave={(e) => {
           e.target.style.borderColor = 'var(--border-color)';
@@ -543,69 +605,91 @@ function Analytics({ currentMatch }) {
             top: 0,
             left: 0,
             right: 0,
-            height: '3px',
+            height: '2px',
             background: 'linear-gradient(90deg, var(--accent-purple), var(--accent-red))'
           }} />
           <div style={{ 
-            fontSize: '0.875rem', 
+            fontSize: '0.75rem', 
             color: 'var(--secondary-text)',
             marginBottom: 'var(--space-xs)',
             display: 'flex',
             alignItems: 'center',
-            gap: 'var(--space-xs)'
+            gap: 'var(--space-xs)',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap'
           }}>
             <span>🏆</span>
-            Top Emoji
+            <span>Top Emoji</span>
           </div>
           <div style={{ 
-            fontSize: '1.75rem', 
+            fontSize: '1.25rem', 
             fontWeight: '700',
             color: 'var(--primary-text)',
             letterSpacing: '-0.025em',
             display: 'flex',
             alignItems: 'center',
-            gap: 'var(--space-sm)'
+            gap: 'var(--space-xs)',
+            overflow: 'hidden'
           }}>
-            <span style={{ fontSize: '2rem' }}>{stats.topEmoji}</span>
-            <span>Fire</span>
+            <span style={{ fontSize: '1.5rem', flexShrink: 0 }}>{stats.topEmoji}</span>
+            <span style={{ 
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap'
+            }}>Fire</span>
           </div>
         </div>
       </div>
 
-      {/* Match Moments */}
+      {/* Match Moments - Compact */}
       <div style={{
         background: 'var(--glass-background)',
         border: '1px solid var(--border-color)',
         borderRadius: 'var(--radius-md)',
-        padding: 'var(--space-md)',
-        transition: 'all 0.3s ease'
+        padding: 'var(--space-sm)',
+        transition: 'all 0.3s ease',
+        width: '100%',
+        boxSizing: 'border-box',
+        overflow: 'hidden'
       }}>
         <h3 style={{ 
-          margin: '0 0 var(--space-md) 0',
-          fontSize: '1rem',
+          margin: '0 0 var(--space-sm) 0',
+          fontSize: '0.875rem',
           fontWeight: '600',
           color: 'var(--primary-text)',
           display: 'flex',
           alignItems: 'center',
-          gap: 'var(--space-xs)'
+          gap: 'var(--space-xs)',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap'
         }}>
           <span>⚡</span>
-          Key Moments
+          <span>Key Moments</span>
         </h3>
         
-        <div style={{ display: 'grid', gap: 'var(--space-sm)' }}>
+        <div style={{ 
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 'var(--space-xs)',
+          width: '100%'
+        }}>
           {stats.matchMoments.map((moment, index) => (
             <div 
               key={index}
               style={{
                 display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: 'var(--space-sm)',
+                flexDirection: 'column',
+                gap: 'var(--space-xs)',
+                padding: 'var(--space-xs)',
                 background: 'var(--tertiary-background)',
                 borderRadius: 'var(--radius-sm)',
                 border: '1px solid var(--border-color)',
-                transition: 'all 0.2s ease'
+                transition: 'all 0.2s ease',
+                width: '100%',
+                boxSizing: 'border-box',
+                overflow: 'hidden'
               }}
               onMouseEnter={(e) => {
                 e.target.style.background = 'var(--secondary-background)';
@@ -616,32 +700,42 @@ function Analytics({ currentMatch }) {
                 e.target.style.borderColor = 'var(--border-color)';
               }}
             >
-              <div>
-                <span style={{
-                  fontSize: '0.75rem',
-                  color: 'var(--accent-blue)',
-                  fontWeight: '600',
-                  marginRight: 'var(--space-sm)'
-                }}>
-                  {moment.time}
-                </span>
-                <span style={{
-                  fontSize: '0.875rem',
-                  color: 'var(--primary-text)'
-                }}>
-                  {moment.event}
-                </span>
-              </div>
               <div style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: 'var(--space-xs)',
-                fontSize: '0.875rem',
-                color: 'var(--secondary-text)',
-                fontWeight: '500'
+                justifyContent: 'space-between',
+                gap: 'var(--space-xs)'
               }}>
-                <span>🎯</span>
-                <span>{formatNumber(moment.reactions)}</span>
+                <span style={{
+                  fontSize: '0.7rem',
+                  color: 'var(--accent-blue)',
+                  fontWeight: '600',
+                  flexShrink: 0
+                }}>
+                  {moment.time}
+                </span>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 'var(--space-xs)',
+                  fontSize: '0.7rem',
+                  color: 'var(--secondary-text)',
+                  fontWeight: '500',
+                  flexShrink: 0
+                }}>
+                  <span>🎯</span>
+                  <span>{formatNumber(moment.reactions)}</span>
+                </div>
+              </div>
+              <div style={{
+                fontSize: '0.75rem',
+                color: 'var(--primary-text)',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                width: '100%'
+              }}>
+                {moment.event}
               </div>
             </div>
           ))}
