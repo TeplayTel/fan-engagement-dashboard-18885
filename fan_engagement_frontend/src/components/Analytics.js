@@ -188,47 +188,183 @@ function Analytics({ currentMatch }) {
 
   return (
     <div className="analytics-section">
+      {/* Header with improved spacing and layout */}
       <div style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'space-between',
-        marginBottom: 'var(--space-lg)',
-        flexWrap: 'wrap',
-        gap: 'var(--space-sm)'
+        marginBottom: 'var(--space-lg)'
       }}>
-        <div>
-          <h2 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 'var(--space-sm)' }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginBottom: 'var(--space-md)',
+          gap: 'var(--space-sm)'
+        }}>
+          <h2 style={{ 
+            margin: 0, 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: 'var(--space-sm)',
+            fontSize: '1.125rem',
+            fontWeight: '700'
+          }}>
             <span>📊</span>
-            {currentMatch ? 'Match Analytics' : 'Live Analytics'}
+            Analytics
           </h2>
-          {currentMatch && (
+          <div style={{
+            width: '8px',
+            height: '8px',
+            borderRadius: '50%',
+            background: currentMatch?.status === 'live' ? 'var(--accent-green)' : 'var(--secondary-text)',
+            animation: currentMatch?.status === 'live' ? 'pulse-subtle 2s ease-in-out infinite' : 'none',
+            flexShrink: 0
+          }} title={currentMatch?.status === 'live' ? 'Live data' : 'Historical data'} />
+        </div>
+        
+        {/* Match Information Card - Neat and Compact */}
+        {currentMatch && (
+          <div style={{
+            background: 'var(--tertiary-background)',
+            border: '1px solid var(--border-color)',
+            borderRadius: 'var(--radius-md)',
+            padding: 'var(--space-md)',
+            marginBottom: 'var(--space-md)'
+          }}>
+            {/* League Badge */}
             <div style={{
-              fontSize: '0.875rem',
-              color: 'var(--secondary-text)',
-              marginTop: 'var(--space-xs)',
               display: 'flex',
               alignItems: 'center',
-              gap: 'var(--space-xs)'
+              justifyContent: 'space-between',
+              marginBottom: 'var(--space-sm)'
             }}>
-              <span>{currentMatch.home.name} vs {currentMatch.away.name}</span>
-              <span>•</span>
-              <span>{currentMatch.league}</span>
+              <div style={{
+                background: 'var(--accent-blue)',
+                color: 'white',
+                padding: 'var(--space-xs) var(--space-sm)',
+                borderRadius: 'var(--radius-sm)',
+                fontSize: '0.75rem',
+                fontWeight: '600',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em'
+              }}>
+                {currentMatch.league}
+              </div>
               {currentMatch.status === 'live' && (
-                <>
-                  <span>•</span>
-                  <span style={{ color: 'var(--accent-red)' }}>🔴 LIVE</span>
-                </>
+                <div style={{
+                  background: 'var(--accent-red)',
+                  color: 'white',
+                  padding: 'var(--space-xs) var(--space-sm)',
+                  borderRadius: 'var(--radius-sm)',
+                  fontSize: '0.75rem',
+                  fontWeight: '600',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 'var(--space-xs)',
+                  animation: 'pulse-glow 2s ease-in-out infinite alternate'
+                }}>
+                  <span style={{ fontSize: '0.6rem' }}>🔴</span>
+                  LIVE
+                </div>
               )}
             </div>
-          )}
-        </div>
-        <div style={{
-          width: '8px',
-          height: '8px',
-          borderRadius: '50%',
-          background: currentMatch?.status === 'live' ? 'var(--accent-green)' : 'var(--secondary-text)',
-          animation: currentMatch?.status === 'live' ? 'pulse-subtle 2s ease-in-out infinite' : 'none'
-        }} title={currentMatch?.status === 'live' ? 'Live data' : 'Historical data'} />
+            
+            {/* Teams Display - Compact */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 'var(--space-sm)'
+            }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 'var(--space-xs)',
+                flex: 1,
+                minWidth: 0
+              }}>
+                <img 
+                  src={currentMatch.home.logo} 
+                  alt={currentMatch.home.name}
+                  style={{
+                    width: '24px',
+                    height: '24px',
+                    borderRadius: '50%',
+                    flexShrink: 0
+                  }}
+                />
+                <span style={{
+                  fontSize: '0.875rem',
+                  fontWeight: '600',
+                  color: 'var(--primary-text)',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap'
+                }}>
+                  {currentMatch.home.name}
+                </span>
+              </div>
+              
+              <div style={{
+                background: 'var(--glass-background)',
+                padding: 'var(--space-xs) var(--space-sm)',
+                borderRadius: 'var(--radius-sm)',
+                fontSize: '0.875rem',
+                fontWeight: '700',
+                color: 'var(--primary-text)',
+                flexShrink: 0
+              }}>
+                {currentMatch.score}
+              </div>
+              
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 'var(--space-xs)',
+                flex: 1,
+                minWidth: 0,
+                justifyContent: 'flex-end'
+              }}>
+                <span style={{
+                  fontSize: '0.875rem',
+                  fontWeight: '600',
+                  color: 'var(--primary-text)',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap'
+                }}>
+                  {currentMatch.away.name}
+                </span>
+                <img 
+                  src={currentMatch.away.logo} 
+                  alt={currentMatch.away.name}
+                  style={{
+                    width: '24px',
+                    height: '24px',
+                    borderRadius: '50%',
+                    flexShrink: 0
+                  }}
+                />
+              </div>
+            </div>
+            
+            {/* Match Time */}
+            {currentMatch.status === 'live' && (
+              <div style={{
+                textAlign: 'center',
+                marginTop: 'var(--space-sm)',
+                padding: 'var(--space-xs)',
+                background: 'var(--glass-background)',
+                borderRadius: 'var(--radius-sm)',
+                fontSize: '0.75rem',
+                color: 'var(--secondary-text)',
+                fontWeight: '600'
+              }}>
+                {currentMatch.time}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Key Statistics Cards */}
