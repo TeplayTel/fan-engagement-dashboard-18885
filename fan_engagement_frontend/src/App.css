@@ -369,6 +369,114 @@ body {
   border: 1px solid var(--border-color);
 }
 
+.admin-dashboard h1 {
+  margin-top: 0;
+  margin-bottom: 24px;
+  color: var(--primary-text);
+  font-size: 2rem;
+}
+
+.admin-dashboard h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: var(--primary-text);
+  font-size: 1.4rem;
+}
+
+/* Upload Form Styles */
+.admin-dashboard form input[type="text"],
+.admin-dashboard form input[type="file"] {
+  font-family: var(--font-family);
+}
+
+.admin-dashboard form input[type="text"]:focus,
+.admin-dashboard form input[type="file"]:focus {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
+}
+
+.admin-dashboard form button:hover:not(:disabled) {
+  background-color: var(--accent-blue) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+.admin-dashboard form button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Emoji Grid Enhancements */
+.admin-dashboard .emoji-grid-item {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-dashboard .emoji-grid-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.admin-dashboard .emoji-remove-btn {
+  transition: all 0.2s ease;
+  opacity: 0.7;
+}
+
+.admin-dashboard .emoji-remove-btn:hover {
+  opacity: 1;
+  transform: scale(1.1);
+  background-color: #dc3545 !important;
+}
+
+/* Statistics Cards */
+.admin-dashboard .stats-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-dashboard .stats-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Status Indicators */
+.admin-dashboard .status-indicator {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Mobile Responsiveness for Admin Dashboard */
+@media (max-width: 768px) {
+  .admin-dashboard {
+    padding: 16px;
+  }
+  
+  .admin-dashboard h1 {
+    font-size: 1.6rem;
+  }
+  
+  .admin-dashboard h2 {
+    font-size: 1.2rem;
+  }
+  
+  .admin-dashboard form {
+    padding: 16px !important;
+  }
+  
+  .admin-dashboard form input[type="text"],
+  .admin-dashboard form input[type="file"] {
+    max-width: 100% !important;
+  }
+}
+
 /* Emoji Flying Animation */
 .flying-emoji-container {
   position: absolute;

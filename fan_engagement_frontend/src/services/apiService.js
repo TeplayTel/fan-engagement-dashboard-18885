@@ -129,6 +129,100 @@ class ApiService {
   async sendUserEmojiReaction(reactionData) {
     return this.post('/fan-engagement/emoji/v1/userEmojiReaction', reactionData);
   }
+
+  // PUBLIC_INTERFACE
+  /**
+   * Upload emoji with multipart/form-data
+   * @param {FormData} formData - FormData containing emojiType and emojiImage
+   * @returns {Promise} Response data
+   */
+  async uploadEmoji(formData) {
+    try {
+      const headers = {};
+      
+      // Add authorization header if token is available
+      if (this.token) {
+        headers['Authorization'] = `Bearer ${this.token}`;
+      }
+      
+      // Don't set Content-Type for multipart/form-data - let browser set it with boundary
+      const response = await fetch(`${this.baseURL}/fan-engagement/emoji/v1/upload`, {
+        method: 'POST',
+        headers: headers,
+        body: formData,
+      });
+
+      if (!response.ok) {
+        // Try to get error details from response body
+        let errorMessage = `HTTP error! status: ${response.status}`;
+        try {
+          const errorData = await response.json();
+          if (errorData.detail) {
+            errorMessage += ` - ${errorData.detail}`;
+          } else if (errorData.message) {
+            errorMessage += ` - ${errorData.message}`;
+          }
+        } catch (parseError) {
+          // If response body can't be parsed, use status text
+          errorMessage += ` - ${response.statusText}`;
+        }
+        
+        throw new Error(errorMessage);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('API emoji upload failed:', error);
+      throw error;
+    }
+  }
+
+  // PUBLIC_INTERFACE
+  /**
+   * Get emoji usage statistics (admin only)
+   * @returns {Promise} Response data with emoji statistics
+   */
+  async getEmojiStats() {
+    return this.get('/fan-engagement/emoji/v1/stats');
+  }
+
+  // PUBLIC_INTERFACE
+  /**
+   * Remove emoji (admin only)
+   * @param {string} emojiId - The ID of the emoji to remove
+   * @returns {Promise} Response data
+   */
+  async removeEmoji(emojiId) {
+    try {
+      const response = await fetch(`${this.baseURL}/fan-engagement/emoji/v1/remove/${emojiId}`, {
+        method: 'DELETE',
+        headers: this.getHeaders(),
+      });
+
+      if (!response.ok) {
+        // Try to get error details from response body
+        let errorMessage = `HTTP error! status: ${response.status}`;
+        try {
+          const errorData = await response.json();
+          if (errorData.detail) {
+            errorMessage += ` - ${errorData.detail}`;
+          } else if (errorData.message) {
+            errorMessage += ` - ${errorData.message}`;
+          }
+        } catch (parseError) {
+          // If response body can't be parsed, use status text
+          errorMessage += ` - ${response.statusText}`;
+        }
+        
+        throw new Error(errorMessage);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('API emoji removal failed:', error);
+      throw error;
+    }
+  }
 }
 
 // Export a singleton instance

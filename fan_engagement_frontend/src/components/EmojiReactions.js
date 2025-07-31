@@ -73,7 +73,55 @@ function EmojiReactions() {
     };
 
     fetchEmojis();
+
+    // Set up periodic refresh to catch admin updates
+    const refreshInterval = setInterval(() => {
+      if (isAuthenticated) {
+        fetchEmojis();
+      }
+    }, 30000); // Refresh every 30 seconds
+
+    return () => clearInterval(refreshInterval);
   }, [isAuthenticated]);
+
+  // Listen for custom events from admin dashboard for immediate updates
+  useEffect(() => {
+    const handleEmojiListUpdate = () => {
+      // Refresh emoji list immediately when admin makes changes
+      if (isAuthenticated) {
+        setTimeout(async () => {
+          try {
+            const emojisData = await apiService.getEmojis();
+            let emojis = [];
+            if (Array.isArray(emojisData)) {
+              emojis = emojisData;
+            } else if (emojisData && emojisData.emojis && Array.isArray(emojisData.emojis)) {
+              emojis = emojisData.emojis;
+            } else if (emojisData && emojisData.data && Array.isArray(emojisData.data)) {
+              emojis = emojisData.data;
+            }
+
+            const formattedEmojis = emojis.map((emoji, index) => ({
+              id: emoji.id || index + 1,
+              emoji: emoji.emoji || emoji.symbol || emoji,
+              name: emoji.name || `emoji_${index + 1}`
+            }));
+
+            setAvailableEmojis(formattedEmojis.length > 0 ? formattedEmojis : fallbackEmojis);
+          } catch (err) {
+            console.warn('Failed to refresh emoji list:', err);
+          }
+        }, 1000);
+      }
+    };
+
+    // Listen for custom events
+    window.addEventListener('emojiListUpdated', handleEmojiListUpdate);
+    
+    return () => {
+      window.removeEventListener('emojiListUpdated', handleEmojiListUpdate);
+    };
+  }, [isAuthenticated, fallbackEmojis]);
 
   const handleEmojiClick = async (emojiData) => {
     // Create flying animation immediately for responsiveness
