@@ -36,13 +36,14 @@ function Dashboard() {
       <SportsFilter />
       <main className="main-content">
         <div className="matches-container">
-          <VideoPlayer videoUrl={liveVideoUrl} />
+          <VideoPlayer videoUrl={liveVideoUrl}>
+            <EmojiReactions />
+          </VideoPlayer>
           {placeholderMatches.map((match, index) => (
             <MatchCard key={index} match={match} />
           ))}
         </div>
         <div className="right-panel">
-            <EmojiReactions />
             <Analytics />
         </div>
       </main>
