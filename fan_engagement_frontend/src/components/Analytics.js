@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 
 // PUBLIC_INTERFACE
-function Analytics() {
+function Analytics({ currentMatch }) {
   /**
    * Enhanced Analytics component with real-time statistics and modern design.
+   * Now displays analytics specific to the currently active match.
+   * @param {object} currentMatch - The currently active match object
    */
   const [stats, setStats] = useState({
     totalReactions: 0,
@@ -16,40 +18,145 @@ function Analytics() {
 
   const [loading, setLoading] = useState(true);
 
+  // Update analytics when current match changes
   useEffect(() => {
-    // Simulate loading analytics data
-    const timer = setTimeout(() => {
-      setStats({
-        totalReactions: 12847,
-        uniqueViewers: 2147,
-        peakViewers: 3521,
-        engagementRate: 68.5,
-        topEmoji: '🔥',
-        matchMoments: [
-          { time: '12\'', event: 'Goal by Arsenal', reactions: 1247 },
-          { time: '34\'', event: 'Yellow Card', reactions: 523 },
-          { time: '67\'', event: 'Goal by Chelsea', reactions: 1891 },
-          { time: '88\'', event: 'Goal by Arsenal', reactions: 2156 }
-        ]
-      });
-      setLoading(false);
-    }, 1000);
+    if (currentMatch) {
+      setLoading(true);
+      
+      // Generate match-specific analytics data
+      const generateMatchStats = (match) => {
+        const baseReactions = Math.floor(Math.random() * 10000) + 5000;
+        const baseViewers = Math.floor(Math.random() * 3000) + 1000;
+        
+        // Generate match-specific moments based on team names
+        const generateMoments = (match) => {
+          const moments = [
+            { time: '12\'', event: `Goal by ${match.home.name}`, reactions: Math.floor(Math.random() * 2000) + 800 },
+            { time: '34\'', event: 'Yellow Card', reactions: Math.floor(Math.random() * 800) + 200 },
+            { time: '67\'', event: `Goal by ${match.away.name}`, reactions: Math.floor(Math.random() * 2500) + 1000 },
+          ];
+          
+          if (match.status === 'live') {
+            moments.push({ 
+              time: match.time, 
+              event: `Current play - ${match.status}`, 
+              reactions: Math.floor(Math.random() * 500) + 100 
+            });
+          }
+          
+          return moments.sort((a, b) => parseInt(a.time) - parseInt(b.time));
+        };
 
-    // Simulate real-time updates
+        return {
+          totalReactions: baseReactions,
+          uniqueViewers: baseViewers,
+          peakViewers: baseViewers + Math.floor(Math.random() * 1000) + 500,
+          engagementRate: Math.floor(Math.random() * 25) + 65,
+          topEmoji: ['🔥', '❤️', '⚽', '🎉', '😮'][Math.floor(Math.random() * 5)],
+          matchMoments: generateMoments(match)
+        };
+      };
+
+      const timer = setTimeout(() => {
+        setStats(generateMatchStats(currentMatch));
+        setLoading(false);
+      }, 800);
+
+      return () => clearTimeout(timer);
+    }
+  }, [currentMatch]);
+
+  // Listen for active match change events
+  useEffect(() => {
+    const handleActiveMatchChange = (event) => {
+      const { matchInfo } = event.detail;
+      if (matchInfo) {
+        setLoading(true);
+        
+        // Refresh analytics for new match
+        setTimeout(() => {
+          const generateMatchStats = (match) => {
+            const baseReactions = Math.floor(Math.random() * 10000) + 5000;
+            const baseViewers = Math.floor(Math.random() * 3000) + 1000;
+            
+            const generateMoments = (match) => {
+              const moments = [
+                { time: '12\'', event: `Goal by ${match.home.name}`, reactions: Math.floor(Math.random() * 2000) + 800 },
+                { time: '34\'', event: 'Yellow Card', reactions: Math.floor(Math.random() * 800) + 200 },
+                { time: '67\'', event: `Goal by ${match.away.name}`, reactions: Math.floor(Math.random() * 2500) + 1000 },
+              ];
+              
+              if (match.status === 'live') {
+                moments.push({ 
+                  time: match.time, 
+                  event: `Current play - ${match.status}`, 
+                  reactions: Math.floor(Math.random() * 500) + 100 
+                });
+              }
+              
+              return moments.sort((a, b) => parseInt(a.time) - parseInt(b.time));
+            };
+
+            return {
+              totalReactions: baseReactions,
+              uniqueViewers: baseViewers,
+              peakViewers: baseViewers + Math.floor(Math.random() * 1000) + 500,
+              engagementRate: Math.floor(Math.random() * 25) + 65,
+              topEmoji: ['🔥', '❤️', '⚽', '🎉', '😮'][Math.floor(Math.random() * 5)],
+              matchMoments: generateMoments(match)
+            };
+          };
+
+          setStats(generateMatchStats(matchInfo));
+          setLoading(false);
+        }, 800);
+      }
+    };
+
+    window.addEventListener('activeMatchChanged', handleActiveMatchChange);
+    return () => window.removeEventListener('activeMatchChanged', handleActiveMatchChange);
+  }, []);
+
+  // Simulate real-time updates (only for live matches)
+  useEffect(() => {
+    if (!currentMatch || currentMatch.status !== 'live') return;
+
     const updateInterval = setInterval(() => {
       setStats(prev => ({
         ...prev,
-        totalReactions: prev.totalReactions + Math.floor(Math.random() * 15),
-        uniqueViewers: prev.uniqueViewers + Math.floor(Math.random() * 3) - 1,
-        engagementRate: Math.max(60, Math.min(85, prev.engagementRate + (Math.random() - 0.5) * 2))
+        totalReactions: prev.totalReactions + Math.floor(Math.random() * 15) + 1,
+        uniqueViewers: Math.max(100, prev.uniqueViewers + Math.floor(Math.random() * 6) - 2),
+        engagementRate: Math.max(40, Math.min(95, prev.engagementRate + (Math.random() - 0.5) * 3))
       }));
     }, 5000);
 
-    return () => {
-      clearTimeout(timer);
-      clearInterval(updateInterval);
-    };
-  }, []);
+    return () => clearInterval(updateInterval);
+  }, [currentMatch]);
+
+  // Initial load effect
+  useEffect(() => {
+    if (!currentMatch) {
+      // Default stats when no match is selected
+      const timer = setTimeout(() => {
+        setStats({
+          totalReactions: 12847,
+          uniqueViewers: 2147,
+          peakViewers: 3521,
+          engagementRate: 68.5,
+          topEmoji: '🔥',
+          matchMoments: [
+            { time: '12\'', event: 'Goal by Arsenal', reactions: 1247 },
+            { time: '34\'', event: 'Yellow Card', reactions: 523 },
+            { time: '67\'', event: 'Goal by Chelsea', reactions: 1891 },
+            { time: '88\'', event: 'Goal by Arsenal', reactions: 2156 }
+          ]
+        });
+        setLoading(false);
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [currentMatch]);
 
   const formatNumber = (num) => {
     if (num >= 1000) {
@@ -85,19 +192,43 @@ function Analytics() {
         display: 'flex', 
         alignItems: 'center', 
         justifyContent: 'space-between',
-        marginBottom: 'var(--space-lg)'
+        marginBottom: 'var(--space-lg)',
+        flexWrap: 'wrap',
+        gap: 'var(--space-sm)'
       }}>
-        <h2 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 'var(--space-sm)' }}>
-          <span>📊</span>
-          Live Analytics
-        </h2>
+        <div>
+          <h2 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 'var(--space-sm)' }}>
+            <span>📊</span>
+            {currentMatch ? 'Match Analytics' : 'Live Analytics'}
+          </h2>
+          {currentMatch && (
+            <div style={{
+              fontSize: '0.875rem',
+              color: 'var(--secondary-text)',
+              marginTop: 'var(--space-xs)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 'var(--space-xs)'
+            }}>
+              <span>{currentMatch.home.name} vs {currentMatch.away.name}</span>
+              <span>•</span>
+              <span>{currentMatch.league}</span>
+              {currentMatch.status === 'live' && (
+                <>
+                  <span>•</span>
+                  <span style={{ color: 'var(--accent-red)' }}>🔴 LIVE</span>
+                </>
+              )}
+            </div>
+          )}
+        </div>
         <div style={{
           width: '8px',
           height: '8px',
           borderRadius: '50%',
-          background: 'var(--accent-green)',
-          animation: 'pulse-subtle 2s ease-in-out infinite'
-        }} title="Live data" />
+          background: currentMatch?.status === 'live' ? 'var(--accent-green)' : 'var(--secondary-text)',
+          animation: currentMatch?.status === 'live' ? 'pulse-subtle 2s ease-in-out infinite' : 'none'
+        }} title={currentMatch?.status === 'live' ? 'Live data' : 'Historical data'} />
       </div>
 
       {/* Key Statistics Cards */}

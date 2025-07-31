@@ -3,10 +3,12 @@ import apiService from '../services/apiService';
 import useAuth from '../hooks/useAuth';
 
 // PUBLIC_INTERFACE
-function EmojiReactions() {
+function EmojiReactions({ currentMatch }) {
   /**
    * A sleek, single-row emoji reactions bar that appears as a minimalist overlay.
    * Positioned to never obscure video player controls with modern aesthetics.
+   * Now context-aware of the current match for better reaction tracking.
+   * @param {object} currentMatch - The currently active match object
    */
   const [flyingEmojis, setFlyingEmojis] = useState([]);
   const [availableEmojis, setAvailableEmojis] = useState([]);
@@ -164,9 +166,12 @@ function EmojiReactions() {
         userId = `anonymous_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
       }
 
+      // Use current match ID or fallback to default
+      const eventId = currentMatch ? `live_match_${currentMatch.id.toString().padStart(3, '0')}` : "live_match_001";
+      
       const reactionPayload = {
         userId: userId,
-        eventId: "live_match_001",
+        eventId: eventId,
         emojiId: emojiData.id.toString(),
         createdAt: currentTime
       };
