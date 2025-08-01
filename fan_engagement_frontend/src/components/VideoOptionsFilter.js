@@ -1,10 +1,10 @@
-import React, { useState, useCallback } from 'react';
+import React from 'react';
 import './VideoOptionsFilter.css';
 
 // PUBLIC_INTERFACE
 /**
- * Modern video options filter component positioned below other matches
- * Features minimalistic dark theme design with accent highlights
+ * Simple video options filter component
+ * Basic filter functionality with minimal styling
  * @param {Array} options - Array of video option objects with id, label, icon
  * @param {String} selectedOption - Currently selected option ID
  * @param {Function} onOptionChange - Callback function when option selection changes
@@ -16,58 +16,39 @@ const VideoOptionsFilter = ({
   onOptionChange,
   className = ''
 }) => {
-  const [isAnimating, setIsAnimating] = useState(false);
-
-  // Handle option selection with animation
-  const handleOptionSelect = useCallback((option) => {
-    if (option.id === selectedOption || isAnimating) return;
-    
-    setIsAnimating(true);
+  // Handle option selection
+  const handleOptionSelect = (option) => {
     if (onOptionChange) {
       onOptionChange(option.id);
     }
-    
-    setTimeout(() => setIsAnimating(false), 300);
-  }, [selectedOption, isAnimating, onOptionChange]);
+  };
 
   return (
     <div className={`video-options-filter ${className}`}>
       <div className="video-options-header">
-        <div className="options-title">
-          <span className="title-icon">🎬</span>
-          <h3 className="title-text">Video Options</h3>
-        </div>
-        <div className="options-count">
-          {options.length} options
-        </div>
+        <h3 className="options-title">Video Options</h3>
       </div>
       
       <div className="video-options-container">
-        {options.map((option, index) => {
+        {options.map((option) => {
           const isSelected = selectedOption === option.id;
           
           return (
             <button
               key={option.id}
-              className={`video-option ${isSelected ? 'active' : ''} ${isAnimating ? 'animating' : ''}`}
+              className={`video-option ${isSelected ? 'active' : ''}`}
               onClick={() => handleOptionSelect(option)}
               aria-selected={isSelected}
               aria-label={`Select ${option.label} video option`}
-              style={{
-                animationDelay: `${index * 0.1}s`
-              }}
             >
               {option.icon && (
-                <span className="option-icon" aria-hidden="true">
+                <span className="option-icon">
                   {option.icon}
                 </span>
               )}
               <span className="option-label">
                 {option.label}
               </span>
-              {isSelected && (
-                <span className="option-indicator" aria-hidden="true" />
-              )}
             </button>
           );
         })}
@@ -76,4 +57,4 @@ const VideoOptionsFilter = ({
   );
 };
 
-export default React.memo(VideoOptionsFilter);
+export default VideoOptionsFilter;
