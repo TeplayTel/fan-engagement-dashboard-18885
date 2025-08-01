@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Header from './Header';
-import SportsFilter from './SportsFilter';
 import CurrentMatchDisplay from './CurrentMatchDisplay';
 import MatchThumbnailCard from './MatchThumbnailCard';
 import EmojiReactions from './EmojiReactions';
@@ -96,7 +95,6 @@ function Dashboard() {
    */
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedSportsFilter, setSelectedSportsFilter] = useState('all');
   const [selectedStatusFilter, setSelectedStatusFilter] = useState('all_status');
   const [currentMatchId, setCurrentMatchId] = useState(1); // Default to first match
   const [isSwapping, setIsSwapping] = useState(false);
@@ -115,15 +113,9 @@ function Dashboard() {
   const currentMatch = matches.find(match => match.id === currentMatchId);
   const otherMatches = matches.filter(match => match.id !== currentMatchId);
 
-  // Filter other matches by sports type and status
+  // Filter other matches by status only
   const filteredMatches = otherMatches.filter(match => {
-    // Sports filter
-    let sportsMatch = true;
-    if (selectedSportsFilter !== 'all') {
-      sportsMatch = match.sport === selectedSportsFilter;
-    }
-
-    // Status filter (live/recorded)
+    // Status filter (live/recorded) - only filtering criteria now
     let statusMatch = true;
     if (selectedStatusFilter === 'live') {
       statusMatch = match.status === 'live' || match.videoType === 'live';
@@ -131,7 +123,7 @@ function Dashboard() {
       statusMatch = match.status === 'finished' || match.videoType === 'recorded';
     }
 
-    return sportsMatch && statusMatch;
+    return statusMatch;
   });
 
   // PUBLIC_INTERFACE
@@ -191,10 +183,6 @@ function Dashboard() {
     return (
       <div className="dashboard fade-in">
         <Header />
-        <SportsFilter 
-          selectedFilter={selectedSportsFilter} 
-          onFilterChange={setSelectedSportsFilter} 
-        />
         <main className="main-content">
           <div className="matches-container">
             <VideoPlayer videoUrl="">
@@ -254,10 +242,6 @@ function Dashboard() {
   return (
     <div className="dashboard fade-in">
       <Header currentMatch={currentMatch} />
-      <SportsFilter 
-        selectedFilter={selectedSportsFilter} 
-        onFilterChange={setSelectedSportsFilter} 
-      />
       <main className="main-content">
         <div className="matches-container">
           {/* Video Player with current match */}
@@ -288,13 +272,50 @@ function Dashboard() {
             
             {/* Status Filter for Other Matches */}
             <div style={{ marginBottom: 'var(--space-md)' }}>
-              <SportsFilter 
-                showStatusFilter={true}
-                selectedStatus={selectedStatusFilter}
-                onStatusChange={setSelectedStatusFilter}
-                selectedFilter={selectedSportsFilter}
-                onFilterChange={setSelectedSportsFilter}
-              />
+              <div className="status-filter-bar">
+                <div style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: 'var(--space-sm)',
+                  marginBottom: 'var(--space-sm)',
+                  color: 'var(--secondary-text)',
+                  fontSize: '0.875rem',
+                  fontWeight: '500'
+                }}>
+                  <span>📡</span>
+                  <span>Filter by status:</span>
+                </div>
+                
+                <div style={{ 
+                  display: 'flex', 
+                  gap: 'var(--space-sm)', 
+                  flexWrap: 'wrap',
+                  alignItems: 'center'
+                }}>
+                  {[
+                    { id: 'all_status', label: 'All', icon: '📺' },
+                    { id: 'live', label: 'Live', icon: '🔴' },
+                    { id: 'recorded', label: 'Recorded', icon: '📹' }
+                  ].map((option) => (
+                    <button 
+                      key={option.id}
+                      className={`filter-btn ${selectedStatusFilter === option.id ? 'active' : ''}`}
+                      onClick={() => setSelectedStatusFilter(option.id)}
+                      aria-label={`Filter by ${option.label}`}
+                      title={`Show ${option.label.toLowerCase()} matches`}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 'var(--space-xs)',
+                        position: 'relative'
+                      }}
+                    >
+                      <span style={{ fontSize: '0.875rem' }}>{option.icon}</span>
+                      <span>{option.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
             
             {filteredMatches.length === 0 ? (
@@ -310,7 +331,6 @@ function Dashboard() {
                 <p>No matches found for the selected filter.</p>
                 <button 
                   onClick={() => {
-                    setSelectedSportsFilter('all');
                     setSelectedStatusFilter('all_status');
                   }}
                   style={{
