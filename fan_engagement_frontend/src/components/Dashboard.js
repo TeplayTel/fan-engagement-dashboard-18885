@@ -265,159 +265,90 @@ function Dashboard() {
             onMatchSelect={handleMatchSelect}
           />
 
-          {/* Other Matches Grid */}
-          <div className="match-grid-container">
-            <div className="match-grid-header">
-              <h2 className="match-grid-title">
-                <span>🎬</span>
-                Other Matches
-              </h2>
-              <div className="match-grid-count">
-                {filteredMatches.length} available
-              </div>
-            </div>
-            
-            {/* Sport Filter for Other Matches */}
-            <div style={{ marginBottom: 'var(--space-md)' }}>
-              <div className="sport-filter-bar">
-                <div style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  gap: 'var(--space-sm)',
-                  marginBottom: 'var(--space-sm)',
-                  color: 'var(--secondary-text)',
-                  fontSize: '0.875rem',
-                  fontWeight: '500'
-                }}>
-                  <span>⚽</span>
-                  <span>Filter by sport:</span>
-                </div>
-                
-                <div style={{ 
-                  display: 'flex', 
-                  gap: 'var(--space-sm)', 
-                  flexWrap: 'wrap',
-                  alignItems: 'center'
-                }}>
-                  {[
-                    { id: 'all_sports', label: 'All Sports', icon: '🏆' },
-                    { id: 'football', label: 'Football', icon: '⚽' },
-                    { id: 'basketball', label: 'Basketball', icon: '🏀' },
-                    { id: 'tennis', label: 'Tennis', icon: '🎾' }
-                  ].map((option) => (
-                    <button 
-                      key={option.id}
-                      className={`sport-filter-btn ${selectedSportFilter === option.id ? 'active' : ''}`}
-                      onClick={() => setSelectedSportFilter(option.id)}
-                      aria-label={`Filter by ${option.label}`}
-                      title={`Show ${option.label.toLowerCase()} matches`}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 'var(--space-xs)',
-                        position: 'relative'
-                      }}
-                    >
-                      <span style={{ fontSize: '0.875rem' }}>{option.icon}</span>
-                      <span>{option.label}</span>
-                    </button>
-                  ))}
+          {/* Other Matches Section - Redesigned */}
+          <div className="other-matches-section">
+            <div className="other-matches-header">
+              <div className="section-title-group">
+                <h2 className="section-title">More Matches</h2>
+                <div className="matches-count-badge">
+                  {filteredMatches.length}
                 </div>
               </div>
-            </div>
-
-            {/* Status Filter for Other Matches */}
-            <div style={{ marginBottom: 'var(--space-md)' }}>
-              <div className="status-filter-bar">
-                <div style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  gap: 'var(--space-sm)',
-                  marginBottom: 'var(--space-sm)',
-                  color: 'var(--secondary-text)',
-                  fontSize: '0.875rem',
-                  fontWeight: '500'
-                }}>
-                  <span>📡</span>
-                  <span>Filter by status:</span>
+              
+              {/* Subtle Filter Controls */}
+              <div className="filter-controls">
+                <div className="filter-group">
+                  <span className="filter-label">Sport</span>
+                  <div className="filter-options">
+                    {[
+                      { id: 'all_sports', label: 'All', icon: '🏆' },
+                      { id: 'football', label: 'Football', icon: '⚽' },
+                      { id: 'basketball', label: 'Basketball', icon: '🏀' },
+                      { id: 'tennis', label: 'Tennis', icon: '🎾' }
+                    ].map((option) => (
+                      <button 
+                        key={option.id}
+                        className={`filter-option ${selectedSportFilter === option.id ? 'active' : ''}`}
+                        onClick={() => setSelectedSportFilter(option.id)}
+                        aria-label={`Filter by ${option.label}`}
+                      >
+                        <span className="filter-icon">{option.icon}</span>
+                        <span className="filter-text">{option.label}</span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
                 
-                <div style={{ 
-                  display: 'flex', 
-                  gap: 'var(--space-sm)', 
-                  flexWrap: 'wrap',
-                  alignItems: 'center'
-                }}>
-                  {[
-                    { id: 'all_status', label: 'All', icon: '📺' },
-                    { id: 'live', label: 'Live', icon: '🔴' },
-                    { id: 'recorded', label: 'Recorded', icon: '📹' }
-                  ].map((option) => (
-                    <button 
-                      key={option.id}
-                      className={`sport-filter-btn ${selectedStatusFilter === option.id ? 'active' : ''}`}
-                      onClick={() => setSelectedStatusFilter(option.id)}
-                      aria-label={`Filter by ${option.label}`}
-                      title={`Show ${option.label.toLowerCase()} matches`}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 'var(--space-xs)',
-                        position: 'relative'
-                      }}
-                    >
-                      <span style={{ fontSize: '0.875rem' }}>{option.icon}</span>
-                      <span>{option.label}</span>
-                    </button>
-                  ))}
+                <div className="filter-group">
+                  <span className="filter-label">Status</span>
+                  <div className="filter-options">
+                    {[
+                      { id: 'all_status', label: 'All', icon: '📺' },
+                      { id: 'live', label: 'Live', icon: '🔴' },
+                      { id: 'recorded', label: 'Recorded', icon: '📹' }
+                    ].map((option) => (
+                      <button 
+                        key={option.id}
+                        className={`filter-option ${selectedStatusFilter === option.id ? 'active' : ''}`}
+                        onClick={() => setSelectedStatusFilter(option.id)}
+                        aria-label={`Filter by ${option.label}`}
+                      >
+                        <span className="filter-icon">{option.icon}</span>
+                        <span className="filter-text">{option.label}</span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
             
+            {/* Matches Content */}
             {filteredMatches.length === 0 ? (
-              <div style={{
-                textAlign: 'center',
-                padding: 'var(--space-xl)',
-                color: 'var(--secondary-text)',
-                background: 'var(--glass-background)',
-                borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--border-color)'
-              }}>
-                <span style={{ fontSize: '2rem', marginBottom: 'var(--space-md)', display: 'block' }}>🔍</span>
-                <p>No matches found for the selected filter.</p>
+              <div className="no-matches-message">
+                <div className="no-matches-icon">🔍</div>
+                <p className="no-matches-text">No matches found for the selected filters</p>
                 <button 
+                  className="reset-filters-btn"
                   onClick={() => {
                     setSelectedStatusFilter('all_status');
                     setSelectedSportFilter('all_sports');
-                  }}
-                  style={{
-                    background: 'var(--accent-blue)',
-                    color: 'white',
-                    border: 'none',
-                    padding: 'var(--space-sm) var(--space-md)',
-                    borderRadius: 'var(--radius-md)',
-                    cursor: 'pointer',
-                    marginTop: 'var(--space-sm)'
                   }}
                 >
                   Show All Matches
                 </button>
               </div>
             ) : (
-              <>
-                {/* Thumbnail Grid */}
-                <div className="matches-grid">
-                  {filteredMatches.map((match, index) => (
-                    <MatchThumbnailCard
-                      key={match.id}
-                      match={match}
-                      isActive={match.id === currentMatchId}
-                      onMatchSelect={handleMatchSelect}
-                      index={index}
-                    />
-                  ))}
-                </div>
-              </>
+              <div className="matches-grid">
+                {filteredMatches.map((match, index) => (
+                  <MatchThumbnailCard
+                    key={match.id}
+                    match={match}
+                    isActive={match.id === currentMatchId}
+                    onMatchSelect={handleMatchSelect}
+                    index={index}
+                  />
+                ))}
+              </div>
             )}
           </div>
         </div>

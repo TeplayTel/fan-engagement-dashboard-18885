@@ -69,15 +69,12 @@ function MatchThumbnailCard({ match, isActive, onMatchSelect, index }) {
 
   return (
     <article 
-      className={`match-thumbnail-card ${isActive ? 'active' : ''} ${isLoading ? 'loading' : ''}`}
+      className={`match-thumbnail-card-elegant ${isActive ? 'active' : ''} ${isLoading ? 'loading' : ''}`}
       onClick={handleCardClick}
       style={{
         animationDelay: `${index * 0.1}s`,
         cursor: isActive ? 'default' : 'pointer',
-        opacity: isLoading ? 0.7 : 1,
-        transform: isActive ? 'scale(0.95)' : 'scale(1)',
-        transition: 'all 0.2s ease-in-out',
-        border: isActive ? '2px solid #00ff88' : '1px solid #404040'
+        opacity: isLoading ? 0.6 : (isActive ? 0.8 : 1),
       }}
       role="button"
       tabIndex={0}
@@ -86,20 +83,6 @@ function MatchThumbnailCard({ match, isActive, onMatchSelect, index }) {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           handleCardClick();
-        }
-      }}
-      onMouseEnter={(e) => {
-        if (!isActive && !isLoading) {
-          e.currentTarget.style.transform = 'scale(1.05)';
-          e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.4)';
-          e.currentTarget.style.borderColor = '#ffffff';
-        }
-      }}
-      onMouseLeave={(e) => {
-        if (!isActive && !isLoading) {
-          e.currentTarget.style.transform = 'scale(1)';
-          e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.2)';
-          e.currentTarget.style.borderColor = '#404040';
         }
       }}
     >
