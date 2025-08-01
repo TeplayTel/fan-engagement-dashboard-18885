@@ -225,37 +225,240 @@ function VideoPlayer({ videoUrl, children, currentMatch }) {
         </div>
       )}
 
-      {/* Match info overlay for context */}
+      {/* Live Indicator - Top Left */}
+      {currentMatch && currentMatch.status === 'live' && !isVideoLoading && (
+        <div style={{
+          position: 'absolute',
+          top: '16px',
+          left: '16px',
+          background: '#e53e3e',
+          borderRadius: '12px',
+          padding: '4px 8px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '4px',
+          zIndex: 10,
+          transition: 'opacity 0.3s ease',
+          opacity: isHovered ? 0.7 : 1
+        }}>
+          <div style={{
+            width: '6px',
+            height: '6px',
+            background: 'white',
+            borderRadius: '50%',
+            animation: 'pulse 2s ease-in-out infinite'
+          }} />
+          <span style={{
+            fontSize: '10px',
+            fontWeight: '600',
+            color: 'white',
+            textTransform: 'uppercase',
+            letterSpacing: '0.05em'
+          }}>
+            LIVE
+          </span>
+        </div>
+      )}
+
+      {/* Team Badges - Bottom Left and Right */}
+      {currentMatch && !isVideoLoading && (
+        <>
+          {/* Home Team Badge - Bottom Left */}
+          <div style={{
+            position: 'absolute',
+            bottom: '80px',
+            left: '20px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '8px',
+            zIndex: 10,
+            transition: 'opacity 0.3s ease',
+            opacity: isHovered ? 0.8 : 1
+          }}>
+            <div style={{
+              width: '40px',
+              height: '40px',
+              borderRadius: '50%',
+              background: currentMatch.home.logo ? 'rgba(255, 255, 255, 0.9)' : 'linear-gradient(135deg, #e53e3e 0%, #ff6b7a 100%)',
+              border: '2px solid #e53e3e',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
+              overflow: 'hidden'
+            }}>
+              {currentMatch.home.logo ? (
+                <img 
+                  src={currentMatch.home.logo} 
+                  alt={currentMatch.home.name}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              ) : (
+                <span style={{
+                  fontSize: '14px',
+                  fontWeight: '800',
+                  color: 'white',
+                  textShadow: '0 1px 2px rgba(0, 0, 0, 0.5)'
+                }}>
+                  {currentMatch.home.name.substring(0, 3).toUpperCase()}
+                </span>
+              )}
+            </div>
+            <div style={{
+              background: 'rgba(0, 0, 0, 0.6)',
+              color: 'white',
+              padding: '4px 8px',
+              borderRadius: '4px',
+              fontSize: '10px',
+              fontWeight: '500',
+              maxWidth: '80px',
+              textAlign: 'center',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis'
+            }}>
+              {currentMatch.home.name}
+            </div>
+          </div>
+
+          {/* Away Team Badge - Bottom Right */}
+          <div style={{
+            position: 'absolute',
+            bottom: '80px',
+            right: '20px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '8px',
+            zIndex: 10,
+            transition: 'opacity 0.3s ease',
+            opacity: isHovered ? 0.8 : 1
+          }}>
+            <div style={{
+              width: '40px',
+              height: '40px',
+              borderRadius: '50%',
+              background: currentMatch.away.logo ? 'rgba(255, 255, 255, 0.9)' : 'linear-gradient(135deg, #3182ce 0%, #63b3ed 100%)',
+              border: '2px solid #3182ce',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
+              overflow: 'hidden'
+            }}>
+              {currentMatch.away.logo ? (
+                <img 
+                  src={currentMatch.away.logo} 
+                  alt={currentMatch.away.name}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              ) : (
+                <span style={{
+                  fontSize: '14px',
+                  fontWeight: '800',
+                  color: 'white',
+                  textShadow: '0 1px 2px rgba(0, 0, 0, 0.5)'
+                }}>
+                  {currentMatch.away.name.substring(0, 3).toUpperCase()}
+                </span>
+              )}
+            </div>
+            <div style={{
+              background: 'rgba(0, 0, 0, 0.6)',
+              color: 'white',
+              padding: '4px 8px',
+              borderRadius: '4px',
+              fontSize: '10px',
+              fontWeight: '500',
+              maxWidth: '80px',
+              textAlign: 'center',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis'
+            }}>
+              {currentMatch.away.name}
+            </div>
+          </div>
+
+          {/* Score Display - Bottom Center */}
+          <div style={{
+            position: 'absolute',
+            bottom: '80px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            background: 'rgba(0, 0, 0, 0.9)',
+            borderRadius: '20px',
+            padding: '8px 16px',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '2px',
+            zIndex: 10,
+            transition: 'opacity 0.3s ease',
+            opacity: isHovered ? 0.8 : 1
+          }}>
+            {currentMatch.time && (
+              <div style={{
+                fontSize: '10px',
+                fontWeight: '500',
+                color: 'rgba(255, 255, 255, 0.8)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em'
+              }}>
+                {currentMatch.time}
+              </div>
+            )}
+            <div style={{
+              fontSize: '16px',
+              fontWeight: '700',
+              color: 'white',
+              letterSpacing: '0.5px'
+            }}>
+              {currentMatch.score}
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* League info overlay for context */}
       {currentMatch && !isVideoLoading && (
         <div style={{
           position: 'absolute',
-          top: 'var(--space-md)',
-          left: 'var(--space-md)',
+          top: '16px',
+          right: '16px',
           background: 'rgba(0, 0, 0, 0.7)',
           color: 'white',
-          padding: 'var(--space-xs) var(--space-sm)',
-          borderRadius: 'var(--radius-md)',
-          fontSize: '0.75rem',
+          padding: '4px 8px',
+          borderRadius: '8px',
+          fontSize: '10px',
           fontWeight: '600',
           backdropFilter: 'blur(10px)',
           border: '1px solid rgba(255, 255, 255, 0.1)',
-          opacity: isHovered ? 0 : 0.8,
+          opacity: isHovered ? 0.7 : 0.9,
           transition: 'opacity 0.3s ease',
           zIndex: 10,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 'var(--space-xs)'
+          textTransform: 'uppercase',
+          letterSpacing: '0.05em'
         }}>
-          <span>📺</span>
-          <span>{currentMatch.league}</span>
-          {currentMatch.status === 'live' && (
-            <>
-              <span>•</span>
-              <span style={{ color: 'var(--accent-red)' }}>🔴 LIVE</span>
-            </>
-          )}
+          {currentMatch.league}
         </div>
       )}
+
+      {/* CSS for pulse animation */}
+      <style jsx>{`
+        @keyframes pulse {
+          0%, 100% { 
+            opacity: 1; 
+            transform: scale(1);
+          }
+          50% { 
+            opacity: 0.6; 
+            transform: scale(1.3);
+          }
+        }
+      `}</style>
     </div>
   );
 }
