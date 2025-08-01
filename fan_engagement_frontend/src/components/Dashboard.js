@@ -5,7 +5,8 @@ import MatchThumbnailCard from './MatchThumbnailCard';
 import EmojiReactions from './EmojiReactions';
 import Analytics from './Analytics';
 import VideoPlayer from './VideoPlayer';
-import NetflixStyleFilterBar from './NetflixStyleFilterBar';
+import GameFilterBar from './GameFilterBar';
+import VideoOptionsFilter from './VideoOptionsFilter';
 
 const placeholderMatches = [
   {
@@ -259,9 +260,9 @@ function Dashboard() {
       <Header currentMatch={currentMatch} />
       <main className="main-content">
         <div className="matches-container">
-          {/* Netflix-Style Filter Bar - Now above video player */}
-          <div className="sports-filter-section">
-            <NetflixStyleFilterBar
+          {/* Modern Game Filter Bar - Above video player */}
+          <div className="game-filter-section">
+            <GameFilterBar
               filters={[
                 // Sport filters
                 { id: 'all_sports', label: 'All Sports', icon: '🏆', category: 'sport' },
@@ -284,7 +285,7 @@ function Dashboard() {
                   setSelectedStatusFilter(filterId);
                 }
               }}
-              className="main-filter-bar"
+              className="game-filter-bar"
             />
           </div>
 
@@ -332,6 +333,34 @@ function Dashboard() {
                 ))}
               </div>
             )}
+            
+            {/* Modern Video Options Filter - Below matches section */}
+            <VideoOptionsFilter
+              options={[
+                { id: 'all_videos', label: 'All Videos', icon: '📺' },
+                { id: 'live_streams', label: 'Live Streams', icon: '🔴' },
+                { id: 'highlights', label: 'Highlights', icon: '⭐' },
+                { id: 'replays', label: 'Replays', icon: '🔄' },
+                { id: 'interviews', label: 'Interviews', icon: '🎤' }
+              ]}
+              selectedOption={selectedStatusFilter === 'live' ? 'live_streams' : 
+                            selectedStatusFilter === 'recorded' ? 'replays' : 'all_videos'}
+              onOptionChange={(optionId) => {
+                // Map video options to existing filter logic
+                switch(optionId) {
+                  case 'live_streams':
+                    setSelectedStatusFilter('live');
+                    break;
+                  case 'replays':
+                  case 'highlights':
+                    setSelectedStatusFilter('recorded');
+                    break;
+                  default:
+                    setSelectedStatusFilter('all_status');
+                }
+              }}
+              className="video-options-filter"
+            />
           </div>
         </div>
         <div className="right-panel">

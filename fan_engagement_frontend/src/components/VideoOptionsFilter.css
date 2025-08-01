@@ -1,0 +1,453 @@
+/* Modern Video Options Filter Styles - Dark Minimalistic Theme */
+.video-options-filter {
+  width: 100%;
+  background: rgba(26, 26, 26, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 18px;
+  padding: 20px;
+  margin-top: 24px;
+  box-shadow: 
+    0 6px 24px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.video-options-filter::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(255, 203, 5, 0.4) 25%, 
+    rgba(52, 168, 83, 0.4) 50%,
+    rgba(49, 130, 206, 0.4) 75%, 
+    transparent 100%);
+  border-radius: 18px 18px 0 0;
+}
+
+.video-options-filter:hover {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(26, 26, 26, 0.95);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* Header Section */
+.video-options-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.options-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.title-icon {
+  font-size: 20px;
+  opacity: 0.9;
+  transition: all 0.3s ease;
+}
+
+.title-text {
+  font-size: 18px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.95);
+  margin: 0;
+  letter-spacing: -0.02em;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.options-count {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  transition: all 0.3s ease;
+}
+
+/* Video Options Container */
+.video-options-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Individual Video Option - Modern Minimalistic Design */
+.video-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  background: rgba(45, 45, 45, 0.6);
+  border: 1.5px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  user-select: none;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  animation: optionSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+  min-height: 42px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes optionSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Modern subtle shimmer effect */
+.video-option::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.06), 
+    transparent);
+  transition: left 0.6s ease;
+}
+
+/* Option hover state */
+.video-option:hover:not(.active):not(.animating) {
+  background: rgba(55, 55, 55, 0.8);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.9);
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+.video-option:hover:not(.active):not(.animating)::before {
+  left: 100%;
+}
+
+/* Option focus state */
+.video-option:focus {
+  outline: 2px solid #FFCB05;
+  outline-offset: 2px;
+  background: rgba(55, 55, 55, 0.8);
+}
+
+/* Active option state - Accent Color Design */
+.video-option.active {
+  background: linear-gradient(135deg, 
+    #FFCB05 0%, 
+    #FFD700 50%,
+    #FFCB05 100%);
+  border-color: #FFD700;
+  color: #1a1a1a;
+  font-weight: 700;
+  box-shadow: 
+    0 0 0 1px rgba(255, 203, 5, 0.3),
+    0 6px 24px rgba(255, 203, 5, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+  position: relative;
+}
+
+.video-option.active::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.1) 0%, 
+    transparent 50%,
+    rgba(255, 255, 255, 0.05) 100%);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.video-option.active:hover {
+  background: linear-gradient(135deg, 
+    #FFD700 0%, 
+    #FFEB3B 50%,
+    #FFD700 100%);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 
+    0 0 0 1px rgba(255, 203, 5, 0.4),
+    0 8px 32px rgba(255, 203, 5, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+/* Option icon */
+.option-icon {
+  font-size: 16px;
+  opacity: 0.9;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+}
+
+.video-option:hover .option-icon {
+  transform: scale(1.1) rotate(3deg);
+  opacity: 1;
+}
+
+.video-option.active .option-icon {
+  opacity: 1;
+  filter: brightness(1.1) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+  color: #1a1a1a;
+}
+
+/* Option label */
+.option-label {
+  font-size: 14px;
+  font-weight: inherit;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: 0.01em;
+}
+
+.video-option.active .option-label {
+  color: #1a1a1a;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+}
+
+/* Active indicator - Modern Design */
+.option-indicator {
+  width: 8px;
+  height: 8px;
+  background: #1a1a1a;
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: accentPulse 2s ease-in-out infinite;
+  box-shadow: 
+    0 0 8px rgba(26, 26, 26, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+@keyframes accentPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 
+      0 0 8px rgba(26, 26, 26, 0.6),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.2);
+    box-shadow: 
+      0 0 12px rgba(26, 26, 26, 0.8),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  }
+}
+
+/* Animation state */
+.video-option.animating {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .video-options-filter {
+    padding: 16px;
+    border-radius: 16px;
+    margin-top: 20px;
+  }
+  
+  .video-options-header {
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+  }
+  
+  .title-text {
+    font-size: 16px;
+  }
+  
+  .title-icon {
+    font-size: 18px;
+  }
+  
+  .options-count {
+    padding: 4px 10px;
+    font-size: 11px;
+  }
+  
+  .video-options-container {
+    gap: 10px;
+  }
+  
+  .video-option {
+    padding: 12px 16px;
+    min-height: 38px;
+    font-size: 13px;
+    border-radius: 12px;
+  }
+  
+  .option-icon {
+    font-size: 14px;
+  }
+  
+  .option-label {
+    font-size: 13px;
+  }
+  
+  /* Reduce animations on mobile */
+  .video-option:hover:not(.active):not(.animating) {
+    transform: translateY(-1px) scale(1.01);
+  }
+  
+  .video-option.active:hover {
+    transform: translateY(-1px) scale(1.01);
+  }
+}
+
+@media (max-width: 480px) {
+  .video-options-filter {
+    padding: 14px;
+    margin-top: 16px;
+  }
+  
+  .video-options-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  
+  .video-options-container {
+    gap: 8px;
+    justify-content: center;
+  }
+  
+  .video-option {
+    padding: 10px 14px;
+    min-height: 36px;
+    font-size: 12px;
+    border-radius: 10px;
+  }
+  
+  .option-icon {
+    font-size: 12px;
+  }
+  
+  .option-label {
+    font-size: 12px;
+  }
+  
+  .option-indicator {
+    width: 6px;
+    height: 6px;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .video-option:hover:not(.active):not(.animating) {
+    background: rgba(45, 45, 45, 0.6);
+    transform: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .video-option.active:hover {
+    background: linear-gradient(135deg, 
+      #FFCB05 0%, 
+      #FFD700 50%,
+      #FFCB05 100%);
+    transform: translateY(-1px);
+  }
+  
+  /* Add active touch feedback */
+  .video-option:active {
+    transform: scale(0.97);
+    transition: transform 0.1s ease;
+  }
+  
+  .video-option.active:active {
+    transform: translateY(-1px) scale(0.97);
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .video-option {
+    border-width: 2px;
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(45, 45, 45, 1);
+  }
+  
+  .video-option.active {
+    background: #FFCB05;
+    border-color: #1a1a1a;
+    border-width: 2px;
+  }
+  
+  .option-indicator {
+    background: #1a1a1a;
+    box-shadow: 0 0 8px #1a1a1a;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .video-option,
+  .option-icon,
+  .option-label {
+    transition: none;
+    animation: none;
+  }
+  
+  .video-option:hover:not(.active):not(.animating) {
+    transform: none;
+  }
+  
+  .video-option.active:hover {
+    transform: none;
+  }
+  
+  @keyframes accentPulse {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes optionSlideIn {
+    from {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+}
