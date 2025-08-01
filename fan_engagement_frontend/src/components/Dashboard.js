@@ -96,6 +96,7 @@ function Dashboard() {
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedStatusFilter, setSelectedStatusFilter] = useState('all_status');
+  const [selectedSportFilter, setSelectedSportFilter] = useState('all_sports');
   const [currentMatchId, setCurrentMatchId] = useState(1); // Default to first match
   const [isSwapping, setIsSwapping] = useState(false);
 
@@ -113,9 +114,9 @@ function Dashboard() {
   const currentMatch = matches.find(match => match.id === currentMatchId);
   const otherMatches = matches.filter(match => match.id !== currentMatchId);
 
-  // Filter other matches by status only
+  // Filter other matches by status and sport
   const filteredMatches = otherMatches.filter(match => {
-    // Status filter (live/recorded) - only filtering criteria now
+    // Status filter (live/recorded)
     let statusMatch = true;
     if (selectedStatusFilter === 'live') {
       statusMatch = match.status === 'live' || match.videoType === 'live';
@@ -123,7 +124,13 @@ function Dashboard() {
       statusMatch = match.status === 'finished' || match.videoType === 'recorded';
     }
 
-    return statusMatch;
+    // Sport filter
+    let sportMatch = true;
+    if (selectedSportFilter !== 'all_sports') {
+      sportMatch = match.sport === selectedSportFilter;
+    }
+
+    return statusMatch && sportMatch;
   });
 
   // PUBLIC_INTERFACE
@@ -270,6 +277,55 @@ function Dashboard() {
               </div>
             </div>
             
+            {/* Sport Filter for Other Matches */}
+            <div style={{ marginBottom: 'var(--space-md)' }}>
+              <div className="sport-filter-bar">
+                <div style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: 'var(--space-sm)',
+                  marginBottom: 'var(--space-sm)',
+                  color: 'var(--secondary-text)',
+                  fontSize: '0.875rem',
+                  fontWeight: '500'
+                }}>
+                  <span>⚽</span>
+                  <span>Filter by sport:</span>
+                </div>
+                
+                <div style={{ 
+                  display: 'flex', 
+                  gap: 'var(--space-sm)', 
+                  flexWrap: 'wrap',
+                  alignItems: 'center'
+                }}>
+                  {[
+                    { id: 'all_sports', label: 'All Sports', icon: '🏆' },
+                    { id: 'football', label: 'Football', icon: '⚽' },
+                    { id: 'basketball', label: 'Basketball', icon: '🏀' },
+                    { id: 'tennis', label: 'Tennis', icon: '🎾' }
+                  ].map((option) => (
+                    <button 
+                      key={option.id}
+                      className={`sport-filter-btn ${selectedSportFilter === option.id ? 'active' : ''}`}
+                      onClick={() => setSelectedSportFilter(option.id)}
+                      aria-label={`Filter by ${option.label}`}
+                      title={`Show ${option.label.toLowerCase()} matches`}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 'var(--space-xs)',
+                        position: 'relative'
+                      }}
+                    >
+                      <span style={{ fontSize: '0.875rem' }}>{option.icon}</span>
+                      <span>{option.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
             {/* Status Filter for Other Matches */}
             <div style={{ marginBottom: 'var(--space-md)' }}>
               <div className="status-filter-bar">
@@ -332,6 +388,7 @@ function Dashboard() {
                 <button 
                   onClick={() => {
                     setSelectedStatusFilter('all_status');
+                    setSelectedSportFilter('all_sports');
                   }}
                   style={{
                     background: 'var(--accent-blue)',
