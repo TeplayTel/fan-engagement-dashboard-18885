@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 // PUBLIC_INTERFACE
 function MatchThumbnailCard({ match, isActive, onMatchSelect, index }) {
   /**
-   * Thumbnail card component for displaying matches in a grid layout.
-   * Based on the design notes for responsive grid cards with hover effects.
+   * Redesigned thumbnail card component matching the Meta design reference.
+   * Features clean, minimalist layout with team logos and yellow "Watch Now" button.
    * @param {object} match - The match data
    * @param {boolean} isActive - Whether this match is currently playing
    * @param {function} onMatchSelect - Callback when card is clicked
@@ -25,56 +25,33 @@ function MatchThumbnailCard({ match, isActive, onMatchSelect, index }) {
     }, 500);
   };
 
-  const getStatusIndicator = (status, time) => {
-    const indicators = {
-      live: { text: 'LIVE', color: '#ff0000', icon: '🔴' },
-      halftime: { text: 'HT', color: '#ffa502', icon: '⏸️' },
-      finished: { text: 'FT', color: '#666666', icon: '✓' },
-      upcoming: { text: 'UP', color: '#3742fa', icon: '⏰' }
+  // Generate team logo fallback with team colors
+  const getTeamLogoFallback = (teamName, isHome = true) => {
+    const teamColors = {
+      'Arsenal': '#DC2626',
+      'Chelsea': '#1E40AF',
+      'Real Madrid': '#FFFFFF',
+      'Barcelona': '#DC2626',
+      'AC Milan': '#DC2626',
+      'Inter Milan': '#1E40AF',
+      'Lakers': '#552583',
+      'Warriors': '#1D4ED8',
+      'PSG': '#1E40AF',
+      'Lyon': '#1E40AF'
     };
     
-    const indicator = indicators[status] || indicators.upcoming;
-    
-    return (
-      <div className="status-indicator" style={{
-        background: indicator.color,
-        color: 'white',
-        padding: '4px 8px',
-        borderRadius: '4px',
-        fontSize: '0.75rem',
-        fontWeight: '700',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '4px',
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
-        animation: status === 'live' ? 'pulse-glow 2s ease-in-out infinite alternate' : 'none'
-      }}>
-        <span>{indicator.icon}</span>
-        <span>{status === 'live' ? `${indicator.text} ${time}` : indicator.text}</span>
-      </div>
-    );
-  };
-
-  // Generate thumbnail placeholder based on teams
-  const generateThumbnail = (match) => {
-    const colors = [
-      'linear-gradient(135deg, #FF6B35, #F7931E)',
-      'linear-gradient(135deg, #003F7F, #0066CC)', 
-      'linear-gradient(135deg, #FB090B, #FF4757)',
-      'linear-gradient(135deg, #0068A8, #00A8FF)',
-      'linear-gradient(135deg, #A50044, #FF3366)'
-    ];
-    return colors[match.id % colors.length];
+    const color = teamColors[teamName] || (isHome ? '#DC2626' : '#1E40AF');
+    return color;
   };
 
   return (
     <article 
-      className={`match-thumbnail-card-elegant ${isActive ? 'active' : ''} ${isLoading ? 'loading' : ''}`}
+      className="meta-match-card"
       onClick={handleCardClick}
       style={{
         animationDelay: `${index * 0.1}s`,
         cursor: isActive ? 'default' : 'pointer',
-        opacity: isLoading ? 0.6 : (isActive ? 0.8 : 1),
+        opacity: isLoading ? 0.6 : 1,
       }}
       role="button"
       tabIndex={0}
@@ -86,81 +63,365 @@ function MatchThumbnailCard({ match, isActive, onMatchSelect, index }) {
         }
       }}
     >
-      {/* Thumbnail Image/Background */}
-      <div 
-        className="card-thumbnail"
-        style={{
-          background: generateThumbnail(match),
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      >
-        {/* Overlay with match info */}
-        <div className="card-overlay">
-          {/* Status badge */}
-          <div className="card-status">
-            {getStatusIndicator(match.status, match.time)}
-          </div>
-
-          {/* Active match indicator */}
-          {isActive && (
-            <div className="now-playing-badge">
-              <span className="now-playing-icon">▶️</span>
-              <span className="now-playing-text">NOW PLAYING</span>
-            </div>
-          )}
-
-          {/* Loading overlay */}
-          {isLoading && (
-            <div className="loading-overlay">
-              <div className="loading-spinner"></div>
-              <span>Loading...</span>
-            </div>
-          )}
-        </div>
-
-        {/* Teams display at bottom */}
-        <div className="card-teams">
-          <div className="teams-container">
-            <div className="team-mini">
-              {match.home.logo && (
-                <img 
-                  src={match.home.logo} 
-                  alt=""
-                  className="team-mini-logo"
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                  }}
-                />
-              )}
-              <span className="team-mini-name">{match.home.name}</span>
-            </div>
-            
-            <div className="score-mini">
-              <span className="score-mini-text">{match.score}</span>
-            </div>
-            
-            <div className="team-mini">
-              <span className="team-mini-name">{match.away.name}</span>
-              {match.away.logo && (
-                <img 
-                  src={match.away.logo} 
-                  alt=""
-                  className="team-mini-logo"
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                  }}
-                />
-              )}
+      {/* Card Background - Clean White */}
+      <div className="meta-card-background">
+        {/* Team Logos Section */}
+        <div className="meta-teams-section">
+          {/* Home Team Logo */}
+          <div className="meta-team-logo-container">
+            {match.home.logo ? (
+              <img 
+                src={match.home.logo} 
+                alt={match.home.name}
+                className="meta-team-logo"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'flex';
+                }}
+              />
+            ) : null}
+            <div 
+              className="meta-team-logo-fallback"
+              style={{
+                backgroundColor: getTeamLogoFallback(match.home.name, true),
+                display: match.home.logo ? 'none' : 'flex'
+              }}
+            >
+              {match.home.name.substring(0, 3).toUpperCase()}
             </div>
           </div>
-          
-          {/* League info */}
-          <div className="league-mini">
-            <span className="league-mini-text">{match.league}</span>
+
+          {/* VS Text */}
+          <div className="meta-vs-text">VS</div>
+
+          {/* Away Team Logo */}
+          <div className="meta-team-logo-container">
+            {match.away.logo ? (
+              <img 
+                src={match.away.logo} 
+                alt={match.away.name}
+                className="meta-team-logo"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'flex';
+                }}
+              />
+            ) : null}
+            <div 
+              className="meta-team-logo-fallback"
+              style={{
+                backgroundColor: getTeamLogoFallback(match.away.name, false),
+                display: match.away.logo ? 'none' : 'flex'
+              }}
+            >
+              {match.away.name.substring(0, 3).toUpperCase()}
+            </div>
           </div>
         </div>
+
+        {/* Watch Now Button */}
+        <div className="meta-action-section">
+          <button 
+            className="meta-watch-button"
+            disabled={isActive || isLoading}
+          >
+            {isActive ? 'NOW PLAYING' : isLoading ? 'Loading...' : 'Watch Now'}
+          </button>
+        </div>
+
+        {/* Status Indicator */}
+        {match.status === 'live' && (
+          <div className="meta-live-indicator">
+            <div className="meta-live-dot"></div>
+            <span>LIVE</span>
+          </div>
+        )}
+
+        {/* Active Indicator */}
+        {isActive && (
+          <div className="meta-active-indicator">
+            <span>▶ PLAYING</span>
+          </div>
+        )}
+
+        {/* Loading Overlay */}
+        {isLoading && (
+          <div className="meta-loading-overlay">
+            <div className="meta-loading-spinner"></div>
+            <span>Switching match...</span>
+          </div>
+        )}
       </div>
+
+      {/* CSS Styles */}
+      <style jsx>{`
+        .meta-match-card {
+          position: relative;
+          border-radius: 12px;
+          overflow: hidden;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          animation: fadeIn 0.6s ease-out both;
+          aspect-ratio: 3 / 2;
+          border: 1px solid #E5E7EB;
+          background: #FFFFFF;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .meta-match-card:hover:not(.active) {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          border-color: #D1D5DB;
+        }
+
+        .meta-match-card:focus {
+          outline: 2px solid #3B82F6;
+          outline-offset: 2px;
+        }
+
+        .meta-card-background {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          padding: 20px;
+          background: #FFFFFF;
+          position: relative;
+        }
+
+        .meta-teams-section {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 24px;
+          flex: 1;
+          margin-bottom: 16px;
+        }
+
+        .meta-team-logo-container {
+          position: relative;
+          width: 48px;
+          height: 48px;
+        }
+
+        .meta-team-logo {
+          width: 48px;
+          height: 48px;
+          border-radius: 50%;
+          object-fit: cover;
+          border: 2px solid #F3F4F6;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .meta-team-logo-fallback {
+          width: 48px;
+          height: 48px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          font-size: 12px;
+          font-weight: 700;
+          border: 2px solid #F3F4F6;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .meta-vs-text {
+          font-size: 14px;
+          font-weight: 600;
+          color: #6B7280;
+          letter-spacing: 0.05em;
+        }
+
+        .meta-action-section {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .meta-watch-button {
+          background-color: #FBBF24;
+          color: #1F2937;
+          border: none;
+          padding: 8px 24px;
+          border-radius: 6px;
+          font-size: 14px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+          min-width: 100px;
+        }
+
+        .meta-watch-button:hover:not(:disabled) {
+          background-color: #F59E0B;
+          transform: translateY(-1px);
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        }
+
+        .meta-watch-button:disabled {
+          background-color: #9CA3AF;
+          color: #FFFFFF;
+          cursor: not-allowed;
+          transform: none;
+        }
+
+        .meta-live-indicator {
+          position: absolute;
+          top: 12px;
+          right: 12px;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          background: #DC2626;
+          color: white;
+          padding: 4px 8px;
+          border-radius: 4px;
+          font-size: 10px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+
+        .meta-live-dot {
+          width: 6px;
+          height: 6px;
+          background: white;
+          border-radius: 50%;
+          animation: pulse 2s ease-in-out infinite;
+        }
+
+        .meta-active-indicator {
+          position: absolute;
+          top: 12px;
+          left: 12px;
+          background: #10B981;
+          color: white;
+          padding: 4px 8px;
+          border-radius: 4px;
+          font-size: 10px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+
+        .meta-loading-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(255, 255, 255, 0.9);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+          color: #374151;
+          font-size: 12px;
+          font-weight: 600;
+          backdrop-filter: blur(2px);
+        }
+
+        .meta-loading-spinner {
+          width: 20px;
+          height: 20px;
+          border: 2px solid #E5E7EB;
+          border-top: 2px solid #3B82F6;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+        }
+
+        @keyframes pulse {
+          0%, 100% { 
+            opacity: 1; 
+            transform: scale(1);
+          }
+          50% { 
+            opacity: 0.5; 
+            transform: scale(1.2);
+          }
+        }
+
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+          .meta-teams-section {
+            gap: 16px;
+          }
+
+          .meta-team-logo-container {
+            width: 40px;
+            height: 40px;
+          }
+
+          .meta-team-logo,
+          .meta-team-logo-fallback {
+            width: 40px;
+            height: 40px;
+            font-size: 10px;
+          }
+
+          .meta-watch-button {
+            padding: 6px 20px;
+            font-size: 12px;
+            min-width: 80px;
+          }
+
+          .meta-card-background {
+            padding: 16px;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .meta-teams-section {
+            gap: 12px;
+          }
+
+          .meta-team-logo-container {
+            width: 36px;
+            height: 36px;
+          }
+
+          .meta-team-logo,
+          .meta-team-logo-fallback {
+            width: 36px;
+            height: 36px;
+            font-size: 9px;
+          }
+
+          .meta-vs-text {
+            font-size: 12px;
+          }
+
+          .meta-watch-button {
+            padding: 5px 16px;
+            font-size: 11px;
+            min-width: 70px;
+          }
+
+          .meta-card-background {
+            padding: 12px;
+          }
+        }
+      `}</style>
     </article>
   );
 }

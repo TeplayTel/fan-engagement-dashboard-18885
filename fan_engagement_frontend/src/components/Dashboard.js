@@ -18,7 +18,7 @@ const placeholderMatches = [
     score: '2 - 1',
     status: 'live',
     videoType: 'live',
-    videoUrl: 'https://www.youtube.com/embed/fSNya223rHQ?autoplay=1&mute=1',
+    videoUrl: 'https://www.youtube.com/embed/fSNya223rHQ?autoplay=1&mute=1&rel=0&modestbranding=1',
     thumbnail: 'https://via.placeholder.com/280x160/FF6B35/FFFFFF?text=ARS+vs+CHE'
   },
   {
@@ -254,7 +254,7 @@ function Dashboard() {
         <div className="matches-container">
           {/* Video Player with current match */}
           <VideoPlayer 
-            videoUrl={currentMatch?.videoUrl || 'https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1&mute=1'}
+            videoUrl={currentMatch?.videoUrl || 'https://www.youtube.com/embed/fSNya223rHQ?autoplay=1&mute=1&rel=0&modestbranding=1'}
             currentMatch={currentMatch}
           >
             <EmojiReactions currentMatch={currentMatch} />

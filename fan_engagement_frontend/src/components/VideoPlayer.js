@@ -13,7 +13,7 @@ function VideoPlayer({ videoUrl, children, currentMatch }) {
   const [isHovered, setIsHovered] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [touchActive, setTouchActive] = useState(false);
-  const [currentVideoUrl, setCurrentVideoUrl] = useState(videoUrl);
+  const [currentVideoUrl, setCurrentVideoUrl] = useState(videoUrl || 'https://www.youtube.com/embed/fSNya223rHQ?autoplay=1&mute=1');
   const [isVideoLoading, setIsVideoLoading] = useState(false);
   const containerRef = useRef(null);
   const touchTimeoutRef = useRef(null);
