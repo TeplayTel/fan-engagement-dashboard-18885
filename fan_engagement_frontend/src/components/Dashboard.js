@@ -134,6 +134,13 @@ function Dashboard() {
     return statusMatch && sportMatch;
   });
 
+  // Filter matches for "More Matches" section to only show recorded or live
+  const moreMatches = otherMatches.filter(match => {
+    return match.status === 'recorded' || match.status === 'live' || 
+           match.status === 'finished' || match.videoType === 'recorded' || 
+           match.videoType === 'live';
+  });
+
   // PUBLIC_INTERFACE
   /**
    * Handles match selection and swapping with the current match
@@ -295,26 +302,26 @@ function Dashboard() {
             onMatchSelect={handleMatchSelect}
           />
 
-          {/* Other Matches Section - Only showing ALL matches */}
+          {/* More Matches Section - Only showing recorded and live matches */}
           <div className="other-matches-section">
             <div className="other-matches-header">
               <div className="section-title-group">
                 <h2 className="section-title">More Matches</h2>
                 <div className="matches-count-badge">
-                  {otherMatches.length}
+                  {moreMatches.length}
                 </div>
               </div>
             </div>
             
-            {/* Matches Content - Show all other matches */}
-            {otherMatches.length === 0 ? (
+            {/* Matches Content - Show only recorded and live matches */}
+            {moreMatches.length === 0 ? (
               <div className="no-matches-message">
                 <div className="no-matches-icon">🔍</div>
-                <p className="no-matches-text">No other matches available</p>
+                <p className="no-matches-text">No recorded or live matches available</p>
               </div>
             ) : (
               <div className="matches-grid">
-                {otherMatches.map((match, index) => (
+                {moreMatches.map((match, index) => (
                   <MatchThumbnailCard
                     key={match.id}
                     match={match}
