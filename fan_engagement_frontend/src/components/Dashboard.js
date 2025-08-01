@@ -5,6 +5,7 @@ import MatchThumbnailCard from './MatchThumbnailCard';
 import EmojiReactions from './EmojiReactions';
 import Analytics from './Analytics';
 import VideoPlayer from './VideoPlayer';
+import NetflixStyleFilterBar from './NetflixStyleFilterBar';
 
 const placeholderMatches = [
   {
@@ -265,7 +266,7 @@ function Dashboard() {
             onMatchSelect={handleMatchSelect}
           />
 
-          {/* Other Matches Section - Redesigned */}
+          {/* Other Matches Section - Netflix-Style Filter Bar */}
           <div className="other-matches-section">
             <div className="other-matches-header">
               <div className="section-title-group">
@@ -275,51 +276,32 @@ function Dashboard() {
                 </div>
               </div>
               
-              {/* Subtle Filter Controls */}
-              <div className="filter-controls">
-                <div className="filter-group">
-                  <span className="filter-label">Sport</span>
-                  <div className="filter-options">
-                    {[
-                      { id: 'all_sports', label: 'All', icon: '🏆' },
-                      { id: 'football', label: 'Football', icon: '⚽' },
-                      { id: 'basketball', label: 'Basketball', icon: '🏀' },
-                      { id: 'tennis', label: 'Tennis', icon: '🎾' }
-                    ].map((option) => (
-                      <button 
-                        key={option.id}
-                        className={`filter-option ${selectedSportFilter === option.id ? 'active' : ''}`}
-                        onClick={() => setSelectedSportFilter(option.id)}
-                        aria-label={`Filter by ${option.label}`}
-                      >
-                        <span className="filter-icon">{option.icon}</span>
-                        <span className="filter-text">{option.label}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                
-                <div className="filter-group">
-                  <span className="filter-label">Status</span>
-                  <div className="filter-options">
-                    {[
-                      { id: 'all_status', label: 'All', icon: '📺' },
-                      { id: 'live', label: 'Live', icon: '🔴' },
-                      { id: 'recorded', label: 'Recorded', icon: '📹' }
-                    ].map((option) => (
-                      <button 
-                        key={option.id}
-                        className={`filter-option ${selectedStatusFilter === option.id ? 'active' : ''}`}
-                        onClick={() => setSelectedStatusFilter(option.id)}
-                        aria-label={`Filter by ${option.label}`}
-                      >
-                        <span className="filter-icon">{option.icon}</span>
-                        <span className="filter-text">{option.label}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              {/* Netflix-Style Filter Bar */}
+              <NetflixStyleFilterBar
+                filters={[
+                  // Sport filters
+                  { id: 'all_sports', label: 'All Sports', icon: '🏆', category: 'sport' },
+                  { id: 'football', label: 'Football', icon: '⚽', category: 'sport' },
+                  { id: 'basketball', label: 'Basketball', icon: '🏀', category: 'sport' },
+                  { id: 'tennis', label: 'Tennis', icon: '🎾', category: 'sport' },
+                  // Status filters
+                  { id: 'all_status', label: 'All Matches', icon: '📺', category: 'status' },
+                  { id: 'live', label: 'Live Now', icon: '🔴', category: 'status' },
+                  { id: 'recorded', label: 'Recorded', icon: '📹', category: 'status' }
+                ]}
+                selectedFilters={{
+                  sport: selectedSportFilter,
+                  status: selectedStatusFilter
+                }}
+                onFilterChange={(category, filterId) => {
+                  if (category === 'sport') {
+                    setSelectedSportFilter(filterId);
+                  } else if (category === 'status') {
+                    setSelectedStatusFilter(filterId);
+                  }
+                }}
+                className="other-matches-filter-bar"
+              />
             </div>
             
             {/* Matches Content */}

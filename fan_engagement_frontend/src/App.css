@@ -414,7 +414,7 @@ body {
 
 /* Removed match-analytics-card and match-cards-grid styles as we're removing bottom analytics sections */
 
-/* Other Matches Section - Redesigned with Subtle Elegance */
+/* Other Matches Section - Redesigned with Netflix-Style Filter Bar */
 .other-matches-section {
   margin-top: var(--space-6);
   padding: var(--space-6);
@@ -451,8 +451,67 @@ body {
 .other-matches-header {
   display: flex;
   flex-direction: column;
-  gap: var(--space-5);
+  gap: var(--space-4);
   margin-bottom: var(--space-6);
+}
+
+/* Netflix-style filter bar integration */
+.other-matches-filter-bar {
+  margin-top: var(--space-2);
+}
+
+.other-matches-filter-bar .filter-gradient-left {
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.05) 30%,
+    rgba(255, 255, 255, 0.03) 70%,
+    transparent 100%
+  );
+}
+
+.other-matches-filter-bar .filter-gradient-right {
+  background: linear-gradient(
+    to left,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.05) 30%,
+    rgba(255, 255, 255, 0.03) 70%,
+    transparent 100%
+  );
+}
+
+/* Enhanced filter chip styling for Other Matches section */
+.other-matches-filter-bar .filter-chip {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.other-matches-filter-bar .filter-chip:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.other-matches-filter-bar .filter-chip.active {
+  background: linear-gradient(135deg, 
+    var(--color-accent-blue) 0%, 
+    rgba(49, 130, 206, 0.85) 100%);
+  border-color: rgba(49, 130, 206, 0.8);
+  box-shadow: 
+    0 0 0 1px rgba(49, 130, 206, 0.25),
+    0 4px 12px rgba(49, 130, 206, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.other-matches-filter-bar .filter-chip.active:hover {
+  background: linear-gradient(135deg, 
+    rgba(49, 130, 206, 1.05) 0%, 
+    var(--color-accent-blue) 100%);
+  box-shadow: 
+    0 0 0 1px rgba(49, 130, 206, 0.35),
+    0 6px 16px rgba(49, 130, 206, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 .section-title-group {
@@ -534,97 +593,7 @@ body {
   transform: translateY(0);
 }
 
-/* Filter Controls - Subtle Design */
-.filter-controls {
-  display: flex;
-  gap: var(--space-6);
-  flex-wrap: wrap;
-}
 
-.filter-group {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.filter-label {
-  font-size: var(--text-sm);
-  font-weight: var(--font-medium);
-  color: var(--color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: var(--space-1);
-}
-
-.filter-options {
-  display: flex;
-  gap: var(--space-1);
-  align-items: center;
-}
-
-.filter-option {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: var(--radius-lg);
-  color: var(--color-text-secondary);
-  font-size: var(--text-sm);
-  font-weight: var(--font-medium);
-  font-family: var(--font-primary);
-  cursor: pointer;
-  transition: all var(--transition-base);
-  position: relative;
-  overflow: hidden;
-}
-
-.filter-option::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
-  transition: left var(--transition-slow);
-}
-
-.filter-option:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.12);
-  color: var(--color-text-primary);
-  transform: translateY(-1px);
-}
-
-.filter-option:hover::before {
-  left: 100%;
-}
-
-.filter-option.active {
-  background: linear-gradient(135deg, 
-    rgba(49, 130, 206, 0.12) 0%, 
-    rgba(49, 130, 206, 0.08) 100%);
-  border-color: rgba(49, 130, 206, 0.3);
-  color: var(--color-accent-blue);
-  box-shadow: 0 0 0 1px rgba(49, 130, 206, 0.1);
-}
-
-.filter-option.active .filter-icon {
-  filter: brightness(1.2);
-}
-
-.filter-icon {
-  font-size: var(--text-sm);
-  opacity: 0.8;
-  transition: all var(--transition-base);
-}
-
-.filter-text {
-  font-size: var(--text-sm);
-  font-weight: var(--font-medium);
-}
 
 /* Enhanced Matches Grid */
 .matches-grid {
@@ -1738,22 +1707,12 @@ body {
   }
   
   .other-matches-header {
-    gap: var(--space-4);
+    gap: var(--space-3);
   }
   
-  .filter-controls {
-    flex-direction: column;
-    gap: var(--space-4);
-  }
-  
-  .filter-options {
-    flex-wrap: wrap;
-    gap: var(--space-1);
-  }
-  
-  .filter-option {
-    padding: var(--space-2) var(--space-2);
-    font-size: var(--text-xs);
+  /* Netflix-style filter bar mobile styles */
+  .other-matches-filter-bar {
+    margin-top: var(--space-2);
   }
   
   .matches-grid {
@@ -1910,14 +1869,9 @@ body {
     font-size: var(--text-lg);
   }
   
-  .filter-option {
-    padding: var(--space-1) var(--space-2);
-    font-size: 0.7rem;
-    min-height: 28px;
-  }
-  
-  .filter-icon {
-    font-size: 0.7rem;
+  /* Netflix-style filter bar small mobile adjustments */
+  .other-matches-filter-bar {
+    margin-top: var(--space-1);
   }
   
   .matches-grid {
