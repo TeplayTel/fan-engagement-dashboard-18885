@@ -1,6 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import apiService from '../services/apiService';
 import useAuth from '../hooks/useAuth';
+
+// Fallback emojis with enhanced variety - moved outside component to avoid dependency issues
+const FALLBACK_EMOJIS = [
+  { id: 1, emoji: '❤️', name: 'heart' },
+  { id: 2, emoji: '🔥', name: 'fire' },
+  { id: 3, emoji: '😂', name: 'laugh' },
+  { id: 4, emoji: '😮', name: 'wow' },
+  { id: 5, emoji: '👍', name: 'thumbs_up' },
+  { id: 6, emoji: '⚽', name: 'soccer' },
+  { id: 7, emoji: '🎉', name: 'celebration' },
+  { id: 8, emoji: '😢', name: 'sad' }
+];
 
 // PUBLIC_INTERFACE
 function EmojiReactions({ currentMatch }) {
@@ -13,23 +25,13 @@ function EmojiReactions({ currentMatch }) {
   const [flyingEmojis, setFlyingEmojis] = useState([]);
   const [availableEmojis, setAvailableEmojis] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [feedbackMessage, setFeedbackMessage] = useState(null);
   const [feedbackType, setFeedbackType] = useState(null);
   const [recentClicks, setRecentClicks] = useState([]);
   const { isAuthenticated, getDemoToken, login, userToken } = useAuth();
 
-  // Fallback emojis with enhanced variety
-  const fallbackEmojis = [
-    { id: 1, emoji: '❤️', name: 'heart' },
-    { id: 2, emoji: '🔥', name: 'fire' },
-    { id: 3, emoji: '😂', name: 'laugh' },
-    { id: 4, emoji: '😮', name: 'wow' },
-    { id: 5, emoji: '👍', name: 'thumbs_up' },
-    { id: 6, emoji: '⚽', name: 'soccer' },
-    { id: 7, emoji: '🎉', name: 'celebration' },
-    { id: 8, emoji: '😢', name: 'sad' }
-  ];
+  // Memoize fallback emojis to prevent re-renders
+  const fallbackEmojis = useMemo(() => FALLBACK_EMOJIS, []);
 
   // Auto-login effect
   useEffect(() => {
@@ -46,7 +48,6 @@ function EmojiReactions({ currentMatch }) {
 
       try {
         setLoading(true);
-        setError(null);
         
         const emojisData = await apiService.getEmojis();
         
@@ -68,7 +69,6 @@ function EmojiReactions({ currentMatch }) {
         setAvailableEmojis(formattedEmojis.length > 0 ? formattedEmojis : fallbackEmojis);
       } catch (err) {
         console.warn('Failed to fetch emojis from API, using fallback:', err);
-        setError('Using local emojis');
         setAvailableEmojis(fallbackEmojis);
       } finally {
         setLoading(false);

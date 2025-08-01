@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import Dashboard from './components/Dashboard';
-import AdminDashboard from './components/AdminDashboard';
 
 // PUBLIC_INTERFACE
 function App() {
+  /**
+   * Main App component - Single Page Application for Fan Engagement
+   * Removed admin functionality as per requirements to focus on fan experience
+   */
   const [theme, setTheme] = useState('dark'); // Default to dark theme
-  const [activeTab, setActiveTab] = useState('viewer'); // 'viewer' or 'admin'
   const [isLoading, setIsLoading] = useState(true);
-  const [tabTransition, setTabTransition] = useState(false);
 
   // Effect to apply theme to document element
   useEffect(() => {
@@ -26,17 +27,6 @@ function App() {
   // PUBLIC_INTERFACE
   const toggleTheme = () => {
     setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
-  };
-
-  // Enhanced tab switching with transition
-  const handleTabSwitch = (tab) => {
-    if (tab !== activeTab) {
-      setTabTransition(true);
-      setTimeout(() => {
-        setActiveTab(tab);
-        setTabTransition(false);
-      }, 150);
-    }
   };
 
   if (isLoading) {
@@ -88,37 +78,8 @@ function App() {
           {theme === 'light' ? 'Dark' : 'Light'}
         </button>
       
-      <nav className="app-nav">
-        <button 
-          className={`nav-tab ${activeTab === 'viewer' ? 'active' : ''}`}
-          onClick={() => handleTabSwitch('viewer')}
-          aria-label="Switch to viewer dashboard"
-          title="View live matches and interact with emojis"
-        >
-          <span style={{ marginRight: '8px' }}>📺</span>
-          Viewer
-        </button>
-        <button 
-          className={`nav-tab ${activeTab === 'admin' ? 'active' : ''}`}
-          onClick={() => handleTabSwitch('admin')}
-          aria-label="Switch to admin dashboard"
-          title="Manage emojis and view analytics"
-        >
-          <span style={{ marginRight: '8px' }}>⚙️</span>
-          Admin
-        </button>
-      </nav>
-
-      <div 
-        className={`tab-content ${tabTransition ? 'transitioning' : ''}`}
-        style={{
-          opacity: tabTransition ? 0.5 : 1,
-          transform: tabTransition ? 'translateY(10px)' : 'translateY(0)',
-          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-        }}
-      >
-        {activeTab === 'viewer' ? <Dashboard /> : <AdminDashboard />}
-      </div>
+      {/* Single-page application - only Dashboard component */}
+      <Dashboard />
     </div>
   );
 }

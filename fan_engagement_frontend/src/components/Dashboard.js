@@ -12,10 +12,12 @@ const placeholderMatches = [
     id: 1,
     league: 'Premier League',
     time: '88\'',
-    home: { name: 'Arsenal', logo: 'https://via.placeholder.com/48/FF6B35/FFFFFF?text=ARS' },
+    sport: 'football',
+    home: { name: 'Arsenal', logo: null }, // Missing logo to test name display
     away: { name: 'Chelsea', logo: 'https://via.placeholder.com/48/003F7F/FFFFFF?text=CHE' },
     score: '2 - 1',
     status: 'live',
+    videoType: 'live',
     videoUrl: 'https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1&mute=1',
     thumbnail: 'https://via.placeholder.com/280x160/FF6B35/FFFFFF?text=ARS+vs+CHE'
   },
@@ -23,10 +25,12 @@ const placeholderMatches = [
     id: 2,
     league: 'La Liga',
     time: 'HT',
+    sport: 'football',
     home: { name: 'Real Madrid', logo: 'https://via.placeholder.com/48/FFFFFF/000000?text=RM' },
-    away: { name: 'Barcelona', logo: 'https://via.placeholder.com/48/A50044/FFFFFF?text=FCB' },
+    away: { name: 'Barcelona', logo: null }, // Missing logo to test name display
     score: '0 - 0',
     status: 'halftime',
+    videoType: 'live',
     videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1',
     thumbnail: 'https://via.placeholder.com/280x160/FFFFFF/000000?text=RM+vs+FCB'
   },
@@ -34,34 +38,53 @@ const placeholderMatches = [
     id: 3,
     league: 'Serie A',
     time: '23\'',
+    sport: 'football',
     home: { name: 'AC Milan', logo: 'https://via.placeholder.com/48/FB090B/FFFFFF?text=ACM' },
     away: { name: 'Inter Milan', logo: 'https://via.placeholder.com/48/0068A8/FFFFFF?text=INT' },
     score: '1 - 0',
     status: 'live',
+    videoType: 'live',
     videoUrl: 'https://www.youtube.com/embed/9bZkp7q19f0?autoplay=1&mute=1',
     thumbnail: 'https://via.placeholder.com/280x160/FB090B/FFFFFF?text=ACM+vs+INT'
   },
   {
     id: 4,
-    league: 'Bundesliga',
+    league: 'NBA',
     time: '67\'',
-    home: { name: 'Bayern Munich', logo: 'https://via.placeholder.com/48/DC143C/FFFFFF?text=FCB' },
-    away: { name: 'Borussia Dortmund', logo: 'https://via.placeholder.com/48/FDE100/000000?text=BVB' },
-    score: '3 - 2',
+    sport: 'basketball',
+    home: { name: 'Lakers', logo: 'https://via.placeholder.com/48/552583/FFFFFF?text=LAL' },
+    away: { name: 'Warriors', logo: null }, // Missing logo to test name display
+    score: '95 - 92',
     status: 'live',
+    videoType: 'live',
     videoUrl: 'https://www.youtube.com/embed/kJQP7kiw5Fk?autoplay=1&mute=1',
-    thumbnail: 'https://via.placeholder.com/280x160/DC143C/FFFFFF?text=FCB+vs+BVB'
+    thumbnail: 'https://via.placeholder.com/280x160/552583/FFFFFF?text=LAL+vs+GSW'
   },
   {
     id: 5,
-    league: 'Ligue 1',
+    league: 'Champions League',
     time: 'FT',
+    sport: 'football',
     home: { name: 'PSG', logo: 'https://via.placeholder.com/48/004170/FFFFFF?text=PSG' },
     away: { name: 'Lyon', logo: 'https://via.placeholder.com/48/1e3a8a/FFFFFF?text=OL' },
     score: '2 - 1',
     status: 'finished',
+    videoType: 'recorded',
     videoUrl: 'https://www.youtube.com/embed/hFcLyDb6niA?autoplay=1&mute=1',
     thumbnail: 'https://via.placeholder.com/280x160/004170/FFFFFF?text=PSG+vs+OL'
+  },
+  {
+    id: 6,
+    league: 'Wimbledon',
+    time: 'SET 3',
+    sport: 'tennis',
+    home: { name: 'Djokovic', logo: null },
+    away: { name: 'Nadal', logo: null },
+    score: '2 - 1',
+    status: 'live',
+    videoType: 'live',
+    videoUrl: 'https://www.youtube.com/embed/tennis123?autoplay=1&mute=1',
+    thumbnail: 'https://via.placeholder.com/280x160/228B22/FFFFFF?text=Tennis'
   }
 ];
 
@@ -73,7 +96,8 @@ function Dashboard() {
    */
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedFilter, setSelectedFilter] = useState('all');
+  const [selectedSportsFilter, setSelectedSportsFilter] = useState('all');
+  const [selectedStatusFilter, setSelectedStatusFilter] = useState('all_status');
   const [currentMatchId, setCurrentMatchId] = useState(1); // Default to first match
   const [isSwapping, setIsSwapping] = useState(false);
 
@@ -91,11 +115,23 @@ function Dashboard() {
   const currentMatch = matches.find(match => match.id === currentMatchId);
   const otherMatches = matches.filter(match => match.id !== currentMatchId);
 
+  // Filter other matches by sports type and status
   const filteredMatches = otherMatches.filter(match => {
-    if (selectedFilter === 'all') return true;
-    if (selectedFilter === 'live') return match.status === 'live';
-    if (selectedFilter === 'finished') return match.status === 'finished';
-    return match.league.toLowerCase().includes(selectedFilter.toLowerCase());
+    // Sports filter
+    let sportsMatch = true;
+    if (selectedSportsFilter !== 'all') {
+      sportsMatch = match.sport === selectedSportsFilter;
+    }
+
+    // Status filter (live/recorded)
+    let statusMatch = true;
+    if (selectedStatusFilter === 'live') {
+      statusMatch = match.status === 'live' || match.videoType === 'live';
+    } else if (selectedStatusFilter === 'recorded') {
+      statusMatch = match.status === 'finished' || match.videoType === 'recorded';
+    }
+
+    return sportsMatch && statusMatch;
   });
 
   // PUBLIC_INTERFACE
@@ -155,7 +191,10 @@ function Dashboard() {
     return (
       <div className="dashboard fade-in">
         <Header />
-        <SportsFilter selectedFilter={selectedFilter} onFilterChange={setSelectedFilter} />
+        <SportsFilter 
+          selectedFilter={selectedSportsFilter} 
+          onFilterChange={setSelectedSportsFilter} 
+        />
         <main className="main-content">
           <div className="matches-container">
             <VideoPlayer videoUrl="">
@@ -215,7 +254,10 @@ function Dashboard() {
   return (
     <div className="dashboard fade-in">
       <Header currentMatch={currentMatch} />
-      <SportsFilter selectedFilter={selectedFilter} onFilterChange={setSelectedFilter} />
+      <SportsFilter 
+        selectedFilter={selectedSportsFilter} 
+        onFilterChange={setSelectedSportsFilter} 
+      />
       <main className="main-content">
         <div className="matches-container">
           {/* Video Player with current match */}
@@ -244,6 +286,17 @@ function Dashboard() {
               </div>
             </div>
             
+            {/* Status Filter for Other Matches */}
+            <div style={{ marginBottom: 'var(--space-md)' }}>
+              <SportsFilter 
+                showStatusFilter={true}
+                selectedStatus={selectedStatusFilter}
+                onStatusChange={setSelectedStatusFilter}
+                selectedFilter={selectedSportsFilter}
+                onFilterChange={setSelectedSportsFilter}
+              />
+            </div>
+            
             {filteredMatches.length === 0 ? (
               <div style={{
                 textAlign: 'center',
@@ -256,7 +309,10 @@ function Dashboard() {
                 <span style={{ fontSize: '2rem', marginBottom: 'var(--space-md)', display: 'block' }}>🔍</span>
                 <p>No matches found for the selected filter.</p>
                 <button 
-                  onClick={() => setSelectedFilter('all')}
+                  onClick={() => {
+                    setSelectedSportsFilter('all');
+                    setSelectedStatusFilter('all_status');
+                  }}
                   style={{
                     background: 'var(--accent-blue)',
                     color: 'white',

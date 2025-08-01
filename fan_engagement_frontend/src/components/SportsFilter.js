@@ -1,30 +1,47 @@
 import React from 'react';
 
-const filterOptions = [
-  { id: 'all', label: 'All Sports', icon: '⚽', count: 3 },
-  { id: 'live', label: 'Live', icon: '🔴', count: 2 },
-  { id: 'premier league', label: 'Premier League', icon: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', count: 1 },
-  { id: 'la liga', label: 'La Liga', icon: '🇪🇸', count: 1 },
-  { id: 'serie a', label: 'Serie A', icon: '🇮🇹', count: 1 },
-  { id: 'champions league', label: 'Champions League', icon: '🏆', count: 0 }
+// Sports type filter options
+const sportsTypeFilters = [
+  { id: 'all', label: 'All Sports', icon: '⚽', type: 'sports' },
+  { id: 'football', label: 'Football', icon: '⚽', type: 'sports' },
+  { id: 'basketball', label: 'Basketball', icon: '🏀', type: 'sports' },
+  { id: 'tennis', label: 'Tennis', icon: '🎾', type: 'sports' },
+  { id: 'baseball', label: 'Baseball', icon: '⚾', type: 'sports' }
+];
+
+// Status filters (for Other Matches section)
+const statusFilters = [
+  { id: 'all_status', label: 'All', icon: '📺', type: 'status' },
+  { id: 'live', label: 'Live', icon: '🔴', type: 'status' },
+  { id: 'recorded', label: 'Recorded', icon: '📹', type: 'status' }
 ];
 
 // PUBLIC_INTERFACE
-function SportsFilter({ selectedFilter = 'all', onFilterChange }) {
+function SportsFilter({ selectedFilter = 'all', onFilterChange, showStatusFilter = false, selectedStatus = 'all_status', onStatusChange }) {
   /**
-   * Enhanced SportsFilter component for filtering matches by sport or status.
-   * @param {string} selectedFilter - Currently selected filter
-   * @param {function} onFilterChange - Callback for filter changes
+   * Enhanced SportsFilter component for filtering matches by sport type and status.
+   * @param {string} selectedFilter - Currently selected sports filter
+   * @param {function} onFilterChange - Callback for sports filter changes
+   * @param {boolean} showStatusFilter - Whether to show live/recorded status filter
+   * @param {string} selectedStatus - Currently selected status filter
+   * @param {function} onStatusChange - Callback for status filter changes
    */
   
-  const handleFilterClick = (filterId) => {
+  const handleSportsFilterClick = (filterId) => {
     if (onFilterChange) {
       onFilterChange(filterId);
     }
   };
 
+  const handleStatusFilterClick = (statusId) => {
+    if (onStatusChange) {
+      onStatusChange(statusId);
+    }
+  };
+
   return (
     <div className="sports-filter-bar">
+      {/* Sports Type Filter */}
       <div style={{ 
         display: 'flex', 
         alignItems: 'center', 
@@ -35,22 +52,23 @@ function SportsFilter({ selectedFilter = 'all', onFilterChange }) {
         fontWeight: '500'
       }}>
         <span>🔍</span>
-        <span>Filter matches:</span>
+        <span>Filter by sport:</span>
       </div>
       
       <div style={{ 
         display: 'flex', 
         gap: 'var(--space-sm)', 
         flexWrap: 'wrap',
-        alignItems: 'center'
+        alignItems: 'center',
+        marginBottom: showStatusFilter ? 'var(--space-md)' : '0'
       }}>
-        {filterOptions.map((option) => (
+        {sportsTypeFilters.map((option) => (
           <button 
             key={option.id}
             className={`filter-btn ${selectedFilter === option.id ? 'active' : ''}`}
-            onClick={() => handleFilterClick(option.id)}
+            onClick={() => handleSportsFilterClick(option.id)}
             aria-label={`Filter by ${option.label}`}
-            title={`Show ${option.label.toLowerCase()} matches (${option.count} available)`}
+            title={`Show ${option.label.toLowerCase()} matches`}
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -60,23 +78,53 @@ function SportsFilter({ selectedFilter = 'all', onFilterChange }) {
           >
             <span style={{ fontSize: '0.875rem' }}>{option.icon}</span>
             <span>{option.label}</span>
-            {option.count > 0 && (
-              <span style={{
-                background: selectedFilter === option.id ? 'rgba(255, 255, 255, 0.2)' : 'var(--accent-blue)',
-                color: 'white',
-                fontSize: '0.75rem',
-                padding: '2px 6px',
-                borderRadius: 'var(--radius-full)',
-                fontWeight: '600',
-                minWidth: '18px',
-                textAlign: 'center'
-              }}>
-                {option.count}
-              </span>
-            )}
           </button>
         ))}
       </div>
+
+      {/* Status Filter (Live/Recorded) - Only shown for Other Matches section */}
+      {showStatusFilter && (
+        <>
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: 'var(--space-sm)',
+            marginBottom: 'var(--space-sm)',
+            color: 'var(--secondary-text)',
+            fontSize: '0.875rem',
+            fontWeight: '500'
+          }}>
+            <span>📡</span>
+            <span>Filter by status:</span>
+          </div>
+          
+          <div style={{ 
+            display: 'flex', 
+            gap: 'var(--space-sm)', 
+            flexWrap: 'wrap',
+            alignItems: 'center'
+          }}>
+            {statusFilters.map((option) => (
+              <button 
+                key={option.id}
+                className={`filter-btn ${selectedStatus === option.id ? 'active' : ''}`}
+                onClick={() => handleStatusFilterClick(option.id)}
+                aria-label={`Filter by ${option.label}`}
+                title={`Show ${option.label.toLowerCase()} matches`}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 'var(--space-xs)',
+                  position: 'relative'
+                }}
+              >
+                <span style={{ fontSize: '0.875rem' }}>{option.icon}</span>
+                <span>{option.label}</span>
+              </button>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

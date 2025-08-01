@@ -293,16 +293,35 @@ function Analytics({ currentMatch }) {
                 gap: 'var(--space-xs)',
                 width: '100%'
               }}>
-                <img 
-                  src={currentMatch.home.logo} 
-                  alt={currentMatch.home.name}
-                  style={{
+                {currentMatch.home.logo ? (
+                  <img 
+                    src={currentMatch.home.logo} 
+                    alt={currentMatch.home.name}
+                    style={{
+                      width: '20px',
+                      height: '20px',
+                      borderRadius: '50%',
+                      flexShrink: 0
+                    }}
+                  />
+                ) : (
+                  <div style={{
                     width: '20px',
                     height: '20px',
                     borderRadius: '50%',
-                    flexShrink: 0
-                  }}
-                />
+                    background: 'var(--accent-blue)',
+                    color: 'white',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '0.6rem',
+                    fontWeight: '700',
+                    flexShrink: 0,
+                    textShadow: '0 1px 2px rgba(0, 0, 0, 0.5)'
+                  }}>
+                    {currentMatch.home.name.slice(0, 3).toUpperCase()}
+                  </div>
+                )}
                 <span style={{
                   fontSize: '0.8rem',
                   fontWeight: '600',
@@ -336,16 +355,35 @@ function Analytics({ currentMatch }) {
                 gap: 'var(--space-xs)',
                 width: '100%'
               }}>
-                <img 
-                  src={currentMatch.away.logo} 
-                  alt={currentMatch.away.name}
-                  style={{
+                {currentMatch.away.logo ? (
+                  <img 
+                    src={currentMatch.away.logo} 
+                    alt={currentMatch.away.name}
+                    style={{
+                      width: '20px',
+                      height: '20px',
+                      borderRadius: '50%',
+                      flexShrink: 0
+                    }}
+                  />
+                ) : (
+                  <div style={{
                     width: '20px',
                     height: '20px',
                     borderRadius: '50%',
-                    flexShrink: 0
-                  }}
-                />
+                    background: 'var(--accent-purple)',
+                    color: 'white',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '0.6rem',
+                    fontWeight: '700',
+                    flexShrink: 0,
+                    textShadow: '0 1px 2px rgba(0, 0, 0, 0.5)'
+                  }}>
+                    {currentMatch.away.name.slice(0, 3).toUpperCase()}
+                  </div>
+                )}
                 <span style={{
                   fontSize: '0.8rem',
                   fontWeight: '600',

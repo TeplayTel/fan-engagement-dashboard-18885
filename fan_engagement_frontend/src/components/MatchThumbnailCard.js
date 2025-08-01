@@ -12,7 +12,6 @@ function MatchThumbnailCard({ match, isActive, onMatchSelect, index }) {
    */
   
   const [isLoading, setIsLoading] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
 
   const handleCardClick = async () => {
     if (isActive || isLoading) return;
@@ -141,12 +140,17 @@ function MatchThumbnailCard({ match, isActive, onMatchSelect, index }) {
         <div className="card-teams">
           <div className="teams-container">
             <div className="team-mini">
-              <img 
-                src={match.home.logo} 
-                alt={match.home.name}
-                className="team-mini-logo"
-                onLoad={() => setImageLoaded(true)}
-              />
+              {match.home.logo ? (
+                <img 
+                  src={match.home.logo} 
+                  alt={match.home.name}
+                  className="team-mini-logo"
+                />
+              ) : (
+                <div className="team-mini-logo-fallback">
+                  {match.home.name.slice(0, 3).toUpperCase()}
+                </div>
+              )}
               <span className="team-mini-name">{match.home.name}</span>
             </div>
             
@@ -156,12 +160,17 @@ function MatchThumbnailCard({ match, isActive, onMatchSelect, index }) {
             
             <div className="team-mini">
               <span className="team-mini-name">{match.away.name}</span>
-              <img 
-                src={match.away.logo} 
-                alt={match.away.name}
-                className="team-mini-logo"
-                onLoad={() => setImageLoaded(true)}
-              />
+              {match.away.logo ? (
+                <img 
+                  src={match.away.logo} 
+                  alt={match.away.name}
+                  className="team-mini-logo"
+                />
+              ) : (
+                <div className="team-mini-logo-fallback">
+                  {match.away.name.slice(0, 3).toUpperCase()}
+                </div>
+              )}
             </div>
           </div>
           

@@ -1569,6 +1569,30 @@ body {
   transform: scale(1.05);
 }
 
+.team-logo-fallback {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 800;
+  border: 3px solid var(--border-color);
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-md);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  letter-spacing: -0.05em;
+}
+
+.team-logo-fallback:hover {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 20px rgba(57, 66, 250, 0.3);
+  transform: scale(1.05);
+}
+
 .team-info {
   flex: 1;
   min-width: 0;
@@ -1874,6 +1898,22 @@ body {
   object-fit: cover;
   border: 1px solid var(--border-color);
   flex-shrink: 0;
+}
+
+.team-mini-logo-fallback {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent-blue);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: 700;
+  border: 1px solid var(--border-color);
+  flex-shrink: 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .team-mini-name {
