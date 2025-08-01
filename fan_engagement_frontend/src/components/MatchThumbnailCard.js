@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 // PUBLIC_INTERFACE
 function MatchThumbnailCard({ match, isActive, onMatchSelect, index }) {
   /**
-   * Redesigned thumbnail card component matching the Meta design reference.
-   * Features clean, minimalist layout with team logos and yellow "Watch Now" button.
+   * Redesigned thumbnail card component with dark theme and consistent sizing.
+   * Features clean, minimalist layout with team logos and consistent card dimensions.
    * @param {object} match - The match data
    * @param {boolean} isActive - Whether this match is currently playing
    * @param {function} onMatchSelect - Callback when card is clicked
@@ -46,7 +46,7 @@ function MatchThumbnailCard({ match, isActive, onMatchSelect, index }) {
 
   return (
     <article 
-      className="meta-match-card"
+      className="dark-match-card"
       onClick={handleCardClick}
       style={{
         animationDelay: `${index * 0.1}s`,
@@ -63,17 +63,17 @@ function MatchThumbnailCard({ match, isActive, onMatchSelect, index }) {
         }
       }}
     >
-      {/* Card Background - Clean White */}
-      <div className="meta-card-background">
+      {/* Card Background - Dark Theme */}
+      <div className="dark-card-background">
         {/* Team Logos Section */}
-        <div className="meta-teams-section">
+        <div className="dark-teams-section">
           {/* Home Team Logo */}
-          <div className="meta-team-logo-container">
+          <div className="dark-team-logo-container">
             {match.home.logo ? (
               <img 
                 src={match.home.logo} 
                 alt={match.home.name}
-                className="meta-team-logo"
+                className="dark-team-logo"
                 onError={(e) => {
                   e.target.style.display = 'none';
                   e.target.nextSibling.style.display = 'flex';
@@ -81,7 +81,7 @@ function MatchThumbnailCard({ match, isActive, onMatchSelect, index }) {
               />
             ) : null}
             <div 
-              className="meta-team-logo-fallback"
+              className="dark-team-logo-fallback"
               style={{
                 backgroundColor: getTeamLogoFallback(match.home.name, true),
                 display: match.home.logo ? 'none' : 'flex'
@@ -92,15 +92,15 @@ function MatchThumbnailCard({ match, isActive, onMatchSelect, index }) {
           </div>
 
           {/* VS Text */}
-          <div className="meta-vs-text">VS</div>
+          <div className="dark-vs-text">VS</div>
 
           {/* Away Team Logo */}
-          <div className="meta-team-logo-container">
+          <div className="dark-team-logo-container">
             {match.away.logo ? (
               <img 
                 src={match.away.logo} 
                 alt={match.away.name}
-                className="meta-team-logo"
+                className="dark-team-logo"
                 onError={(e) => {
                   e.target.style.display = 'none';
                   e.target.nextSibling.style.display = 'flex';
@@ -108,7 +108,7 @@ function MatchThumbnailCard({ match, isActive, onMatchSelect, index }) {
               />
             ) : null}
             <div 
-              className="meta-team-logo-fallback"
+              className="dark-team-logo-fallback"
               style={{
                 backgroundColor: getTeamLogoFallback(match.away.name, false),
                 display: match.away.logo ? 'none' : 'flex'
@@ -120,9 +120,9 @@ function MatchThumbnailCard({ match, isActive, onMatchSelect, index }) {
         </div>
 
         {/* Watch Now Button */}
-        <div className="meta-action-section">
+        <div className="dark-action-section">
           <button 
-            className="meta-watch-button"
+            className="dark-watch-button"
             disabled={isActive || isLoading}
           >
             {isActive ? 'NOW PLAYING' : isLoading ? 'Loading...' : 'Watch Now'}
@@ -131,65 +131,74 @@ function MatchThumbnailCard({ match, isActive, onMatchSelect, index }) {
 
         {/* Status Indicator */}
         {match.status === 'live' && (
-          <div className="meta-live-indicator">
-            <div className="meta-live-dot"></div>
+          <div className="dark-live-indicator">
+            <div className="dark-live-dot"></div>
             <span>LIVE</span>
           </div>
         )}
 
         {/* Active Indicator */}
         {isActive && (
-          <div className="meta-active-indicator">
+          <div className="dark-active-indicator">
             <span>▶ PLAYING</span>
           </div>
         )}
 
         {/* Loading Overlay */}
         {isLoading && (
-          <div className="meta-loading-overlay">
-            <div className="meta-loading-spinner"></div>
+          <div className="dark-loading-overlay">
+            <div className="dark-loading-spinner"></div>
             <span>Switching match...</span>
           </div>
         )}
       </div>
 
-      {/* CSS Styles */}
+      {/* CSS Styles - Dark Theme with Consistent Sizing */}
       <style jsx>{`
-        .meta-match-card {
+        .dark-match-card {
           position: relative;
           border-radius: 12px;
           overflow: hidden;
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           animation: fadeIn 0.6s ease-out both;
-          aspect-ratio: 3 / 2;
-          border: 1px solid #E5E7EB;
-          background: #FFFFFF;
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+          /* Consistent sizing for all cards */
+          width: 100%;
+          height: 200px;
+          min-height: 200px;
+          max-height: 200px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: var(--glass-background);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
         }
 
-        .meta-match-card:hover:not(.active) {
+        .dark-match-card:hover:not(.active) {
           transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-          border-color: #D1D5DB;
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+          border-color: rgba(255, 255, 255, 0.2);
+          background: rgba(255, 255, 255, 0.08);
         }
 
-        .meta-match-card:focus {
-          outline: 2px solid #3B82F6;
+        .dark-match-card:focus {
+          outline: 2px solid var(--color-accent-blue);
           outline-offset: 2px;
         }
 
-        .meta-card-background {
+        .dark-card-background {
           width: 100%;
           height: 100%;
           display: flex;
           flex-direction: column;
           justify-content: space-between;
           padding: 20px;
-          background: #FFFFFF;
+          background: linear-gradient(135deg, 
+            var(--color-bg-secondary) 0%, 
+            var(--color-bg-tertiary) 100%);
           position: relative;
         }
 
-        .meta-teams-section {
+        .dark-teams-section {
           display: flex;
           align-items: center;
           justify-content: center;
@@ -198,22 +207,23 @@ function MatchThumbnailCard({ match, isActive, onMatchSelect, index }) {
           margin-bottom: 16px;
         }
 
-        .meta-team-logo-container {
+        .dark-team-logo-container {
           position: relative;
           width: 48px;
           height: 48px;
+          flex-shrink: 0;
         }
 
-        .meta-team-logo {
+        .dark-team-logo {
           width: 48px;
           height: 48px;
           border-radius: 50%;
           object-fit: cover;
-          border: 2px solid #F3F4F6;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          border: 2px solid rgba(255, 255, 255, 0.2);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
 
-        .meta-team-logo-fallback {
+        .dark-team-logo-fallback {
           width: 48px;
           height: 48px;
           border-radius: 50%;
@@ -223,27 +233,29 @@ function MatchThumbnailCard({ match, isActive, onMatchSelect, index }) {
           color: white;
           font-size: 12px;
           font-weight: 700;
-          border: 2px solid #F3F4F6;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+          border: 2px solid rgba(255, 255, 255, 0.2);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
         }
 
-        .meta-vs-text {
+        .dark-vs-text {
           font-size: 14px;
           font-weight: 600;
-          color: #6B7280;
-          letter-spacing: 0.05em;
+          color: var(--color-text-secondary);
+          letter-spacing: 0.1em;
+          flex-shrink: 0;
         }
 
-        .meta-action-section {
+        .dark-action-section {
           display: flex;
           justify-content: center;
           align-items: center;
+          margin-top: auto;
         }
 
-        .meta-watch-button {
-          background-color: #FBBF24;
-          color: #1F2937;
+        .dark-watch-button {
+          background: linear-gradient(135deg, var(--color-accent-blue) 0%, rgba(49, 130, 206, 0.8) 100%);
+          color: var(--color-text-primary);
           border: none;
           padding: 8px 24px;
           border-radius: 6px;
@@ -251,31 +263,33 @@ function MatchThumbnailCard({ match, isActive, onMatchSelect, index }) {
           font-weight: 600;
           cursor: pointer;
           transition: all 0.2s ease;
-          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 2px 8px rgba(49, 130, 206, 0.3);
           min-width: 100px;
+          flex-shrink: 0;
         }
 
-        .meta-watch-button:hover:not(:disabled) {
-          background-color: #F59E0B;
+        .dark-watch-button:hover:not(:disabled) {
+          background: linear-gradient(135deg, rgba(49, 130, 206, 1.1) 0%, var(--color-accent-blue) 100%);
           transform: translateY(-1px);
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+          box-shadow: 0 4px 12px rgba(49, 130, 206, 0.4);
         }
 
-        .meta-watch-button:disabled {
-          background-color: #9CA3AF;
-          color: #FFFFFF;
+        .dark-watch-button:disabled {
+          background: var(--color-text-muted);
+          color: var(--color-text-secondary);
           cursor: not-allowed;
           transform: none;
+          box-shadow: none;
         }
 
-        .meta-live-indicator {
+        .dark-live-indicator {
           position: absolute;
           top: 12px;
           right: 12px;
           display: flex;
           align-items: center;
           gap: 4px;
-          background: #DC2626;
+          background: var(--color-accent-red);
           color: white;
           padding: 4px 8px;
           border-radius: 4px;
@@ -283,9 +297,10 @@ function MatchThumbnailCard({ match, isActive, onMatchSelect, index }) {
           font-weight: 700;
           text-transform: uppercase;
           letter-spacing: 0.05em;
+          box-shadow: 0 2px 8px rgba(229, 62, 62, 0.4);
         }
 
-        .meta-live-dot {
+        .dark-live-dot {
           width: 6px;
           height: 6px;
           background: white;
@@ -293,11 +308,11 @@ function MatchThumbnailCard({ match, isActive, onMatchSelect, index }) {
           animation: pulse 2s ease-in-out infinite;
         }
 
-        .meta-active-indicator {
+        .dark-active-indicator {
           position: absolute;
           top: 12px;
           left: 12px;
-          background: #10B981;
+          background: var(--color-accent-green);
           color: white;
           padding: 4px 8px;
           border-radius: 4px;
@@ -305,31 +320,32 @@ function MatchThumbnailCard({ match, isActive, onMatchSelect, index }) {
           font-weight: 700;
           text-transform: uppercase;
           letter-spacing: 0.05em;
+          box-shadow: 0 2px 8px rgba(56, 161, 105, 0.4);
         }
 
-        .meta-loading-overlay {
+        .dark-loading-overlay {
           position: absolute;
           top: 0;
           left: 0;
           right: 0;
           bottom: 0;
-          background: rgba(255, 255, 255, 0.9);
+          background: rgba(0, 0, 0, 0.8);
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
           gap: 12px;
-          color: #374151;
+          color: var(--color-text-primary);
           font-size: 12px;
           font-weight: 600;
-          backdrop-filter: blur(2px);
+          backdrop-filter: blur(4px);
         }
 
-        .meta-loading-spinner {
+        .dark-loading-spinner {
           width: 20px;
           height: 20px;
-          border: 2px solid #E5E7EB;
-          border-top: 2px solid #3B82F6;
+          border: 2px solid rgba(255, 255, 255, 0.3);
+          border-top: 2px solid var(--color-accent-blue);
           border-radius: 50%;
           animation: spin 1s linear infinite;
         }
@@ -363,61 +379,73 @@ function MatchThumbnailCard({ match, isActive, onMatchSelect, index }) {
 
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
-          .meta-teams-section {
+          .dark-match-card {
+            height: 180px;
+            min-height: 180px;
+            max-height: 180px;
+          }
+
+          .dark-teams-section {
             gap: 16px;
           }
 
-          .meta-team-logo-container {
+          .dark-team-logo-container {
             width: 40px;
             height: 40px;
           }
 
-          .meta-team-logo,
-          .meta-team-logo-fallback {
+          .dark-team-logo,
+          .dark-team-logo-fallback {
             width: 40px;
             height: 40px;
             font-size: 10px;
           }
 
-          .meta-watch-button {
+          .dark-watch-button {
             padding: 6px 20px;
             font-size: 12px;
             min-width: 80px;
           }
 
-          .meta-card-background {
+          .dark-card-background {
             padding: 16px;
           }
         }
 
         @media (max-width: 480px) {
-          .meta-teams-section {
+          .dark-match-card {
+            height: 160px;
+            min-height: 160px;
+            max-height: 160px;
+          }
+
+          .dark-teams-section {
             gap: 12px;
           }
 
-          .meta-team-logo-container {
+          .dark-team-logo-container {
             width: 36px;
             height: 36px;
           }
 
-          .meta-team-logo,
-          .meta-team-logo-fallback {
+          .dark-team-logo,
+          .dark-team-logo-fallback {
             width: 36px;
             height: 36px;
             font-size: 9px;
           }
 
-          .meta-vs-text {
+          .dark-vs-text {
             font-size: 12px;
           }
 
-          .meta-watch-button {
+          .dark-watch-button {
             padding: 5px 16px;
             font-size: 11px;
             min-width: 70px;
           }
 
-          .meta-card-background {
+          .dark-card-background {
             padding: 12px;
           }
         }

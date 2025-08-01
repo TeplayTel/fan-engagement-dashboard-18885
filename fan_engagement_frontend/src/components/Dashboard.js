@@ -252,6 +252,35 @@ function Dashboard() {
       <Header currentMatch={currentMatch} />
       <main className="main-content">
         <div className="matches-container">
+          {/* Netflix-Style Filter Bar - Now above video player */}
+          <div className="sports-filter-section">
+            <NetflixStyleFilterBar
+              filters={[
+                // Sport filters
+                { id: 'all_sports', label: 'All Sports', icon: '🏆', category: 'sport' },
+                { id: 'football', label: 'Football', icon: '⚽', category: 'sport' },
+                { id: 'basketball', label: 'Basketball', icon: '🏀', category: 'sport' },
+                { id: 'tennis', label: 'Tennis', icon: '🎾', category: 'sport' },
+                // Status filters
+                { id: 'all_status', label: 'All Matches', icon: '📺', category: 'status' },
+                { id: 'live', label: 'Live Now', icon: '🔴', category: 'status' },
+                { id: 'recorded', label: 'Recorded', icon: '📹', category: 'status' }
+              ]}
+              selectedFilters={{
+                sport: selectedSportFilter,
+                status: selectedStatusFilter
+              }}
+              onFilterChange={(category, filterId) => {
+                if (category === 'sport') {
+                  setSelectedSportFilter(filterId);
+                } else if (category === 'status') {
+                  setSelectedStatusFilter(filterId);
+                }
+              }}
+              className="main-filter-bar"
+            />
+          </div>
+
           {/* Video Player with current match */}
           <VideoPlayer 
             videoUrl={currentMatch?.videoUrl || 'https://www.youtube.com/embed/fSNya223rHQ?autoplay=1&mute=1&rel=0&modestbranding=1'}
@@ -266,62 +295,26 @@ function Dashboard() {
             onMatchSelect={handleMatchSelect}
           />
 
-          {/* Other Matches Section - Netflix-Style Filter Bar */}
+          {/* Other Matches Section - Only showing ALL matches */}
           <div className="other-matches-section">
             <div className="other-matches-header">
               <div className="section-title-group">
                 <h2 className="section-title">More Matches</h2>
                 <div className="matches-count-badge">
-                  {filteredMatches.length}
+                  {otherMatches.length}
                 </div>
               </div>
-              
-              {/* Netflix-Style Filter Bar */}
-              <NetflixStyleFilterBar
-                filters={[
-                  // Sport filters
-                  { id: 'all_sports', label: 'All Sports', icon: '🏆', category: 'sport' },
-                  { id: 'football', label: 'Football', icon: '⚽', category: 'sport' },
-                  { id: 'basketball', label: 'Basketball', icon: '🏀', category: 'sport' },
-                  { id: 'tennis', label: 'Tennis', icon: '🎾', category: 'sport' },
-                  // Status filters
-                  { id: 'all_status', label: 'All Matches', icon: '📺', category: 'status' },
-                  { id: 'live', label: 'Live Now', icon: '🔴', category: 'status' },
-                  { id: 'recorded', label: 'Recorded', icon: '📹', category: 'status' }
-                ]}
-                selectedFilters={{
-                  sport: selectedSportFilter,
-                  status: selectedStatusFilter
-                }}
-                onFilterChange={(category, filterId) => {
-                  if (category === 'sport') {
-                    setSelectedSportFilter(filterId);
-                  } else if (category === 'status') {
-                    setSelectedStatusFilter(filterId);
-                  }
-                }}
-                className="other-matches-filter-bar"
-              />
             </div>
             
-            {/* Matches Content */}
-            {filteredMatches.length === 0 ? (
+            {/* Matches Content - Show all other matches */}
+            {otherMatches.length === 0 ? (
               <div className="no-matches-message">
                 <div className="no-matches-icon">🔍</div>
-                <p className="no-matches-text">No matches found for the selected filters</p>
-                <button 
-                  className="reset-filters-btn"
-                  onClick={() => {
-                    setSelectedStatusFilter('all_status');
-                    setSelectedSportFilter('all_sports');
-                  }}
-                >
-                  Show All Matches
-                </button>
+                <p className="no-matches-text">No other matches available</p>
               </div>
             ) : (
               <div className="matches-grid">
-                {filteredMatches.map((match, index) => (
+                {otherMatches.map((match, index) => (
                   <MatchThumbnailCard
                     key={match.id}
                     match={match}
