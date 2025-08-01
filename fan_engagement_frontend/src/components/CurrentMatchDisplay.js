@@ -83,16 +83,15 @@ function CurrentMatchDisplay({ match, onMatchSelect }) {
           {/* Home Team */}
           <div className="team-section home-team">
             <div className="team-logo-container">
-              {match.home.logo ? (
+              {match.home.logo && (
                 <img 
                   src={match.home.logo} 
-                  alt={`${match.home.name} logo`}
+                  alt=""
                   className="team-logo"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
                 />
-              ) : (
-                <div className="team-logo-fallback">
-                  {match.home.name.slice(0, 3).toUpperCase()}
-                </div>
               )}
             </div>
             <div className="team-info">
@@ -122,16 +121,15 @@ function CurrentMatchDisplay({ match, onMatchSelect }) {
               <span className="team-designation">AWAY</span>
             </div>
             <div className="team-logo-container">
-              {match.away.logo ? (
+              {match.away.logo && (
                 <img 
                   src={match.away.logo} 
-                  alt={`${match.away.name} logo`}
+                  alt=""
                   className="team-logo"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
                 />
-              ) : (
-                <div className="team-logo-fallback">
-                  {match.away.name.slice(0, 3).toUpperCase()}
-                </div>
               )}
             </div>
           </div>

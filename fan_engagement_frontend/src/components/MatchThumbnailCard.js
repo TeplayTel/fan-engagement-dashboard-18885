@@ -140,16 +140,15 @@ function MatchThumbnailCard({ match, isActive, onMatchSelect, index }) {
         <div className="card-teams">
           <div className="teams-container">
             <div className="team-mini">
-              {match.home.logo ? (
+              {match.home.logo && (
                 <img 
                   src={match.home.logo} 
-                  alt={match.home.name}
+                  alt=""
                   className="team-mini-logo"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
                 />
-              ) : (
-                <div className="team-mini-logo-fallback">
-                  {match.home.name.slice(0, 3).toUpperCase()}
-                </div>
               )}
               <span className="team-mini-name">{match.home.name}</span>
             </div>
@@ -160,16 +159,15 @@ function MatchThumbnailCard({ match, isActive, onMatchSelect, index }) {
             
             <div className="team-mini">
               <span className="team-mini-name">{match.away.name}</span>
-              {match.away.logo ? (
+              {match.away.logo && (
                 <img 
                   src={match.away.logo} 
-                  alt={match.away.name}
+                  alt=""
                   className="team-mini-logo"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
                 />
-              ) : (
-                <div className="team-mini-logo-fallback">
-                  {match.away.name.slice(0, 3).toUpperCase()}
-                </div>
               )}
             </div>
           </div>

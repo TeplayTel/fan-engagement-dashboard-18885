@@ -355,7 +355,7 @@ function Dashboard() {
                   ].map((option) => (
                     <button 
                       key={option.id}
-                      className={`filter-btn ${selectedStatusFilter === option.id ? 'active' : ''}`}
+                      className={`sport-filter-btn ${selectedStatusFilter === option.id ? 'active' : ''}`}
                       onClick={() => setSelectedStatusFilter(option.id)}
                       aria-label={`Filter by ${option.label}`}
                       title={`Show ${option.label.toLowerCase()} matches`}
