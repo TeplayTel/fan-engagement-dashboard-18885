@@ -7,6 +7,8 @@ import Analytics from './Analytics';
 import VideoPlayer from './VideoPlayer';
 import GameFilterBar from './GameFilterBar';
 import VideoOptionsFilter from './VideoOptionsFilter';
+import apiService from '../services/apiService';
+import websocketService from '../services/websocketService';
 
 const placeholderMatches = [
   {
@@ -103,13 +105,58 @@ function Dashboard() {
   const [isSwapping, setIsSwapping] = useState(false);
 
   useEffect(() => {
-    // Simulate loading matches
-    const timer = setTimeout(() => {
-      setMatches(placeholderMatches);
-      setLoading(false);
-    }, 800);
+    // Fetch real matches data from API
+    const fetchMatches = async () => {
+      try {
+        setLoading(true);
+        const matchesData = await apiService.getMatches();
+        
+        let matches = [];
+        if (Array.isArray(matchesData)) {
+          matches = matchesData;
+        } else if (matchesData && matchesData.matches && Array.isArray(matchesData.matches)) {
+          matches = matchesData.matches;
+        } else if (matchesData && matchesData.data && Array.isArray(matchesData.data)) {
+          matches = matchesData.data;
+        }
 
-    return () => clearTimeout(timer);
+        if (matches.length > 0) {
+          setMatches(matches);
+        } else {
+          // Fallback to placeholder data if no real matches available
+          console.warn('No matches data received from API, using placeholder data');
+          setMatches(placeholderMatches);
+        }
+      } catch (error) {
+        console.error('Failed to fetch matches:', error);
+        // Use placeholder data as fallback
+        setMatches(placeholderMatches);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMatches();
+
+    // Connect to WebSocket for real-time updates
+    websocketService.connect();
+    
+    // Subscribe to match updates
+    websocketService.subscribeToMatchUpdates((matchUpdate) => {
+      console.log('Received match update:', matchUpdate);
+      setMatches(currentMatches => {
+        return currentMatches.map(match => 
+          match.id === matchUpdate.matchId 
+            ? { ...match, ...matchUpdate.data }
+            : match
+        );
+      });
+    });
+
+    // Cleanup WebSocket on unmount
+    return () => {
+      websocketService.disconnect();
+    };
   }, []);
 
   // Get current match and other matches

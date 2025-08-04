@@ -3,7 +3,7 @@
  * API service for making HTTP requests to the fan engagement backend
  */
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://vscode-internal-33385-beta.beta01.cloud.kavia.ai:3001';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
 class ApiService {
   constructor() {
