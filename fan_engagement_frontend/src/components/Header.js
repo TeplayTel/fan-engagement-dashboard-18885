@@ -7,7 +7,7 @@ function Header({ currentMatch }) {
    * Now dynamically updates based on the currently selected match.
    * @param {object} currentMatch - The currently active match object
    */
-  const [matchTime, setMatchTime] = useState('88\'');
+  const [matchTime, setMatchTime] = useState('15.2 overs');
   const [viewerCount, setViewerCount] = useState(2147);
   const [matchTitle, setMatchTitle] = useState('Loading Match...');
   const [league, setLeague] = useState('');
@@ -37,14 +37,24 @@ function Header({ currentMatch }) {
     return () => window.removeEventListener('matchChanged', handleMatchChange);
   }, []);
   
-  // Simulate live match time updates (only for live matches)
+  // Simulate live match time updates (only for live matches) - Cricket overs format
   useEffect(() => {
     if (status !== 'live') return;
 
     const interval = setInterval(() => {
       setMatchTime(prev => {
-        const time = parseInt(prev);
-        return time < 90 ? `${time + 1}'` : `${time + Math.floor(Math.random() * 5)}'`;
+        // Parse cricket overs format (e.g., "15.2")
+        const overs = parseFloat(prev);
+        const balls = Math.floor((overs % 1) * 10);
+        const completeOvers = Math.floor(overs);
+        
+        // Increment by one ball
+        const newBalls = balls + 1;
+        if (newBalls >= 6) {
+          return `${completeOvers + 1}.0 overs`;
+        } else {
+          return `${completeOvers}.${newBalls} overs`;
+        }
       });
       
       // Simulate viewer count fluctuation
@@ -100,7 +110,7 @@ function Header({ currentMatch }) {
             alignItems: 'center',
             gap: 'var(--space-xs)'
           }}>
-            <span>⏱️</span>
+            <span>🏏</span>
             <span>{matchTime}</span>
           </div>
         )}
@@ -109,24 +119,24 @@ function Header({ currentMatch }) {
   };
 
   const getStadiumName = () => {
-    // Map teams to their stadiums (placeholder logic)
-    const stadiums = {
-      'Arsenal': 'Emirates Stadium',
-      'Chelsea': 'Stamford Bridge',
-      'Real Madrid': 'Santiago Bernabéu',
-      'Barcelona': 'Camp Nou',
-      'AC Milan': 'San Siro',
-      'Inter Milan': 'San Siro',
-      'Bayern Munich': 'Allianz Arena',
-      'Borussia Dortmund': 'Signal Iduna Park',
-      'PSG': 'Parc des Princes',
-      'Lyon': 'Groupama Stadium'
+    // Map teams to their cricket grounds (placeholder logic)
+    const cricketGrounds = {
+      'India': 'Wankhede Stadium',
+      'Australia': 'Melbourne Cricket Ground',
+      'England': 'Lord\'s Cricket Ground',
+      'Pakistan': 'National Stadium',
+      'South Africa': 'Wanderers Stadium',
+      'New Zealand': 'Eden Park',
+      'Sri Lanka': 'R. Premadasa Stadium',
+      'West Indies': 'Kensington Oval',
+      'Bangladesh': 'Shere Bangla Stadium',
+      'Afghanistan': 'Sharjah Cricket Stadium'
     };
 
     if (currentMatch) {
-      return stadiums[currentMatch.home.name] || 'Stadium';
+      return cricketGrounds[currentMatch.home.name] || 'Cricket Ground';
     }
-    return 'Stadium';
+    return 'Cricket Ground';
   };
 
   return (

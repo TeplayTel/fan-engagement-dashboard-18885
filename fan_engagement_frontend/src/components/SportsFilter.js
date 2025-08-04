@@ -1,12 +1,13 @@
 import React from 'react';
 
 const filterOptions = [
-  { id: 'all', label: 'All Sports', icon: '⚽', count: 3 },
-  { id: 'live', label: 'Live', icon: '🔴', count: 2 },
-  { id: 'premier league', label: 'Premier League', icon: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', count: 1 },
-  { id: 'la liga', label: 'La Liga', icon: '🇪🇸', count: 1 },
-  { id: 'serie a', label: 'Serie A', icon: '🇮🇹', count: 1 },
-  { id: 'champions league', label: 'Champions League', icon: '🏆', count: 0 }
+  { id: 'all', label: 'All Cricket', icon: '🏏', count: 5 },
+  { id: 'live', label: 'Live', icon: '🔴', count: 3 },
+  { id: 't20 world cup', label: 'T20 World Cup', icon: '🏆', count: 1 },
+  { id: 'ipl', label: 'IPL', icon: '🇮🇳', count: 1 },
+  { id: 'odi', label: 'ODI Series', icon: '🌍', count: 1 },
+  { id: 'test', label: 'Test Match', icon: '⚪', count: 1 },
+  { id: 'big bash', label: 'Big Bash', icon: '🇦🇺', count: 1 }
 ];
 
 // PUBLIC_INTERFACE

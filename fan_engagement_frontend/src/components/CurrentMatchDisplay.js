@@ -98,12 +98,16 @@ function CurrentMatchDisplay({ match, onMatchSelect }) {
           {/* VS Section with Score */}
           <div className="vs-section">
             <div className="score-display">
-              <span className="score-text">{match.score}</span>
+              <div className="cricket-score-display">
+                <span className="runs-text">{match.score.split(' - ')[0]}</span>
+                <span className="wickets-text">/{match.wickets || '3'}</span>
+                <span className="overs-text">({match.overs || '15.2'})</span>
+              </div>
             </div>
             <div className="vs-text">VS</div>
             {match.status === 'live' && (
               <div className="match-time">
-                <span className="time-icon">⏱️</span>
+                <span className="time-icon">🏏</span>
                 <span className="time-text">{match.time}</span>
               </div>
             )}
@@ -132,12 +136,12 @@ function CurrentMatchDisplay({ match, onMatchSelect }) {
             <span className="stat-text">{(Math.floor(Math.random() * 500) + 100 * 10)} watching</span>
           </div>
           <div className="match-stat">
-            <span className="stat-icon">🎯</span>
-            <span className="stat-text">{(Math.floor(Math.random() * 1000) + 200 * 5)} reactions</span>
+            <span className="stat-icon">🏏</span>
+            <span className="stat-text">Run Rate: 12.24</span>
           </div>
           <div className="match-stat">
             <span className="stat-icon">🏟️</span>
-            <span className="stat-text">Emirates Stadium</span>
+            <span className="stat-text">Melbourne Cricket Ground</span>
           </div>
         </div>
       </div>

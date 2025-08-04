@@ -89,7 +89,7 @@ const FormationGrid = styled.div`
   grid-template-columns: repeat(4, 1fr);
   gap: 10px;
   aspect-ratio: 3/4;
-  background: linear-gradient(to bottom, #1a4a3a, #1a3a4a);
+  background: linear-gradient(to bottom, #2d5a3d, #1e3a2a);
   border-radius: 6px;
   padding: 15px;
   position: relative;
@@ -107,24 +107,59 @@ const FieldLines = styled.div`
   &::before {
     content: '';
     position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-50%);
+    top: 10%;
+    left: 40%;
+    width: 20%;
+    height: 80%;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.05);
   }
   
   &::after {
     content: '';
     position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 40px;
-    height: 40px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
+    top: 35%;
+    left: 38%;
+    width: 24%;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.4);
+  }
+`;
+
+const CreaseLines = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 65%;
+    left: 38%;
+    width: 24%;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.4);
+  }
+`;
+
+const Stumps = styled.div`
+  position: absolute;
+  width: 2%;
+  height: 3px;
+  background: #8B4513;
+  border-radius: 1px;
+  
+  &.striker {
+    top: 66%;
+    left: 49%;
+  }
+  
+  &.non-striker {
+    top: 34%;
+    left: 49%;
   }
 `;
 
@@ -161,32 +196,23 @@ const RightSidebarComponent = () => {
    * following exact design specifications for layout and styling.
    */
   
-  const homeFormation = [
-    { x: 50, y: 90, number: '1' }, // GK
-    { x: 20, y: 70, number: '3' }, // LB
-    { x: 40, y: 75, number: '6' }, // CB
-    { x: 60, y: 75, number: '4' }, // CB
-    { x: 80, y: 70, number: '2' }, // RB
-    { x: 30, y: 50, number: '8' }, // CM
-    { x: 70, y: 50, number: '5' }, // CM
-    { x: 15, y: 30, number: '11' }, // LW
-    { x: 50, y: 25, number: '10' }, // AM
-    { x: 85, y: 30, number: '7' }, // RW
-    { x: 50, y: 10, number: '9' } // ST
+  const battingTeamPositions = [
+    { x: 50, y: 65, number: '1', role: 'batsman' }, // Striker
+    { x: 50, y: 35, number: '2', role: 'batsman' }, // Non-striker
   ];
   
-  const awayFormation = [
-    { x: 50, y: 10, number: '1' }, // GK
-    { x: 80, y: 30, number: '2' }, // RB
-    { x: 60, y: 25, number: '4' }, // CB
-    { x: 40, y: 25, number: '6' }, // CB
-    { x: 20, y: 30, number: '3' }, // LB
-    { x: 70, y: 50, number: '5' }, // CM
-    { x: 30, y: 50, number: '8' }, // CM
-    { x: 85, y: 70, number: '7' }, // RW
-    { x: 50, y: 75, number: '10' }, // AM
-    { x: 15, y: 70, number: '11' }, // LW
-    { x: 50, y: 90, number: '9' } // ST
+  const bowlingTeamPositions = [
+    { x: 50, y: 25, number: '8', role: 'bowler' }, // Bowler
+    { x: 50, y: 75, number: '1', role: 'keeper' }, // Keeper
+    { x: 20, y: 40, number: '3', role: 'fielder' }, // Point
+    { x: 80, y: 40, number: '4', role: 'fielder' }, // Cover
+    { x: 35, y: 20, number: '5', role: 'fielder' }, // Mid-off
+    { x: 65, y: 20, number: '6', role: 'fielder' }, // Mid-on
+    { x: 30, y: 60, number: '7', role: 'fielder' }, // Square leg
+    { x: 70, y: 60, number: '9', role: 'fielder' }, // Mid-wicket
+    { x: 15, y: 80, number: '10', role: 'fielder' }, // Fine leg
+    { x: 85, y: 80, number: '11', role: 'fielder' }, // Third man
+    { x: 50, y: 10, number: '2', role: 'fielder' } // Long-off
   ];
 
   return (
@@ -195,52 +221,55 @@ const RightSidebarComponent = () => {
         <ScoreDisplay>
           <TeamNames>
             <TeamName>
-              <TeamLogo color="var(--team-blue)">CHE</TeamLogo>
-              Chelsea
+              <TeamLogo color="var(--team-blue)">IND</TeamLogo>
+              India
             </TeamName>
             <TeamName className="away">
-              <TeamLogo color="var(--team-red)">ARS</TeamLogo>
-              Arsenal
+              <TeamLogo color="var(--team-red)">AUS</TeamLogo>
+              Australia
             </TeamName>
           </TeamNames>
-          <Score>2 - 1</Score>
+          <Score>187/3 (15.2)</Score>
         </ScoreDisplay>
         
         <MatchDetails>
-          Premier League • Matchday 12<br />
-          Stamford Bridge, London<br />
-          88' • Live
+          T20 World Cup • Semi-Final<br />
+          Melbourne Cricket Ground<br />
+          15.2 overs • Live
         </MatchDetails>
       </MatchInfoPanel>
 
       <FormationPanel>
-        <FormationTitle>Formation (4-2-3-1)</FormationTitle>
+        <FormationTitle>Field Positions</FormationTitle>
         <FormationGrid>
           <FieldLines />
+          <CreaseLines />
+          <Stumps className="striker" />
+          <Stumps className="non-striker" />
           
-          {/* Home team players */}
-          {homeFormation.map((player, index) => (
+          {/* Batting team players */}
+          {battingTeamPositions.map((player, index) => (
             <PlayerDot
-              key={`home-${index}`}
+              key={`batting-${index}`}
               team="home"
               x={player.x}
               y={player.y}
-              title={`Player ${player.number}`}
+              title={`${player.role} ${player.number}`}
             >
-              {player.number}
+              {player.role === 'batsman' ? '🏏' : player.number}
             </PlayerDot>
           ))}
           
-          {/* Away team players */}
-          {awayFormation.map((player, index) => (
+          {/* Bowling team players */}
+          {bowlingTeamPositions.map((player, index) => (
             <PlayerDot
-              key={`away-${index}`}
+              key={`bowling-${index}`}
               team="away"
               x={player.x}
               y={player.y}
-              title={`Player ${player.number}`}
+              title={`${player.role} ${player.number}`}
             >
-              {player.number}
+              {player.role === 'bowler' ? '⚾' : player.role === 'keeper' ? '🥅' : player.number}
             </PlayerDot>
           ))}
         </FormationGrid>

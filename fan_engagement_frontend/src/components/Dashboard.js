@@ -10,58 +10,68 @@ import MatchThumbnailCard from './MatchThumbnailCard';
 const placeholderMatches = [
   {
     id: 1,
-    league: 'Premier League',
-    time: '88\'',
-    home: { name: 'Arsenal', logo: 'https://via.placeholder.com/48/FF6B35/FFFFFF?text=ARS' },
-    away: { name: 'Chelsea', logo: 'https://via.placeholder.com/48/003F7F/FFFFFF?text=CHE' },
-    score: '2 - 1',
+    league: 'T20 World Cup',
+    time: '15.2 overs',
+    home: { name: 'India', logo: 'https://via.placeholder.com/48/FF6B35/FFFFFF?text=IND' },
+    away: { name: 'Australia', logo: 'https://via.placeholder.com/48/FDE100/000000?text=AUS' },
+    score: '187 - 156',
+    wickets: '3',
+    overs: '15.2',
     status: 'live',
     videoUrl: 'https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1&mute=1',
-    thumbnail: 'https://via.placeholder.com/280x160/FF6B35/FFFFFF?text=ARS+vs+CHE'
+    thumbnail: 'https://via.placeholder.com/280x160/FF6B35/FFFFFF?text=IND+vs+AUS'
   },
   {
     id: 2,
-    league: 'La Liga',
-    time: 'HT',
-    home: { name: 'Real Madrid', logo: 'https://via.placeholder.com/48/FFFFFF/000000?text=RM' },
-    away: { name: 'Barcelona', logo: 'https://via.placeholder.com/48/A50044/FFFFFF?text=FCB' },
-    score: '0 - 0',
+    league: 'IPL 2024',
+    time: 'Innings Break',
+    home: { name: 'Mumbai Indians', logo: 'https://via.placeholder.com/48/004BA0/FFFFFF?text=MI' },
+    away: { name: 'Chennai Super Kings', logo: 'https://via.placeholder.com/48/FDB900/000000?text=CSK' },
+    score: '168 - 142',
+    wickets: '6',
+    overs: '20.0',
     status: 'halftime',
     videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1',
-    thumbnail: 'https://via.placeholder.com/280x160/FFFFFF/000000?text=RM+vs+FCB'
+    thumbnail: 'https://via.placeholder.com/280x160/004BA0/FFFFFF?text=MI+vs+CSK'
   },
   {
     id: 3,
-    league: 'Serie A',
-    time: '23\'',
-    home: { name: 'AC Milan', logo: 'https://via.placeholder.com/48/FB090B/FFFFFF?text=ACM' },
-    away: { name: 'Inter Milan', logo: 'https://via.placeholder.com/48/0068A8/FFFFFF?text=INT' },
-    score: '1 - 0',
+    league: 'ODI Series',
+    time: '23.4 overs',
+    home: { name: 'England', logo: 'https://via.placeholder.com/48/012169/FFFFFF?text=ENG' },
+    away: { name: 'Pakistan', logo: 'https://via.placeholder.com/48/01411C/FFFFFF?text=PAK' },
+    score: '145 - 98',
+    wickets: '2',
+    overs: '23.4',
     status: 'live',
     videoUrl: 'https://www.youtube.com/embed/9bZkp7q19f0?autoplay=1&mute=1',
-    thumbnail: 'https://via.placeholder.com/280x160/FB090B/FFFFFF?text=ACM+vs+INT'
+    thumbnail: 'https://via.placeholder.com/280x160/012169/FFFFFF?text=ENG+vs+PAK'
   },
   {
     id: 4,
-    league: 'Bundesliga',
-    time: '67\'',
-    home: { name: 'Bayern Munich', logo: 'https://via.placeholder.com/48/DC143C/FFFFFF?text=FCB' },
-    away: { name: 'Borussia Dortmund', logo: 'https://via.placeholder.com/48/FDE100/000000?text=BVB' },
-    score: '3 - 2',
+    league: 'Test Championship',
+    time: '67.2 overs',
+    home: { name: 'South Africa', logo: 'https://via.placeholder.com/48/FFB612/000000?text=SA' },
+    away: { name: 'New Zealand', logo: 'https://via.placeholder.com/48/000000/FFFFFF?text=NZ' },
+    score: '287 - 234',
+    wickets: '4',
+    overs: '67.2',
     status: 'live',
     videoUrl: 'https://www.youtube.com/embed/kJQP7kiw5Fk?autoplay=1&mute=1',
-    thumbnail: 'https://via.placeholder.com/280x160/DC143C/FFFFFF?text=FCB+vs+BVB'
+    thumbnail: 'https://via.placeholder.com/280x160/FFB612/000000?text=SA+vs+NZ'
   },
   {
     id: 5,
-    league: 'Ligue 1',
-    time: 'FT',
-    home: { name: 'PSG', logo: 'https://via.placeholder.com/48/004170/FFFFFF?text=PSG' },
-    away: { name: 'Lyon', logo: 'https://via.placeholder.com/48/1e3a8a/FFFFFF?text=OL' },
-    score: '2 - 1',
+    league: 'Big Bash League',
+    time: 'Match Completed',
+    home: { name: 'Sydney Sixers', logo: 'https://via.placeholder.com/48/FF0198/FFFFFF?text=SIX' },
+    away: { name: 'Melbourne Stars', logo: 'https://via.placeholder.com/48/004225/FFFFFF?text=STA' },
+    score: '176 - 164',
+    wickets: '8',
+    overs: '20.0',
     status: 'finished',
     videoUrl: 'https://www.youtube.com/embed/hFcLyDb6niA?autoplay=1&mute=1',
-    thumbnail: 'https://via.placeholder.com/280x160/004170/FFFFFF?text=PSG+vs+OL'
+    thumbnail: 'https://via.placeholder.com/280x160/FF0198/FFFFFF?text=SIX+vs+STA'
   }
 ];
 

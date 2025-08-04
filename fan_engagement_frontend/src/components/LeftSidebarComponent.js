@@ -113,40 +113,40 @@ const LeftSidebarComponent = () => {
   const [activeTeam, setActiveTeam] = useState('home');
 
   const matchStats = [
-    { label: 'Ball Possession', value: '58% - 42%' },
-    { label: 'Shots on Target', value: '7 - 4' },
-    { label: 'Corner Kicks', value: '5 - 3' },
-    { label: 'Fouls', value: '12 - 8' },
-    { label: 'Yellow Cards', value: '2 - 1' },
-    { label: 'Offsides', value: '3 - 2' }
+    { label: 'Run Rate', value: '12.24 RPO' },
+    { label: 'Boundaries', value: '18 (4s: 14, 6s: 4)' },
+    { label: 'Strike Rate', value: '148.5%' },
+    { label: 'Wickets Lost', value: '3' },
+    { label: 'Partnerships', value: '2 > 50 runs' },
+    { label: 'Extras', value: '12 (wd: 7, nb: 3, b: 2)' }
   ];
 
   const homeTeamPlayers = [
-    { name: 'Robert Sanchez', position: 'GK', number: '1', rating: '7.2' },
-    { name: 'Reece James', position: 'RB', number: '24', rating: '7.8' },
-    { name: 'Thiago Silva', position: 'CB', number: '6', rating: '8.1' },
-    { name: 'Wesley Fofana', position: 'CB', number: '33', rating: '7.5' },
-    { name: 'Ben Chilwell', position: 'LB', number: '21', rating: '7.3' },
-    { name: 'Enzo Fernandez', position: 'CM', number: '5', rating: '8.2' },
-    { name: 'Moises Caicedo', position: 'CM', number: '25', rating: '7.9' },
-    { name: 'Raheem Sterling', position: 'RW', number: '7', rating: '7.6' },
-    { name: 'Cole Palmer', position: 'AM', number: '20', rating: '8.5' },
-    { name: 'Mykhaylo Mudryk', position: 'LW', number: '10', rating: '7.4' },
-    { name: 'Nicolas Jackson', position: 'ST', number: '15', rating: '8.0' }
+    { name: 'Rohit Sharma', position: 'Opener', number: '45', rating: '8.5', status: 'Batting', runs: '67*' },
+    { name: 'Virat Kohli', position: 'Top Order', number: '18', rating: '8.8', status: 'Batting', runs: '89*' },
+    { name: 'KL Rahul', position: 'WK-Bat', number: '1', rating: '7.2', status: 'Out', runs: '23' },
+    { name: 'Suryakumar Yadav', position: 'Middle Order', number: '63', rating: '8.0', status: 'Next', runs: '-' },
+    { name: 'Hardik Pandya', position: 'All-rounder', number: '33', rating: '7.8', status: 'Next', runs: '-' },
+    { name: 'Ravindra Jadeja', position: 'All-rounder', number: '8', rating: '7.5', status: 'Next', runs: '-' },
+    { name: 'MS Dhoni', position: 'WK-Bat', number: '7', rating: '7.9', status: 'Next', runs: '-' },
+    { name: 'Bhuvneshwar Kumar', position: 'Bowler', number: '15', rating: '7.3', status: 'Next', runs: '-' },
+    { name: 'Jasprit Bumrah', position: 'Bowler', number: '93', rating: '8.2', status: 'Next', runs: '-' },
+    { name: 'Yuzvendra Chahal', position: 'Spinner', number: '3', rating: '7.6', status: 'Next', runs: '-' },
+    { name: 'Mohammed Shami', position: 'Bowler', number: '11', rating: '7.4', status: 'Next', runs: '-' }
   ];
 
   const awayTeamPlayers = [
-    { name: 'David Raya', position: 'GK', number: '22', rating: '7.5' },
-    { name: 'Ben White', position: 'RB', number: '4', rating: '7.7' },
-    { name: 'William Saliba', position: 'CB', number: '2', rating: '8.3' },
-    { name: 'Gabriel', position: 'CB', number: '6', rating: '8.0' },
-    { name: 'Oleksandr Zinchenko', position: 'LB', number: '35', rating: '7.4' },
-    { name: 'Declan Rice', position: 'CDM', number: '41', rating: '8.1' },
-    { name: 'Martin Odegaard', position: 'CM', number: '8', rating: '8.7' },
-    { name: 'Bukayo Saka', position: 'RW', number: '7', rating: '8.4' },
-    { name: 'Kai Havertz', position: 'AM', number: '29', rating: '7.8' },
-    { name: 'Gabriel Martinelli', position: 'LW', number: '11', rating: '7.9' },
-    { name: 'Gabriel Jesus', position: 'ST', number: '9', rating: '7.6' }
+    { name: 'David Warner', position: 'Opener', number: '31', rating: '7.8', status: 'Bowling', overs: '0-0-0-0' },
+    { name: 'Steve Smith', position: 'Top Order', number: '49', rating: '8.3', status: 'Bowling', overs: '0-0-0-0' },
+    { name: 'Glenn Maxwell', position: 'All-rounder', number: '32', rating: '7.9', status: 'Bowling', overs: '2-0-18-0' },
+    { name: 'Marcus Stoinis', position: 'All-rounder', number: '0', rating: '7.2', status: 'Bowling', overs: '0-0-0-0' },
+    { name: 'Josh Inglis', position: 'WK-Bat', number: '17', rating: '7.1', status: 'Bowling', overs: '0-0-0-0' },
+    { name: 'Tim David', position: 'Middle Order', number: '46', rating: '7.4', status: 'Bowling', overs: '0-0-0-0' },
+    { name: 'Pat Cummins', position: 'Bowler', number: '30', rating: '8.5', status: 'Bowling', overs: '3-0-28-1' },
+    { name: 'Mitchell Starc', position: 'Bowler', number: '56', rating: '8.1', status: 'Bowler', overs: '2.2-0-21-2' },
+    { name: 'Josh Hazlewood', position: 'Bowler', number: '5', rating: '7.7', status: 'Bowling', overs: '3-0-22-0' },
+    { name: 'Adam Zampa', position: 'Spinner', number: '1', rating: '7.8', status: 'Bowling', overs: '4-0-35-0' },
+    { name: 'Kane Richardson', position: 'Bowler', number: '4', rating: '7.0', status: 'Bowling', overs: '1-0-12-0' }
   ];
 
   const currentPlayers = activeTeam === 'home' ? homeTeamPlayers : awayTeamPlayers;
@@ -179,7 +179,7 @@ const LeftSidebarComponent = () => {
                 cursor: 'pointer'
               }}
             >
-              Chelsea
+              India (Batting)
             </button>
             <button
               onClick={() => setActiveTeam('away')}
@@ -193,7 +193,7 @@ const LeftSidebarComponent = () => {
                 cursor: 'pointer'
               }}
             >
-              Arsenal
+              Australia (Bowling)
             </button>
           </div>
         </PanelHeader>
@@ -207,6 +207,9 @@ const LeftSidebarComponent = () => {
               <PlayerInfo>
                 <PlayerName>{player.name}</PlayerName>
                 <PlayerPosition>{player.position}</PlayerPosition>
+                <div style={{ fontSize: 'var(--font-xs)', color: 'var(--muted-text)', marginTop: '2px' }}>
+                  {player.runs ? `Runs: ${player.runs}` : player.overs ? `${player.overs}` : player.status}
+                </div>
               </PlayerInfo>
               <PlayerRating>{player.rating}</PlayerRating>
             </PlayerCard>

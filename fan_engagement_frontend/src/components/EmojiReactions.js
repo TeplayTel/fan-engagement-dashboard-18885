@@ -19,16 +19,16 @@ function EmojiReactions({ currentMatch }) {
   const [recentClicks, setRecentClicks] = useState([]);
   const { isAuthenticated, getDemoToken, login, userToken } = useAuth();
 
-  // Fallback emojis with enhanced variety
+  // Fallback emojis with cricket-themed variety
   const fallbackEmojis = [
     { id: 1, emoji: '❤️', name: 'heart' },
     { id: 2, emoji: '🔥', name: 'fire' },
     { id: 3, emoji: '😂', name: 'laugh' },
     { id: 4, emoji: '😮', name: 'wow' },
     { id: 5, emoji: '👍', name: 'thumbs_up' },
-    { id: 6, emoji: '⚽', name: 'soccer' },
+    { id: 6, emoji: '🏏', name: 'cricket' },
     { id: 7, emoji: '🎉', name: 'celebration' },
-    { id: 8, emoji: '😢', name: 'sad' }
+    { id: 8, emoji: '⚡', name: 'lightning' }
   ];
 
   // Auto-login effect

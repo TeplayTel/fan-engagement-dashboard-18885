@@ -31,20 +31,21 @@ function Analytics({ currentMatch }) {
         // Generate match-specific moments based on team names
         const generateMoments = (match) => {
           const moments = [
-            { time: '12\'', event: `Goal by ${match.home.name}`, reactions: Math.floor(Math.random() * 2000) + 800 },
-            { time: '34\'', event: 'Yellow Card', reactions: Math.floor(Math.random() * 800) + 200 },
-            { time: '67\'', event: `Goal by ${match.away.name}`, reactions: Math.floor(Math.random() * 2500) + 1000 },
+            { time: '3.2', event: `Six by ${match.home.name}`, reactions: Math.floor(Math.random() * 2000) + 800 },
+            { time: '7.4', event: 'Wicket fallen', reactions: Math.floor(Math.random() * 2500) + 1000 },
+            { time: '12.1', event: `Four by ${match.home.name}`, reactions: Math.floor(Math.random() * 1500) + 600 },
+            { time: '14.5', event: 'Dropped catch', reactions: Math.floor(Math.random() * 800) + 200 },
           ];
           
           if (match.status === 'live') {
             moments.push({ 
               time: match.time, 
-              event: `Current play - ${match.status}`, 
+              event: `Current over - ${match.status}`, 
               reactions: Math.floor(Math.random() * 500) + 100 
             });
           }
           
-          return moments.sort((a, b) => parseInt(a.time) - parseInt(b.time));
+          return moments.sort((a, b) => parseFloat(a.time) - parseFloat(b.time));
         };
 
         return {
@@ -81,20 +82,21 @@ function Analytics({ currentMatch }) {
             
             const generateMoments = (match) => {
               const moments = [
-                { time: '12\'', event: `Goal by ${match.home.name}`, reactions: Math.floor(Math.random() * 2000) + 800 },
-                { time: '34\'', event: 'Yellow Card', reactions: Math.floor(Math.random() * 800) + 200 },
-                { time: '67\'', event: `Goal by ${match.away.name}`, reactions: Math.floor(Math.random() * 2500) + 1000 },
+                { time: '3.2', event: `Six by ${match.home.name}`, reactions: Math.floor(Math.random() * 2000) + 800 },
+                { time: '7.4', event: 'Wicket fallen', reactions: Math.floor(Math.random() * 2500) + 1000 },
+                { time: '12.1', event: `Four by ${match.home.name}`, reactions: Math.floor(Math.random() * 1500) + 600 },
+                { time: '14.5', event: 'Dropped catch', reactions: Math.floor(Math.random() * 800) + 200 },
               ];
               
               if (match.status === 'live') {
                 moments.push({ 
                   time: match.time, 
-                  event: `Current play - ${match.status}`, 
+                  event: `Current over - ${match.status}`, 
                   reactions: Math.floor(Math.random() * 500) + 100 
                 });
               }
               
-              return moments.sort((a, b) => parseInt(a.time) - parseInt(b.time));
+              return moments.sort((a, b) => parseFloat(a.time) - parseFloat(b.time));
             };
 
             return {
@@ -145,10 +147,10 @@ function Analytics({ currentMatch }) {
           engagementRate: 68.5,
           topEmoji: '🔥',
           matchMoments: [
-            { time: '12\'', event: 'Goal by Arsenal', reactions: 1247 },
-            { time: '34\'', event: 'Yellow Card', reactions: 523 },
-            { time: '67\'', event: 'Goal by Chelsea', reactions: 1891 },
-            { time: '88\'', event: 'Goal by Arsenal', reactions: 2156 }
+            { time: '3.2', event: 'Six by India', reactions: 1247 },
+            { time: '7.4', event: 'Wicket fallen', reactions: 2156 },
+            { time: '12.1', event: 'Four by India', reactions: 891 },
+            { time: '15.2', event: 'Current over - live', reactions: 523 }
           ]
         });
         setLoading(false);

@@ -64,9 +64,9 @@ const FooterComponent = () => {
   
   const stats = [
     {
-      icon: '⚽',
-      label: 'Goals',
-      value: '3'
+      icon: '🏏',
+      label: 'Runs',
+      value: '187'
     },
     {
       icon: '👥',
@@ -85,8 +85,8 @@ const FooterComponent = () => {
     },
     {
       icon: '⏱️',
-      label: 'Time',
-      value: '88\''
+      label: 'Overs',
+      value: '15.2'
     }
   ];
 

@@ -32,13 +32,13 @@ function BottomAnalytics({ currentMatch }) {
       });
     }
 
-    // Generate comparison data
+    // Generate comparison data for cricket
     const comparison = {
-      attacks: { home: 24, away: 18 },
-      dangerousAttacks: { home: 12, away: 8 },
-      possession: { home: 58, away: 42 },
-      shots: { home: 15, away: 9 },
-      corners: { home: 7, away: 4 }
+      runs: { home: 187, away: 156 },
+      boundaries: { home: 18, away: 12 },
+      strikeRate: { home: 148, away: 132 },
+      wickets: { home: 3, away: 5 },
+      extras: { home: 12, away: 8 }
     };
 
     setChartData({ timeline, comparison });
@@ -120,13 +120,13 @@ function BottomAnalytics({ currentMatch }) {
         </div>
         
         <div className="chart-x-axis">
-          <span>0'</span>
-          <span>15'</span>
-          <span>30'</span>
-          <span>45'</span>
-          <span>60'</span>
-          <span>75'</span>
-          <span>90'</span>
+          <span>0</span>
+          <span>3</span>
+          <span>6</span>
+          <span>9</span>
+          <span>12</span>
+          <span>15</span>
+          <span>18</span>
         </div>
       </div>
     </div>
