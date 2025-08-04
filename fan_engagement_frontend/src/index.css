@@ -27,6 +27,16 @@
   /* Team Colors */
   --team-blue: #1e90ff;
   --team-red: #ff4444;
+  
+  /* India Team Colors */
+  --india-primary: #1a237e;
+  --india-accent: #3949ab;
+  --india-border: #2196f3;
+  
+  /* Australia Team Colors */
+  --australia-primary: #d32f2f;
+  --australia-accent: #f44336;
+  --australia-border: #ff5722;
 
   /* Typography */
   --font-xs: 10px;

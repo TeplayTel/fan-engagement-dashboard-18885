@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Analytics from './Analytics';
+import RightSidebarComponent from './RightSidebarComponent';
 
 // PUBLIC_INTERFACE  
 function RightSidebar({ currentMatch }) {
@@ -74,6 +75,9 @@ function RightSidebar({ currentMatch }) {
 
   return (
     <div className="right-sidebar">
+      {/* Team Panels and Match Info */}
+      <RightSidebarComponent currentMatch={currentMatch} />
+      
       {/* Player Statistics Section */}
       <div className="sidebar-section">
         <div 

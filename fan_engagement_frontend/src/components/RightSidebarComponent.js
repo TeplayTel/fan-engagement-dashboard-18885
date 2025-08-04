@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import TeamPanels from './TeamPanels';
 
 const SidebarContainer = styled.div`
   height: 100%;
@@ -190,10 +191,11 @@ const PlayerDot = styled.div`
 `;
 
 // PUBLIC_INTERFACE
-const RightSidebarComponent = () => {
+const RightSidebarComponent = ({ currentMatch }) => {
   /**
    * Right sidebar component with match information and formation visualization
    * following exact design specifications for layout and styling.
+   * Now includes India and Australia team panels when applicable.
    */
   
   const battingTeamPositions = [
@@ -217,6 +219,9 @@ const RightSidebarComponent = () => {
 
   return (
     <SidebarContainer>
+      {/* Team Panels for India vs Australia matches */}
+      <TeamPanels currentMatch={currentMatch} />
+      
       <MatchInfoPanel>
         <ScoreDisplay>
           <TeamNames>
