@@ -53,22 +53,17 @@ function EmojiReactions({ currentMatch }) {
         
         const emojisData = await apiService.getEmojis();
         
+        // Backend returns array of emoji strings directly
         let emojis = [];
         if (Array.isArray(emojisData)) {
-          emojis = emojisData;
-        } else if (emojisData && emojisData.emojis && Array.isArray(emojisData.emojis)) {
-          emojis = emojisData.emojis;
-        } else if (emojisData && emojisData.data && Array.isArray(emojisData.data)) {
-          emojis = emojisData.data;
+          emojis = emojisData.map((emojiString, index) => ({
+            id: index + 1,
+            emoji: emojiString,
+            name: `emoji_${index + 1}`
+          }));
         }
 
-        const formattedEmojis = emojis.map((emoji, index) => ({
-          id: emoji.id || index + 1,
-          emoji: emoji.emoji || emoji.symbol || emoji,
-          name: emoji.name || `emoji_${index + 1}`
-        }));
-
-        setAvailableEmojis(formattedEmojis.length > 0 ? formattedEmojis : fallbackEmojis);
+        setAvailableEmojis(emojis.length > 0 ? emojis : fallbackEmojis);
       } catch (err) {
         console.warn('Failed to fetch emojis from API, using fallback:', err);
         setAvailableEmojis(fallbackEmojis);
@@ -95,22 +90,18 @@ function EmojiReactions({ currentMatch }) {
         setTimeout(async () => {
           try {
             const emojisData = await apiService.getEmojis();
+            
+            // Backend returns array of emoji strings directly
             let emojis = [];
             if (Array.isArray(emojisData)) {
-              emojis = emojisData;
-            } else if (emojisData && emojisData.emojis && Array.isArray(emojisData.emojis)) {
-              emojis = emojisData.emojis;
-            } else if (emojisData && emojisData.data && Array.isArray(emojisData.data)) {
-              emojis = emojisData.data;
+              emojis = emojisData.map((emojiString, index) => ({
+                id: index + 1,
+                emoji: emojiString,
+                name: `emoji_${index + 1}`
+              }));
             }
 
-            const formattedEmojis = emojis.map((emoji, index) => ({
-              id: emoji.id || index + 1,
-              emoji: emoji.emoji || emoji.symbol || emoji,
-              name: emoji.name || `emoji_${index + 1}`
-            }));
-
-            setAvailableEmojis(formattedEmojis.length > 0 ? formattedEmojis : fallbackEmojis);
+            setAvailableEmojis(emojis.length > 0 ? emojis : fallbackEmojis);
           } catch (err) {
             console.warn('Failed to refresh emoji list:', err);
           }

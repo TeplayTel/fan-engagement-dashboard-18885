@@ -9,6 +9,51 @@ function Analytics({ currentMatch }) {
    * Now displays analytics specific to the currently active match.
    * @param {object} currentMatch - The currently active match object
    */
+  
+  // Helper method to get top emoji from breakdown
+  const getTopEmojiFromBreakdown = (emojiBreakdown) => {
+    if (!emojiBreakdown || typeof emojiBreakdown !== 'object') return '❤️';
+    
+    let topEmoji = '❤️';
+    let maxCount = 0;
+    
+    Object.entries(emojiBreakdown).forEach(([emoji, count]) => {
+      if (count > maxCount) {
+        maxCount = count;
+        topEmoji = emoji;
+      }
+    });
+    
+    return topEmoji;
+  };
+
+  // Helper method to convert reactions per minute to match moments
+  const convertReactionsToMoments = (reactionsPerMinute, match) => {
+    if (!Array.isArray(reactionsPerMinute) || reactionsPerMinute.length === 0) {
+      return generateFallbackMoments(match);
+    }
+    
+    // Convert backend format to frontend format
+    return reactionsPerMinute
+      .filter(item => item.reactions > 50) // Only significant moments
+      .slice(0, 4) // Limit to 4 moments
+      .map(item => ({
+        time: `${item.minute || item.time || Math.floor(Math.random() * 90)}'`,
+        event: item.event || `High activity period`,
+        reactions: item.reactions || 0
+      }));
+  };
+
+  // Generate fallback moments when no data available
+  const generateFallbackMoments = (match) => {
+    if (!match) return [];
+    
+    return [
+      { time: '12\'', event: `Goal by ${match.home_team?.name || match.home?.name || 'Home Team'}`, reactions: Math.floor(Math.random() * 2000) + 800 },
+      { time: '34\'', event: 'Yellow Card', reactions: Math.floor(Math.random() * 800) + 200 },
+      { time: '67\'', event: `Goal by ${match.away_team?.name || match.away?.name || 'Away Team'}`, reactions: Math.floor(Math.random() * 2500) + 1000 },
+    ];
+  };
   const [stats, setStats] = useState({
     totalReactions: 0,
     uniqueViewers: 0,

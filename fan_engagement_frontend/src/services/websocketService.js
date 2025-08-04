@@ -11,7 +11,7 @@ class WebSocketService {
     this.reconnectDelay = 1000;
     this.listeners = new Map();
     this.isConnecting = false;
-    this.baseUrl = process.env.REACT_APP_WS_URL || 'wss://vscode-internal-33385-beta.beta01.cloud.kavia.ai:3001';
+    this.baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
   }
 
   // PUBLIC_INTERFACE
@@ -33,7 +33,8 @@ class WebSocketService {
     this.isConnecting = true;
 
     try {
-      const wsUrl = `${this.baseUrl}/ws`;
+      // Convert HTTP URL to WebSocket URL and use the analytics endpoint
+      const wsUrl = this.baseUrl.replace('http', 'ws') + '/ws/analytics';
       console.log('Connecting to WebSocket:', wsUrl);
       
       this.ws = new WebSocket(wsUrl);

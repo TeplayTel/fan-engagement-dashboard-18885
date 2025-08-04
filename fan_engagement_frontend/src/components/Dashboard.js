@@ -109,27 +109,50 @@ function Dashboard() {
     const fetchMatches = async () => {
       try {
         setLoading(true);
-        const matchesData = await apiService.getMatches();
         
-        let matches = [];
-        if (Array.isArray(matchesData)) {
-          matches = matchesData;
-        } else if (matchesData && matchesData.matches && Array.isArray(matchesData.matches)) {
-          matches = matchesData.matches;
-        } else if (matchesData && matchesData.data && Array.isArray(matchesData.data)) {
-          matches = matchesData.data;
+        // Try to get live matches first, then all matches
+        let matchesData = [];
+        
+        try {
+          const liveMatches = await apiService.getLiveMatches();
+          const upcomingMatches = await apiService.getUpcomingMatches(10);
+          
+          // Combine live and upcoming matches
+          matchesData = [...(liveMatches || []), ...(upcomingMatches || [])];
+        } catch (apiError) {
+          console.warn('Live/upcoming API failed, trying general matches endpoint:', apiError);
+          matchesData = await apiService.getMatches({ limit: 20 });
         }
 
-        if (matches.length > 0) {
-          setMatches(matches);
+        // Transform backend format to frontend format
+        const transformedMatches = Array.isArray(matchesData) ? matchesData.map(match => ({
+          id: match.id,
+          league: match.league,
+          time: match.match_time || (match.status === 'live' ? 'LIVE' : 'FT'),
+          sport: 'football', // Default since backend doesn't specify
+          home: { 
+            name: match.home_team?.name || 'Home Team', 
+            logo: match.home_team?.logo_url || null 
+          },
+          away: { 
+            name: match.away_team?.name || 'Away Team', 
+            logo: match.away_team?.logo_url || null 
+          },
+          score: match.score ? `${match.score.home || 0} - ${match.score.away || 0}` : '0 - 0',
+          status: match.status,
+          videoType: match.status === 'live' ? 'live' : 'recorded',
+          videoUrl: `https://www.youtube.com/embed/fSNya223rHQ?autoplay=1&mute=1&rel=0&modestbranding=1`, // Fallback video
+          thumbnail: `https://via.placeholder.com/280x160/FF6B35/FFFFFF?text=${encodeURIComponent(match.home_team?.short_name || 'HOME')}+vs+${encodeURIComponent(match.away_team?.short_name || 'AWAY')}`
+        })) : [];
+
+        if (transformedMatches.length > 0) {
+          setMatches(transformedMatches);
         } else {
-          // Fallback to placeholder data if no real matches available
           console.warn('No matches data received from API, using placeholder data');
           setMatches(placeholderMatches);
         }
       } catch (error) {
         console.error('Failed to fetch matches:', error);
-        // Use placeholder data as fallback
         setMatches(placeholderMatches);
       } finally {
         setLoading(false);
