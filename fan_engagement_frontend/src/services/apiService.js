@@ -107,7 +107,7 @@ class ApiService {
    * @returns {Promise<Array>} Array of emoji objects
    */
   async getEmojis() {
-    return this.get('/fan-engagement/emoji/v1/listEmojis');
+    return this.get('/reactions/emojis');
   }
 
   // PUBLIC_INTERFACE
@@ -117,49 +117,148 @@ class ApiService {
    * @returns {Promise} Response data
    */
   async sendReaction(reactionData) {
-    return this.post('/fan-engagement/emoji/v1/reaction', reactionData);
+    return this.post('/reactions/emoji_reaction', reactionData);
   }
 
   // PUBLIC_INTERFACE
   /**
-   * Send user emoji reaction with correct payload structure
-   * @param {Object} reactionData - Object containing userId, eventId, emojiId, createdAt
+   * Send user emoji reaction with correct payload structure matching backend API
+   * @param {Object} reactionData - Object containing match_id, emoji_type, user_id, timestamp
    * @returns {Promise} Response data
    */
   async sendUserEmojiReaction(reactionData) {
-    return this.post('/fan-engagement/emoji/v1/userEmojiReaction', reactionData);
+    // Transform frontend format to backend format
+    const backendPayload = {
+      match_id: parseInt(reactionData.eventId?.replace('live_match_', '') || '1'),
+      emoji_type: this.mapEmojiIdToType(reactionData.emojiId),
+      user_id: reactionData.userId,
+      timestamp: reactionData.createdAt || new Date().toISOString()
+    };
+    return this.post('/reactions/emoji_reaction', backendPayload);
   }
 
   // PUBLIC_INTERFACE
   /**
-   * Get basic engagement statistics for fans
+   * Get all matches with optional filtering
+   * @param {Object} filters - Optional filters (status, league, team, date_from, date_to, limit)
+   * @returns {Promise} Response data with matches
+   */
+  async getMatches(filters = {}) {
+    const params = new URLSearchParams();
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        params.append(key, value);
+      }
+    });
+    const queryString = params.toString();
+    return this.get(`/matches/${queryString ? '?' + queryString : ''}`);
+  }
+
+  // PUBLIC_INTERFACE
+  /**
+   * Get match details by ID
+   * @param {string|number} matchId - The ID of the match
+   * @returns {Promise} Response data with match details
+   */
+  async getMatchDetails(matchId) {
+    return this.get(`/matches/${matchId}`);
+  }
+
+  // PUBLIC_INTERFACE
+  /**
+   * Get live matches
+   * @returns {Promise} Response data with live matches
+   */
+  async getLiveMatches() {
+    return this.get('/matches/live/current');
+  }
+
+  // PUBLIC_INTERFACE
+  /**
+   * Get upcoming matches
+   * @param {number} limit - Number of matches to return
+   * @returns {Promise} Response data with upcoming matches
+   */
+  async getUpcomingMatches(limit = 5) {
+    return this.get(`/matches/upcoming/next?limit=${limit}`);
+  }
+
+  // PUBLIC_INTERFACE
+  /**
+   * Get recent reactions for a match
+   * @param {string|number} matchId - The match ID
+   * @param {number} limit - Number of reactions to return
+   * @returns {Promise} Response data with recent reactions
+   */
+  async getRecentReactions(matchId, limit = 10) {
+    return this.get(`/reactions/match/${matchId}/recent?limit=${limit}`);
+  }
+
+  // PUBLIC_INTERFACE
+  /**
+   * Get global analytics
+   * @returns {Promise} Response data with global analytics
+   */
+  async getGlobalAnalytics() {
+    return this.get('/analytics/global');
+  }
+
+  // PUBLIC_INTERFACE
+  /**
+   * Get match-specific analytics
+   * @param {string|number} matchId - The match ID
+   * @returns {Promise} Response data with match analytics
+   */
+  async getMatchAnalytics(matchId) {
+    return this.get(`/analytics/match/${matchId}`);
+  }
+
+  // PUBLIC_INTERFACE
+  /**
+   * Get analytics summary
+   * @returns {Promise} Response data with analytics summary
+   */
+  async getAnalyticsSummary() {
+    return this.get('/analytics/summary');
+  }
+
+  // PUBLIC_INTERFACE
+  /**
+   * Get basic engagement statistics for fans (fallback method)
    * @param {string} eventId - Optional event ID to filter statistics
    * @returns {Promise} Response data with engagement statistics
    */
   async getEngagementStats(eventId = null) {
-    const endpoint = eventId ? 
-      `/fan-engagement/stats/v1/engagement?eventId=${encodeURIComponent(eventId)}` : 
-      '/fan-engagement/stats/v1/engagement';
-    return this.get(endpoint);
+    try {
+      // Try to get match-specific analytics if eventId provided
+      if (eventId) {
+        const matchId = eventId.replace('live_match_', '').replace(/^0+/, '') || '1';
+        return await this.getMatchAnalytics(matchId);
+      }
+      // Otherwise get global analytics
+      return await this.getGlobalAnalytics();
+    } catch (error) {
+      console.warn('Failed to get engagement stats, falling back to summary:', error);
+      return await this.getAnalyticsSummary();
+    }
   }
 
-  // PUBLIC_INTERFACE
   /**
-   * Get list of available matches/events
-   * @returns {Promise} Response data with available matches
+   * Map emoji ID to backend emoji type enum
+   * @private
    */
-  async getMatches() {
-    return this.get('/fan-engagement/matches/v1/list');
-  }
-
-  // PUBLIC_INTERFACE
-  /**
-   * Get match details including video URL
-   * @param {string} matchId - The ID of the match
-   * @returns {Promise} Response data with match details
-   */
-  async getMatchDetails(matchId) {
-    return this.get(`/fan-engagement/matches/v1/details/${matchId}`);
+  mapEmojiIdToType(emojiId) {
+    const emojiMap = {
+      '1': '❤️',
+      '2': '🔥',
+      '3': '👏',
+      '4': '👍',
+      '5': '⚽',
+      '6': '🎉',
+      '7': '😠',
+      '8': '😢'
+    };
+    return emojiMap[emojiId] || '❤️';
   }
 }
 
