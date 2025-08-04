@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import Header from './Header';
+import NavigationHeader from './NavigationHeader';
+import MainFieldArea from './MainFieldArea';
+import RightSidebar from './RightSidebar';
+import BottomAnalytics from './BottomAnalytics';
 import SportsFilter from './SportsFilter';
 import CurrentMatchDisplay from './CurrentMatchDisplay';
 import MatchThumbnailCard from './MatchThumbnailCard';
-import EmojiReactions from './EmojiReactions';
-import Analytics from './Analytics';
-import VideoPlayer from './VideoPlayer';
 
 const placeholderMatches = [
   {
@@ -153,59 +153,105 @@ function Dashboard() {
 
   if (loading) {
     return (
-      <div className="dashboard fade-in">
-        <Header />
-        <SportsFilter selectedFilter={selectedFilter} onFilterChange={setSelectedFilter} />
-        <main className="main-content">
-          <div className="matches-container">
-            <VideoPlayer videoUrl="">
-              <EmojiReactions />
-            </VideoPlayer>
-            
-            {/* Loading current match display */}
-            <div className="current-match-display loading">
-              <div className="current-match-content">
-                <div className="loading-placeholder">
-                  <span>Loading current match...</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Loading grid */}
-            <div className="match-grid-container">
-              <div className="match-grid-header">
-                <h2 className="match-grid-title">
-                  <span>🎬</span>
-                  Other Matches
-                </h2>
-              </div>
-              <div className="matches-grid">
-                {[1, 2, 3, 4].map(i => (
-                  <div 
-                    key={i}
-                    style={{
-                      background: 'var(--glass-background)',
-                      borderRadius: 'var(--radius-md)',
-                      aspectRatio: '16 / 9',
-                      border: '1px solid var(--border-color)',
-                      animation: `pulse 1.5s ease-in-out infinite ${i * 0.2}s`
-                    }}
-                  />
-                ))}
+      <div className="dashboard-container fade-in">
+        {/* Navigation Header */}
+        <NavigationHeader />
+        
+        {/* Main Content Loading */}
+        <div className="main-content">
+          <SportsFilter selectedFilter={selectedFilter} onFilterChange={setSelectedFilter} />
+          
+          <div className="video-field-area">
+            <div style={{
+              width: '100%',
+              height: '100%',
+              background: 'var(--primary-bg)',
+              borderRadius: 'var(--radius-lg)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              border: '1px solid var(--border-color)'
+            }}>
+              <div style={{
+                textAlign: 'center',
+                color: 'var(--text-secondary)'
+              }}>
+                <div style={{
+                  width: '40px',
+                  height: '40px',
+                  border: '3px solid var(--border-color)',
+                  borderTop: '3px solid var(--accent-blue)',
+                  borderRadius: '50%',
+                  animation: 'spin 1s linear infinite',
+                  margin: '0 auto 16px'
+                }}></div>
+                <span>Loading match data...</span>
               </div>
             </div>
           </div>
-          <div className="right-panel">
-            <div style={{ animation: 'fadeIn 0.6s ease-out 0.3s both' }}>
-              <Analytics />
+          
+          {/* Loading match selection */}
+          <div className="match-selection-area">
+            <div className="match-grid-header">
+              <h3 className="match-grid-title">
+                <span>🎬</span>
+                Loading Matches...
+              </h3>
+            </div>
+            <div className="matches-grid-horizontal">
+              {[1, 2, 3, 4].map(i => (
+                <div 
+                  key={i}
+                  style={{
+                    width: '200px',
+                    aspectRatio: '16 / 9',
+                    background: 'var(--tertiary-bg)',
+                    borderRadius: 'var(--radius-md)',
+                    border: '1px solid var(--border-color)',
+                    animation: `pulse 1.5s ease-in-out infinite ${i * 0.2}s`,
+                    flexShrink: 0
+                  }}
+                />
+              ))}
             </div>
           </div>
-        </main>
+        </div>
+        
+        {/* Right Sidebar Loading */}
+        <div className="right-panel">
+          <div style={{
+            background: 'var(--tertiary-bg)',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'var(--text-secondary)'
+          }}>
+            Loading statistics...
+          </div>
+        </div>
+        
+        {/* Bottom Analytics Loading */}
+        <div className="bottom-analytics">
+          <div style={{
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'var(--text-secondary)'
+          }}>
+            Loading analytics...
+          </div>
+        </div>
         
         <style>{`
           @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
+          }
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
           }
         `}</style>
       </div>
@@ -213,87 +259,70 @@ function Dashboard() {
   }
 
   return (
-    <div className="dashboard fade-in">
-      <Header currentMatch={currentMatch} />
-      <SportsFilter selectedFilter={selectedFilter} onFilterChange={setSelectedFilter} />
-      <main className="main-content">
-        <div className="matches-container">
-          {/* Video Player with current match */}
-          <VideoPlayer 
-            videoUrl={currentMatch?.videoUrl || 'https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1&mute=1'}
-            currentMatch={currentMatch}
-          >
-            <EmojiReactions currentMatch={currentMatch} />
-          </VideoPlayer>
-          
-          {/* Current Match Display - Who vs Who Row */}
-          <CurrentMatchDisplay 
-            match={currentMatch}
-            onMatchSelect={handleMatchSelect}
-          />
+    <div className="dashboard-container fade-in">
+      {/* Navigation Header - Arena11 Design */}
+      <NavigationHeader />
+      
+      {/* Main Central Area - Video/Field View */}
+      <div className="main-content">
+        {/* Sports Filter Bar */}
+        <SportsFilter selectedFilter={selectedFilter} onFilterChange={setSelectedFilter} />
+        
+        {/* Main Field/Video Area */}
+        <div className="video-field-area">
+          <MainFieldArea currentMatch={currentMatch} />
+        </div>
+        
+        {/* Current Match Display */}
+        <CurrentMatchDisplay 
+          match={currentMatch}
+          onMatchSelect={handleMatchSelect}
+        />
 
-          {/* Other Matches Grid */}
-          <div className="match-grid-container">
-            <div className="match-grid-header">
-              <h2 className="match-grid-title">
-                <span>🎬</span>
-                Other Matches
-              </h2>
-              <div className="match-grid-count">
-                {filteredMatches.length} available
-              </div>
+        {/* Other Matches Selection */}
+        <div className="match-selection-area">
+          <div className="match-grid-header">
+            <h3 className="match-grid-title">
+              <span>🎬</span>
+              Switch Match
+            </h3>
+            <div className="match-grid-count">
+              {filteredMatches.length} available
             </div>
-            
-            {filteredMatches.length === 0 ? (
-              <div style={{
-                textAlign: 'center',
-                padding: 'var(--space-xl)',
-                color: 'var(--secondary-text)',
-                background: 'var(--glass-background)',
-                borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--border-color)'
-              }}>
-                <span style={{ fontSize: '2rem', marginBottom: 'var(--space-md)', display: 'block' }}>🔍</span>
-                <p>No matches found for the selected filter.</p>
-                <button 
-                  onClick={() => setSelectedFilter('all')}
-                  style={{
-                    background: 'var(--accent-blue)',
-                    color: 'white',
-                    border: 'none',
-                    padding: 'var(--space-sm) var(--space-md)',
-                    borderRadius: 'var(--radius-md)',
-                    cursor: 'pointer',
-                    marginTop: 'var(--space-sm)'
-                  }}
-                >
-                  Show All Matches
-                </button>
-              </div>
-            ) : (
-              <>
-                {/* Thumbnail Grid */}
-                <div className="matches-grid">
-                  {filteredMatches.map((match, index) => (
-                    <MatchThumbnailCard
-                      key={match.id}
-                      match={match}
-                      isActive={match.id === currentMatchId}
-                      onMatchSelect={handleMatchSelect}
-                      index={index}
-                    />
-                  ))}
-                </div>
-              </>
-            )}
           </div>
+          
+          {filteredMatches.length === 0 ? (
+            <div className="no-matches-message">
+              <span className="no-matches-icon">🔍</span>
+              <p>No matches found for the selected filter.</p>
+              <button 
+                className="show-all-btn"
+                onClick={() => setSelectedFilter('all')}
+              >
+                Show All Matches
+              </button>
+            </div>
+          ) : (
+            <div className="matches-grid-horizontal">
+              {filteredMatches.map((match, index) => (
+                <MatchThumbnailCard
+                  key={match.id}
+                  match={match}
+                  isActive={match.id === currentMatchId}
+                  onMatchSelect={handleMatchSelect}
+                  index={index}
+                />
+              ))}
+            </div>
+          )}
         </div>
-        <div className="right-panel">
-          <div style={{ animation: 'fadeIn 0.6s ease-out 0.3s both' }}>
-            <Analytics currentMatch={currentMatch} />
-          </div>
-        </div>
-      </main>
+      </div>
+      
+      {/* Right Sidebar - Player Stats & Team Info */}
+      <RightSidebar currentMatch={currentMatch} />
+      
+      {/* Bottom Analytics Section */}
+      <BottomAnalytics currentMatch={currentMatch} />
     </div>
   );
 }

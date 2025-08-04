@@ -186,7 +186,6 @@ function VideoPlayer({ videoUrl, children, currentMatch }) {
           position: 'absolute',
           bottom: '60px', // Positioned above typical video controls
           left: '50%',
-          transform: 'translateX(-50%)',
           width: '90%',
           maxWidth: '600px',
           pointerEvents: (isHovered && !isVideoLoading) ? 'auto' : 'none',

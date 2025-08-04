@@ -76,35 +76,37 @@ function App() {
 
   return (
     <div className="App fade-in">
-       <button 
-          className="theme-toggle" 
-          onClick={toggleTheme}
-          aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-          title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-        >
-          <span style={{ fontSize: '1.2rem', marginRight: '8px' }}>
-            {theme === 'light' ? '🌙' : '☀️'}
-          </span>
-          {theme === 'light' ? 'Dark' : 'Light'}
-        </button>
+      {/* Theme Toggle - Positioned for new layout */}
+      <button 
+        className="theme-toggle" 
+        onClick={toggleTheme}
+        aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+        title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+      >
+        <span style={{ fontSize: '1.2rem', marginRight: '8px' }}>
+          {theme === 'light' ? '🌙' : '☀️'}
+        </span>
+        {theme === 'light' ? 'Dark' : 'Light'}
+      </button>
       
+      {/* Tab Navigation - Updated for sports dashboard */}
       <nav className="app-nav">
         <button 
           className={`nav-tab ${activeTab === 'viewer' ? 'active' : ''}`}
           onClick={() => handleTabSwitch('viewer')}
-          aria-label="Switch to viewer dashboard"
-          title="View live matches and interact with emojis"
+          aria-label="Switch to sports dashboard"
+          title="View live matches and engage with fans"
         >
-          <span style={{ marginRight: '8px' }}>📺</span>
-          Viewer
+          <span style={{ marginRight: '8px' }}>⚽</span>
+          Live Sports
         </button>
         <button 
           className={`nav-tab ${activeTab === 'admin' ? 'active' : ''}`}
           onClick={() => handleTabSwitch('admin')}
           aria-label="Switch to admin dashboard"
-          title="Manage emojis and view analytics"
+          title="Manage matches and view analytics"
         >
-          <span style={{ marginRight: '8px' }}>⚙️</span>
+          <span style={{ marginRight: '8px' }}>📊</span>
           Admin
         </button>
       </nav>
@@ -114,7 +116,8 @@ function App() {
         style={{
           opacity: tabTransition ? 0.5 : 1,
           transform: tabTransition ? 'translateY(10px)' : 'translateY(0)',
-          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          height: activeTab === 'viewer' ? '100vh' : 'auto'
         }}
       >
         {activeTab === 'viewer' ? <Dashboard /> : <AdminDashboard />}
