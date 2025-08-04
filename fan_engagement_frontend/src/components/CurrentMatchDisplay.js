@@ -83,11 +83,16 @@ function CurrentMatchDisplay({ match, onMatchSelect }) {
           {/* Home Team */}
           <div className="team-section home-team">
             <div className="team-logo-container">
-              <img 
-                src={match.home.logo} 
-                alt={`${match.home.name} logo`}
-                className="team-logo"
-              />
+              {match.home.logo && (
+                <img 
+                  src={match.home.logo} 
+                  alt=""
+                  className="team-logo"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              )}
             </div>
             <div className="team-info">
               <h2 className="team-name">{match.home.name}</h2>
@@ -120,11 +125,16 @@ function CurrentMatchDisplay({ match, onMatchSelect }) {
               <span className="team-designation">AWAY</span>
             </div>
             <div className="team-logo-container">
-              <img 
-                src={match.away.logo} 
-                alt={`${match.away.name} logo`}
-                className="team-logo"
-              />
+              {match.away.logo && (
+                <img 
+                  src={match.away.logo} 
+                  alt=""
+                  className="team-logo"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              )}
             </div>
           </div>
         </div>

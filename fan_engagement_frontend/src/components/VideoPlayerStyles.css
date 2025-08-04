@@ -1,0 +1,239 @@
+/* Video Player Component Styles - Sports Design System */
+
+/* Video Controls Design */
+.video-controls-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+  padding: 16px 20px;
+  opacity: 0;
+  transition: opacity 200ms ease-out;
+  pointer-events: none;
+  z-index: 15;
+}
+
+.video-player-container-sleek:hover .video-controls-overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Play/Pause Button */
+.video-play-btn {
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 200ms ease-out;
+}
+
+.video-play-btn:hover {
+  transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.video-play-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: white;
+}
+
+/* Progress Bar */
+.video-progress-bar {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: height 150ms ease-out;
+}
+
+.video-progress-bar:hover {
+  height: 6px;
+}
+
+.video-progress-fill {
+  height: 100%;
+  background: #e53e3e;
+  transition: width 100ms ease-out;
+}
+
+.video-progress-thumb {
+  width: 12px;
+  height: 12px;
+  background: #e53e3e;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%) scale(0);
+  transition: transform 150ms ease-out;
+  cursor: pointer;
+}
+
+.video-progress-bar:hover .video-progress-thumb {
+  transform: translateY(-50%) scale(1);
+}
+
+/* Volume Control */
+.video-volume-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.video-volume-slider {
+  width: 80px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: width 200ms ease-out;
+}
+
+.video-volume-control:hover .video-volume-slider {
+  width: 120px;
+}
+
+.video-volume-fill {
+  height: 100%;
+  background: white;
+  border-radius: 2px;
+}
+
+/* Fullscreen Button */
+.video-fullscreen-btn {
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 200ms ease-out;
+}
+
+.video-fullscreen-btn:hover {
+  opacity: 1;
+}
+
+.video-fullscreen-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: white;
+}
+
+/* Team Badge Hover Effects */
+.team-badge-container {
+  transition: transform 200ms ease-out;
+}
+
+.team-badge-container:hover {
+  transform: scale(1.1);
+}
+
+/* Score Display Hover */
+.score-display-container:hover {
+  transform: scale(1.05);
+  background: rgba(0, 0, 0, 0.95);
+}
+
+/* Loading States */
+.video-loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: white;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+}
+
+.video-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Error State */
+.video-error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: white;
+  background: #4a1a1a;
+  text-align: center;
+  padding: 32px;
+}
+
+.video-error-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.video-retry-btn {
+  background: #e53e3e;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 200ms ease-out;
+}
+
+.video-retry-btn:hover {
+  background: #c53030;
+}
+
+/* Accessibility */
+.video-player-container-sleek:focus-within {
+  outline: 2px solid #3182ce;
+  outline-offset: 2px;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .team-badge-container,
+  .score-display-container,
+  .video-play-btn,
+  .video-progress-bar,
+  .video-volume-slider {
+    transition: none;
+  }
+  
+  .video-loading-spinner {
+    animation: none;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .video-controls-overlay {
+    background: rgba(0, 0, 0, 0.9);
+  }
+  
+  .video-play-btn {
+    border-width: 3px;
+  }
+  
+  .team-badge-container div:first-child {
+    border-width: 3px;
+  }
+}

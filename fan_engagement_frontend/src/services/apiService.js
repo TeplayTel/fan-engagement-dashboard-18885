@@ -3,7 +3,7 @@
  * API service for making HTTP requests to the fan engagement backend
  */
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://vscode-internal-33385-beta.beta01.cloud.kavia.ai:3001';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
 class ApiService {
   constructor() {
@@ -132,109 +132,34 @@ class ApiService {
 
   // PUBLIC_INTERFACE
   /**
-   * Upload emoji with multipart/form-data
-   * @param {FormData} formData - FormData containing emojiType and emojiImage
-   * @returns {Promise} Response data
-   */
-  async uploadEmoji(formData) {
-    try {
-      const headers = {};
-      
-      // Add authorization header if token is available
-      if (this.token) {
-        headers['Authorization'] = `Bearer ${this.token}`;
-      }
-      
-      // Don't set Content-Type for multipart/form-data - let browser set it with boundary
-      const response = await fetch(`${this.baseURL}/fan-engagement/emoji/v1/upload`, {
-        method: 'POST',
-        headers: headers,
-        body: formData,
-      });
-
-      if (!response.ok) {
-        // Try to get error details from response body
-        let errorMessage = `HTTP error! status: ${response.status}`;
-        try {
-          const errorData = await response.json();
-          if (errorData.detail) {
-            errorMessage += ` - ${errorData.detail}`;
-          } else if (errorData.message) {
-            errorMessage += ` - ${errorData.message}`;
-          }
-        } catch (parseError) {
-          // If response body can't be parsed, use status text
-          errorMessage += ` - ${response.statusText}`;
-        }
-        
-        throw new Error(errorMessage);
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error('API emoji upload failed:', error);
-      throw error;
-    }
-  }
-
-  // PUBLIC_INTERFACE
-  /**
-   * Get emoji usage statistics (admin only)
+   * Get basic engagement statistics for fans
    * @param {string} eventId - Optional event ID to filter statistics
-   * @returns {Promise} Response data with emoji statistics
+   * @returns {Promise} Response data with engagement statistics
    */
-  async getEmojiStats(eventId = null) {
+  async getEngagementStats(eventId = null) {
     const endpoint = eventId ? 
-      `/fan-engagement/emoji/v1/stats?eventId=${encodeURIComponent(eventId)}` : 
-      '/fan-engagement/emoji/v1/stats';
+      `/fan-engagement/stats/v1/engagement?eventId=${encodeURIComponent(eventId)}` : 
+      '/fan-engagement/stats/v1/engagement';
     return this.get(endpoint);
   }
 
   // PUBLIC_INTERFACE
   /**
-   * Get list of available events for statistics filtering
-   * @returns {Promise} Response data with available events
+   * Get list of available matches/events
+   * @returns {Promise} Response data with available matches
    */
-  async getEvents() {
-    return this.get('/fan-engagement/events/v1/list');
+  async getMatches() {
+    return this.get('/fan-engagement/matches/v1/list');
   }
 
   // PUBLIC_INTERFACE
   /**
-   * Remove emoji (admin only)
-   * @param {string} emojiId - The ID of the emoji to remove
-   * @returns {Promise} Response data
+   * Get match details including video URL
+   * @param {string} matchId - The ID of the match
+   * @returns {Promise} Response data with match details
    */
-  async removeEmoji(emojiId) {
-    try {
-      const response = await fetch(`${this.baseURL}/fan-engagement/emoji/v1/remove/${emojiId}`, {
-        method: 'DELETE',
-        headers: this.getHeaders(),
-      });
-
-      if (!response.ok) {
-        // Try to get error details from response body
-        let errorMessage = `HTTP error! status: ${response.status}`;
-        try {
-          const errorData = await response.json();
-          if (errorData.detail) {
-            errorMessage += ` - ${errorData.detail}`;
-          } else if (errorData.message) {
-            errorMessage += ` - ${errorData.message}`;
-          }
-        } catch (parseError) {
-          // If response body can't be parsed, use status text
-          errorMessage += ` - ${response.statusText}`;
-        }
-        
-        throw new Error(errorMessage);
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error('API emoji removal failed:', error);
-      throw error;
-    }
+  async getMatchDetails(matchId) {
+    return this.get(`/fan-engagement/matches/v1/details/${matchId}`);
   }
 }
 

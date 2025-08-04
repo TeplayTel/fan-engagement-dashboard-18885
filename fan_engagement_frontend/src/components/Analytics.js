@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import apiService from '../services/apiService';
+import websocketService from '../services/websocketService';
 
 // PUBLIC_INTERFACE
 function Analytics({ currentMatch }) {
@@ -23,6 +25,7 @@ function Analytics({ currentMatch }) {
     if (currentMatch) {
       setLoading(true);
       
+<<<<<<< HEAD
       // Generate match-specific analytics data
       const generateMatchStats = (match) => {
         const baseReactions = Math.floor(Math.random() * 10000) + 5000;
@@ -47,23 +50,74 @@ function Analytics({ currentMatch }) {
           
           return moments.sort((a, b) => parseFloat(a.time) - parseFloat(b.time));
         };
+=======
+      // Fetch real engagement statistics from API
+      const fetchEngagementStats = async (match) => {
+        try {
+          const eventId = `live_match_${match.id.toString().padStart(3, '0')}`;
+          const statsData = await apiService.getEngagementStats(eventId);
+          
+          // Parse API response
+          let apiStats = {};
+          if (statsData && typeof statsData === 'object') {
+            apiStats = {
+              totalReactions: statsData.totalReactions || statsData.total_reactions || 0,
+              uniqueViewers: statsData.uniqueViewers || statsData.unique_viewers || 0,
+              peakViewers: statsData.peakViewers || statsData.peak_viewers || 0,
+              engagementRate: statsData.engagementRate || statsData.engagement_rate || 0,
+              topEmoji: statsData.topEmoji || statsData.top_emoji || '❤️',
+              matchMoments: statsData.matchMoments || statsData.match_moments || []
+            };
+          }
+>>>>>>> cga-cg3c87e1d1
 
-        return {
-          totalReactions: baseReactions,
-          uniqueViewers: baseViewers,
-          peakViewers: baseViewers + Math.floor(Math.random() * 1000) + 500,
-          engagementRate: Math.floor(Math.random() * 25) + 65,
-          topEmoji: ['🔥', '❤️', '⚽', '🎉', '😮'][Math.floor(Math.random() * 5)],
-          matchMoments: generateMoments(match)
-        };
+          // Generate fallback data if API doesn't provide complete data
+          const generateFallbackMoments = (match) => {
+            return [
+              { time: '12\'', event: `Goal by ${match.home.name}`, reactions: Math.floor(Math.random() * 2000) + 800 },
+              { time: '34\'', event: 'Yellow Card', reactions: Math.floor(Math.random() * 800) + 200 },
+              { time: '67\'', event: `Goal by ${match.away.name}`, reactions: Math.floor(Math.random() * 2500) + 1000 },
+            ];
+          };
+
+          return {
+            totalReactions: apiStats.totalReactions || Math.floor(Math.random() * 10000) + 5000,
+            uniqueViewers: apiStats.uniqueViewers || Math.floor(Math.random() * 3000) + 1000,
+            peakViewers: apiStats.peakViewers || (apiStats.uniqueViewers || Math.floor(Math.random() * 3000) + 1000) + Math.floor(Math.random() * 1000) + 500,
+            engagementRate: apiStats.engagementRate || Math.floor(Math.random() * 25) + 65,
+            topEmoji: apiStats.topEmoji || ['🔥', '❤️', '⚽', '🎉', '😮'][Math.floor(Math.random() * 5)],
+            matchMoments: apiStats.matchMoments.length > 0 ? apiStats.matchMoments : generateFallbackMoments(match)
+          };
+        } catch (error) {
+          console.error('Failed to fetch engagement stats:', error);
+          
+          // Fallback to generated data if API fails
+          const generateFallbackMoments = (match) => {
+            return [
+              { time: '12\'', event: `Goal by ${match.home.name}`, reactions: Math.floor(Math.random() * 2000) + 800 },
+              { time: '34\'', event: 'Yellow Card', reactions: Math.floor(Math.random() * 800) + 200 },
+              { time: '67\'', event: `Goal by ${match.away.name}`, reactions: Math.floor(Math.random() * 2500) + 1000 },
+            ];
+          };
+
+          const baseReactions = Math.floor(Math.random() * 10000) + 5000;
+          const baseViewers = Math.floor(Math.random() * 3000) + 1000;
+          
+          return {
+            totalReactions: baseReactions,
+            uniqueViewers: baseViewers,
+            peakViewers: baseViewers + Math.floor(Math.random() * 1000) + 500,
+            engagementRate: Math.floor(Math.random() * 25) + 65,
+            topEmoji: ['🔥', '❤️', '⚽', '🎉', '😮'][Math.floor(Math.random() * 5)],
+            matchMoments: generateFallbackMoments(match)
+          };
+        }
       };
 
-      const timer = setTimeout(() => {
-        setStats(generateMatchStats(currentMatch));
+      fetchEngagementStats(currentMatch).then(newStats => {
+        setStats(newStats);
         setLoading(false);
-      }, 800);
-
-      return () => clearTimeout(timer);
+      });
     }
   }, [currentMatch]);
 
@@ -119,20 +173,56 @@ function Analytics({ currentMatch }) {
     return () => window.removeEventListener('activeMatchChanged', handleActiveMatchChange);
   }, []);
 
-  // Simulate real-time updates (only for live matches)
+  // WebSocket integration for real-time analytics updates
   useEffect(() => {
     if (!currentMatch || currentMatch.status !== 'live') return;
 
+    // Subscribe to real-time analytics updates
+    const handleAnalyticsUpdate = (analyticsData) => {
+      console.log('Received analytics update:', analyticsData);
+      setStats(prev => ({
+        ...prev,
+        totalReactions: analyticsData.totalReactions || prev.totalReactions + Math.floor(Math.random() * 15) + 1,
+        uniqueViewers: analyticsData.uniqueViewers || Math.max(100, prev.uniqueViewers + Math.floor(Math.random() * 6) - 2),
+        engagementRate: analyticsData.engagementRate || Math.max(40, Math.min(95, prev.engagementRate + (Math.random() - 0.5) * 3))
+      }));
+    };
+
+    websocketService.subscribeToAnalytics(handleAnalyticsUpdate);
+
+    // Subscribe to emoji reactions for live count updates
+    const handleReactionUpdate = (reactionData) => {
+      if (reactionData.eventId === `live_match_${currentMatch.id.toString().padStart(3, '0')}`) {
+        setStats(prev => ({
+          ...prev,
+          totalReactions: prev.totalReactions + 1
+        }));
+      }
+    };
+
+    websocketService.subscribeToReactions(handleReactionUpdate);
+
+    // Fallback interval for when WebSocket updates aren't available
     const updateInterval = setInterval(() => {
+      if (websocketService.isConnected()) {
+        // Only do minimal updates if WebSocket is working
+        return;
+      }
+      
+      // Fallback updates when WebSocket is not available
       setStats(prev => ({
         ...prev,
         totalReactions: prev.totalReactions + Math.floor(Math.random() * 15) + 1,
         uniqueViewers: Math.max(100, prev.uniqueViewers + Math.floor(Math.random() * 6) - 2),
         engagementRate: Math.max(40, Math.min(95, prev.engagementRate + (Math.random() - 0.5) * 3))
       }));
-    }, 5000);
+    }, 10000); // Less frequent updates as fallback
 
-    return () => clearInterval(updateInterval);
+    return () => {
+      clearInterval(updateInterval);
+      websocketService.off('analytics_update', handleAnalyticsUpdate);
+      websocketService.off('emoji_reaction', handleReactionUpdate);
+    };
   }, [currentMatch]);
 
   // Initial load effect
@@ -295,16 +385,35 @@ function Analytics({ currentMatch }) {
                 gap: 'var(--space-xs)',
                 width: '100%'
               }}>
-                <img 
-                  src={currentMatch.home.logo} 
-                  alt={currentMatch.home.name}
-                  style={{
+                {currentMatch.home.logo ? (
+                  <img 
+                    src={currentMatch.home.logo} 
+                    alt={currentMatch.home.name}
+                    style={{
+                      width: '20px',
+                      height: '20px',
+                      borderRadius: '50%',
+                      flexShrink: 0
+                    }}
+                  />
+                ) : (
+                  <div style={{
                     width: '20px',
                     height: '20px',
                     borderRadius: '50%',
-                    flexShrink: 0
-                  }}
-                />
+                    background: 'var(--accent-blue)',
+                    color: 'white',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '0.6rem',
+                    fontWeight: '700',
+                    flexShrink: 0,
+                    textShadow: '0 1px 2px rgba(0, 0, 0, 0.5)'
+                  }}>
+                    {currentMatch.home.name.slice(0, 3).toUpperCase()}
+                  </div>
+                )}
                 <span style={{
                   fontSize: '0.8rem',
                   fontWeight: '600',
@@ -338,16 +447,35 @@ function Analytics({ currentMatch }) {
                 gap: 'var(--space-xs)',
                 width: '100%'
               }}>
-                <img 
-                  src={currentMatch.away.logo} 
-                  alt={currentMatch.away.name}
-                  style={{
+                {currentMatch.away.logo ? (
+                  <img 
+                    src={currentMatch.away.logo} 
+                    alt={currentMatch.away.name}
+                    style={{
+                      width: '20px',
+                      height: '20px',
+                      borderRadius: '50%',
+                      flexShrink: 0
+                    }}
+                  />
+                ) : (
+                  <div style={{
                     width: '20px',
                     height: '20px',
                     borderRadius: '50%',
-                    flexShrink: 0
-                  }}
-                />
+                    background: 'var(--accent-purple)',
+                    color: 'white',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '0.6rem',
+                    fontWeight: '700',
+                    flexShrink: 0,
+                    textShadow: '0 1px 2px rgba(0, 0, 0, 0.5)'
+                  }}>
+                    {currentMatch.away.name.slice(0, 3).toUpperCase()}
+                  </div>
+                )}
                 <span style={{
                   fontSize: '0.8rem',
                   fontWeight: '600',

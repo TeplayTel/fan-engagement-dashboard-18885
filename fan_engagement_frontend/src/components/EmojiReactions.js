@@ -1,6 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import apiService from '../services/apiService';
+import websocketService from '../services/websocketService';
 import useAuth from '../hooks/useAuth';
+
+// Fallback emojis with enhanced variety - moved outside component to avoid dependency issues
+const FALLBACK_EMOJIS = [
+  { id: 1, emoji: '❤️', name: 'heart' },
+  { id: 2, emoji: '🔥', name: 'fire' },
+  { id: 3, emoji: '😂', name: 'laugh' },
+  { id: 4, emoji: '😮', name: 'wow' },
+  { id: 5, emoji: '👍', name: 'thumbs_up' },
+  { id: 6, emoji: '⚽', name: 'soccer' },
+  { id: 7, emoji: '🎉', name: 'celebration' },
+  { id: 8, emoji: '😢', name: 'sad' }
+];
 
 // PUBLIC_INTERFACE
 function EmojiReactions({ currentMatch }) {
@@ -13,12 +26,13 @@ function EmojiReactions({ currentMatch }) {
   const [flyingEmojis, setFlyingEmojis] = useState([]);
   const [availableEmojis, setAvailableEmojis] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [feedbackMessage, setFeedbackMessage] = useState(null);
   const [feedbackType, setFeedbackType] = useState(null);
   const [recentClicks, setRecentClicks] = useState([]);
+  const [viewerCount, setViewerCount] = useState(2100);
   const { isAuthenticated, getDemoToken, login, userToken } = useAuth();
 
+<<<<<<< HEAD
   // Fallback emojis with cricket-themed variety
   const fallbackEmojis = [
     { id: 1, emoji: '❤️', name: 'heart' },
@@ -30,6 +44,10 @@ function EmojiReactions({ currentMatch }) {
     { id: 7, emoji: '🎉', name: 'celebration' },
     { id: 8, emoji: '⚡', name: 'lightning' }
   ];
+=======
+  // Memoize fallback emojis to prevent re-renders
+  const fallbackEmojis = useMemo(() => FALLBACK_EMOJIS, []);
+>>>>>>> cga-cg3c87e1d1
 
   // Auto-login effect
   useEffect(() => {
@@ -46,7 +64,6 @@ function EmojiReactions({ currentMatch }) {
 
       try {
         setLoading(true);
-        setError(null);
         
         const emojisData = await apiService.getEmojis();
         
@@ -68,7 +85,6 @@ function EmojiReactions({ currentMatch }) {
         setAvailableEmojis(formattedEmojis.length > 0 ? formattedEmojis : fallbackEmojis);
       } catch (err) {
         console.warn('Failed to fetch emojis from API, using fallback:', err);
-        setError('Using local emojis');
         setAvailableEmojis(fallbackEmojis);
       } finally {
         setLoading(false);
@@ -86,7 +102,7 @@ function EmojiReactions({ currentMatch }) {
     return () => clearInterval(refreshInterval);
   }, [isAuthenticated]);
 
-  // Listen for admin updates
+  // Listen for admin updates via WebSocket and custom events
   useEffect(() => {
     const handleEmojiListUpdate = () => {
       if (isAuthenticated) {
@@ -116,12 +132,32 @@ function EmojiReactions({ currentMatch }) {
       }
     };
 
+    // WebSocket subscription for admin updates
+    const handleAdminUpdate = (adminData) => {
+      console.log('Received admin update:', adminData);
+      if (adminData.type === 'emoji_list_updated') {
+        handleEmojiListUpdate();
+      }
+    };
+
+    websocketService.subscribeToAdminUpdates(handleAdminUpdate);
     window.addEventListener('emojiListUpdated', handleEmojiListUpdate);
     
+    // Subscribe to viewer count updates
+    const handleViewerUpdate = (viewerData) => {
+      if (viewerData.eventId === (currentMatch ? `live_match_${currentMatch.id.toString().padStart(3, '0')}` : "live_match_001")) {
+        setViewerCount(viewerData.viewerCount || viewerData.count || viewerCount);
+      }
+    };
+
+    websocketService.on('viewer_update', handleViewerUpdate);
+
     return () => {
       window.removeEventListener('emojiListUpdated', handleEmojiListUpdate);
+      websocketService.off('admin_update', handleAdminUpdate);
+      websocketService.off('viewer_update', handleViewerUpdate);
     };
-  }, [isAuthenticated, fallbackEmojis]);
+  }, [isAuthenticated, fallbackEmojis, currentMatch, viewerCount]);
 
   const handleEmojiClick = async (emojiData) => {
     // Prevent spam clicking
@@ -232,7 +268,7 @@ function EmojiReactions({ currentMatch }) {
             </div>
           </div>
           <div className="watching-counter-sleek">
-            <span className="watching-count-sleek">2.1K</span>
+            <span className="watching-count-sleek">{viewerCount >= 1000 ? `${(viewerCount / 1000).toFixed(1)}K` : viewerCount}</span>
           </div>
         </div>
       </div>
@@ -290,7 +326,7 @@ function EmojiReactions({ currentMatch }) {
 
           {/* Watching counter (compact) */}
           <div className="watching-counter-sleek">
-            <span className="watching-count-sleek">2.1K</span>
+            <span className="watching-count-sleek">{viewerCount >= 1000 ? `${(viewerCount / 1000).toFixed(1)}K` : viewerCount}</span>
             <div className="live-pulse-sleek"></div>
           </div>
         </div>
