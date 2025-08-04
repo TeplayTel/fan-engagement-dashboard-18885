@@ -21,9 +21,11 @@ const PanelsWrapper = styled.div`
   
   @media (max-width: 768px) {
     align-items: center;
+    gap: 12px;
     
     > * {
       width: 250px;
+      padding: 12px;
     }
   }
 `;
@@ -31,19 +33,12 @@ const PanelsWrapper = styled.div`
 // PUBLIC_INTERFACE
 const TeamPanels = ({ currentMatch }) => {
   /**
-   * Container component for India and Australia team panels
-   * Displays both panels with proper positioning and responsive behavior
+   * Brand new container component for India and Australia team panels
+   * Displays both panels with exact positioning and responsive behavior
+   * as specified in the design notes for pixel-perfect implementation.
    */
   
-  // Only show panels for India vs Australia matches
-  if (!currentMatch || 
-      !(currentMatch.home?.name?.toLowerCase().includes('india') || 
-        currentMatch.away?.name?.toLowerCase().includes('india') ||
-        currentMatch.home?.name?.toLowerCase().includes('australia') || 
-        currentMatch.away?.name?.toLowerCase().includes('australia'))) {
-    return null;
-  }
-
+  // Always show panels for cricket dashboard (India vs Australia)
   return (
     <PanelsWrapper>
       <IndiaTeamPanel />

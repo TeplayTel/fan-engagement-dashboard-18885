@@ -2,14 +2,15 @@ import React from 'react';
 import styled from 'styled-components';
 
 const PanelContainer = styled.div`
-  background: #d32f2f;
-  border: 1px solid #f44336;
+  background: var(--australia-primary);
+  border: 1px solid var(--australia-accent);
   border-radius: 8px;
   width: 280px;
   padding: 16px;
   margin: 8px 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 8px var(--panel-shadow, rgba(0, 0, 0, 0.2));
   transition: all 0.3s ease;
+  position: relative;
   
   &:hover {
     filter: brightness(1.1);
@@ -17,9 +18,9 @@ const PanelContainer = styled.div`
 `;
 
 const Header = styled.div`
-  background: rgba(211, 47, 47, 0.8);
-  color: #ffffff;
-  font-family: Arial, sans-serif;
+  background: rgba(211, 47, 47, 0.9);
+  color: var(--panel-text);
+  font-family: Arial, Helvetica, sans-serif;
   font-weight: 700;
   font-size: 14px;
   text-transform: uppercase;
@@ -28,18 +29,19 @@ const Header = styled.div`
   text-align: center;
   margin: -16px -16px 16px -16px;
   border-radius: 8px 8px 0 0;
-  border-bottom: 1px solid #f44336;
+  border-bottom: 1px solid var(--australia-accent);
 `;
 
-const FormationGrid = styled.div`
+const FormationContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(4, 1fr);
-  gap: 16px 8px;
+  gap: 20px 16px;
   justify-items: center;
   align-items: center;
   min-height: 240px;
   padding: 8px 0;
+  position: relative;
 `;
 
 const PlayerContainer = styled.div`
@@ -49,6 +51,7 @@ const PlayerContainer = styled.div`
   gap: 4px;
   transition: all 0.2s ease;
   cursor: pointer;
+  position: relative;
   
   &:hover {
     transform: scale(1.1);
@@ -58,39 +61,43 @@ const PlayerContainer = styled.div`
 const PlayerCircle = styled.div`
   width: 24px;
   height: 24px;
-  background: #ffffff;
-  border: 2px solid #f44336;
+  background: var(--player-circle-bg);
+  border: 2px solid var(--australia-border);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 8px;
   font-weight: 600;
-  color: #d32f2f;
+  color: var(--australia-primary);
   transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   
   &:hover {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
   }
 `;
 
 const PlayerName = styled.div`
   font-size: 10px;
   font-weight: 500;
-  color: #ffffff;
+  color: var(--panel-text);
   text-align: center;
   max-width: 40px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   line-height: 1.2;
+  font-family: Arial, Helvetica, sans-serif;
 `;
 
 // PUBLIC_INTERFACE
 const AustraliaTeamPanel = () => {
   /**
-   * Australia cricket team panel component displaying team formation
-   * with exact styling specifications from design notes
+   * Brand new Australia cricket team panel component with pixel-perfect design
+   * specifications matching the provided screenshot and design notes exactly.
+   * Features proper formation layout, hover effects, and team-specific styling.
    */
   
   const australianPlayers = [
@@ -120,7 +127,7 @@ const AustraliaTeamPanel = () => {
   return (
     <PanelContainer>
       <Header>AUSTRALIA</Header>
-      <FormationGrid>
+      <FormationContainer>
         {australianPlayers.map((player, index) => (
           <PlayerContainer
             key={index}
@@ -135,7 +142,7 @@ const AustraliaTeamPanel = () => {
             <PlayerName>{player.name}</PlayerName>
           </PlayerContainer>
         ))}
-      </FormationGrid>
+      </FormationContainer>
     </PanelContainer>
   );
 };

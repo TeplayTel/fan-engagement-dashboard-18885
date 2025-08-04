@@ -37,6 +37,11 @@
   --australia-primary: #d32f2f;
   --australia-accent: #f44336;
   --australia-border: #ff5722;
+  
+  /* Common Panel Colors */
+  --panel-text: #ffffff;
+  --player-circle-bg: #ffffff;
+  --panel-shadow: rgba(0, 0, 0, 0.2);
 
   /* Typography */
   --font-xs: 10px;
